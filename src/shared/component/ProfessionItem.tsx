@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
         fontFamily: fonts.medium,
         fontSize: 12,
         color: colors.grey3,
-        marginTop: 2
+        // marginTop: 2
+        includeFontPadding: false
     },
     checkbox: {
         width: 20,

@@ -20,13 +20,15 @@ import BottomSheet from './BottomSheet'
 interface ProfessionModalInterface {
     isOpen?: boolean,
     toggleModal?: () => void,
-    isFilter?: boolean
+    isFilter?: boolean,
+    addMarginBottom?: boolean
 }
 
 const ProfessionModal: FC<ProfessionModalInterface> = ({
     isOpen = false,
     toggleModal,
-    isFilter = false
+    isFilter = false,
+    addMarginBottom = false
 }) => {
 
     const insets = useSafeAreaInsets()
@@ -82,7 +84,7 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
                 renderSectionHeader={({ section: { title } }) => (
                     <ProfessionItemHead title={title} />
                 )}
-                style={styles.list}
+                style={[styles.list, addMarginBottom && styles.mb_100]}
                 contentContainerStyle={styles.listContainer}
                 showsVerticalScrollIndicator={false}
                 stickySectionHeadersEnabled={true} // set to true if you want sticky headers
@@ -122,6 +124,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: colors.white,
         textAlign: 'center',
+        includeFontPadding: false
     },
     btn: {
         flex: 0.2,
@@ -134,6 +137,7 @@ const styles = StyleSheet.create({
         fontFamily: fonts.bold,
         color: colors.white,
         textAlign: 'center',
+        includeFontPadding: false
     },
     searchBox: {
         backgroundColor: colors.white,
@@ -152,12 +156,15 @@ const styles = StyleSheet.create({
         fontFamily: fonts.medium,
         fontSize: 12,
         color: colors.black,
+        includeFontPadding: false
     },
     list: {
         flex: 1,
-        marginBottom: 20
     },
     listContainer: {
         backgroundColor: colors.white,
     },
+    mb_100: {
+        marginBottom: 100
+    }
 })

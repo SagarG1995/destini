@@ -1,17 +1,21 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { FC, memo, useState } from 'react'
 import CustomInput from '../../../shared/component/CustomInput'
 import GenderSelection from './GenderSelection'
 import { fonts } from '../../../shared/constants/fonts'
 import { colors } from '../../../shared/constants/colors'
-import ProfessionModal from '../../../shared/component/ProfessionModal'
 
-const ProfileForm1 = () => {
+interface ProfileForm1Interface {
+    toogleModal?: () => void
+}
+
+const ProfileForm1: FC<ProfileForm1Interface> = ({
+    toogleModal
+}) => {
 
     const [gender, setGender] = useState('female')
     const [nickname, setNickname] = useState('')
     const [fullname, setFullname] = useState('')
-    const [isOpen, setIsopen] = useState(false)
 
     return (
         <View style={styles.contianer}>
@@ -28,30 +32,25 @@ const ProfileForm1 = () => {
                 onTypingComplete={setFullname}
                 containerStyle={styles.mt_30}
             />
-            <TouchableOpacity style={styles.profession} onPress={() => setIsopen(true)}>
+            <TouchableOpacity style={styles.profession} onPress={toogleModal}>
                 <Text style={styles.professionLabel}>Profession*</Text>
             </TouchableOpacity>
-
-            {
-                <ProfessionModal
-                    isOpen={isOpen}
-                    toggleModal={() => setIsopen(false)}
-                />
-            }
         </View>
     )
 }
 
-export default ProfileForm1
+export default memo(ProfileForm1)
 
 const styles = StyleSheet.create({
     contianer: {
         justifyContent: 'center',
     },
     profession: {
-        marginTop: 50,
+        marginTop: 45,
         borderBottomColor: colors.black,
-        borderBottomWidth: 1
+        borderBottomWidth: 2,
+        paddingLeft: 10,
+        borderRadius: 10,
     },
     professionLabel: {
         fontFamily: fonts.regular,

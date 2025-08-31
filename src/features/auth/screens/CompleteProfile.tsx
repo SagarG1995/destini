@@ -19,6 +19,7 @@ const CompleteProfile = () => {
 
 
     const [step, setStep] = useState(1)
+    const [isOpen, setIsopen] = useState(false)
 
 
 
@@ -50,6 +51,10 @@ const CompleteProfile = () => {
         )
     }, [])
 
+    const toogleModal = useCallback(() => {
+        setIsopen(!isOpen)
+    }, [isOpen])
+
     return (
         <View style={styles.container}>
             <Header
@@ -62,7 +67,7 @@ const CompleteProfile = () => {
 
                     {
                         step === 1 ?
-                            <ProfileForm1 />
+                            <ProfileForm1 toogleModal={toogleModal} />
                             :
                             <ProfileForm2 />
                     }
@@ -78,10 +83,13 @@ const CompleteProfile = () => {
                             <Text style={styles.swipeInfo}>Swipe Up To Fill More Details</Text>
                         </View>
                     }
+
                 </KeyboardAwareScrollView>
             </GestureDetector>
-
-
+            <ProfessionModal
+                isOpen={isOpen}
+                toggleModal={toogleModal}
+            />
         </View>
     )
 }

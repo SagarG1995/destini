@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
         fontFamily: fonts.semibold,
         fontSize: 14,
         color: colors.white,
-        textAlign: 'center'
+        textAlign: 'center',
+        includeFontPadding: false
     },
     disabledButton: {
         backgroundColor: colors.grey1

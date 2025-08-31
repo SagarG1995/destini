@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     title: {
         fontFamily: fonts.medium,
         fontSize: 12,
-        color: colors.grey3
+        color: colors.grey3,
+        includeFontPadding: false
     }
 })

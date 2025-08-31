@@ -50,6 +50,7 @@ const Login = () => {
                         placeholder='Email'
                         onTypingComplete={setEmail}
                         keyboardType='email-address'
+                        textAlignVertical='bottom'
                     />
                     <CustomInput
                         placeholder='Password'

@@ -8,7 +8,7 @@ interface CustomInputInterface extends TextInputProps {
     leftIcon?: () => React.ReactElement | null;
     rightIcon?: () => React.ReactElement | null;
     containerStyle?: StyleProp<ViewStyle>;
-    inputStyle?: TextStyle;
+    inputStyle?: StyleProp<TextStyle>;
     onTypingComplete?: (text: string) => void;
     onChangeText?: (text: string) => void;
 }
@@ -76,16 +76,19 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         alignItems: 'flex-end',
         borderRadius: 10,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        // backgroundColor: 'pink'
     },
     input: {
         flex: 1,
+        height: '100%',
         color: colors.black,
         fontSize: 16,
         fontFamily: fonts.regular,
-        paddingVertical: 0,
         paddingTop: 10,
-        textAlignVertical: 'center',
+        paddingBottom: 0,
         paddingLeft: 10,
+        // backgroundColor: 'red',
+        // lineHeight: 30
     }
 })

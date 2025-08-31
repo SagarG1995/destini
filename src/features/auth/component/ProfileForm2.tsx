@@ -20,6 +20,7 @@ const ProfileForm2 = () => {
                     numberOfLines={5}
                     placeholder='Describe Yourself In 250 Characters'
                     textAlignVertical='top'
+                    maxLength={250}
                     inputStyle={styles.inputStyle}
                     containerStyle={styles.inputContainerStyle}
                 />
