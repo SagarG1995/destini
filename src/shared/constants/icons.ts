@@ -21,4 +21,5 @@ export const icons = {
     calendarcolor: require("../../assets/icons/calendar-color.png"),
     locationcolor: require("../../assets/icons/location-color.png"),
     profilecirclecolor: require("../../assets/icons/profile-circle-color.png"),
+    calendarheart: require("../../assets/icons/calendar-heart.png"),
 }

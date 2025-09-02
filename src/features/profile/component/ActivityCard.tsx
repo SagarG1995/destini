@@ -24,42 +24,44 @@ const ActivityCard = () => {
     }, [status])
 
     return (
-        <LinearGradient useAngle={true} angle={120} angleCenter={{ x: 0.6, y: 0.5 }} colors={[colors.blue2, colors.white]} style={styles.container}>
-            <View style={styles.cardHeader}>
-                <View style={[styles.row, styles.flex1]}>
-                    <Image source={icons.profilecirclecolor} style={styles.profile} resizeMode='contain' />
-                    <Text style={styles.tripName} numberOfLines={2} allowFontScaling={false} >Someone from Rajori Garden is headed to Bistro Cafe!! </Text>
+        <View style={styles.container}>
+            <LinearGradient useAngle={true} angle={120} angleCenter={{ x: 0.3, y: 0.5 }} colors={[colors.blue2, colors.white]} style={styles.gradient1}>
+                <View style={styles.cardHeader}>
+                    <View style={[styles.row, styles.flex1]}>
+                        <Image source={icons.profilecirclecolor} style={styles.profile} resizeMode='contain' />
+                        <Text style={styles.tripName} numberOfLines={2} allowFontScaling={false} >Someone from Rajori Garden is headed to Bistro Cafe!! </Text>
+                    </View>
+                    <View style={[styles.statusContainer, statusBgColor]}>
+                        <Text style={styles.status}>{status}</Text>
+                    </View>
                 </View>
-                <View style={[styles.statusContainer, statusBgColor]}>
-                    <Text style={styles.status}>{status}</Text>
-                </View>
-            </View>
-            <Text style={[styles.description]} numberOfLines={2} allowFontScaling={false}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et .
-            </Text>
+                <Text style={[styles.description]} numberOfLines={2} allowFontScaling={false}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et .
+                </Text>
 
-            <View style={[styles.row, styles.mt_15]}>
-                <View style={styles.flex1}>
-                    <View style={styles.row}>
-                        <Image source={icons.locationcolor} style={styles.icon} resizeMode='contain' />
-                        <Text style={styles.text}>3 KM away from you</Text>
+                <View style={[styles.row, styles.mt_15]}>
+                    <View style={styles.flex1}>
+                        <View style={styles.row}>
+                            <Image source={icons.locationcolor} style={styles.icon} resizeMode='contain' />
+                            <Text style={styles.text}>3 KM away from you</Text>
+                        </View>
+                        <View style={[styles.row, styles.mt_5]}>
+                            <Image source={icons.calendarcolor} style={styles.icon} resizeMode='contain' />
+                            <Text style={styles.text}>July 30,2025</Text>
+                        </View>
                     </View>
-                    <View style={[styles.row, styles.mt_5]}>
-                        <Image source={icons.calendarcolor} style={styles.icon} resizeMode='contain' />
-                        <Text style={styles.text}>July 30,2025</Text>
-                    </View>
+                    {
+                        status !== 'rejected' &&
+                        <CustomButton
+                            label='CHAT'
+                            containerStyle={chatButtonEnabled ? styles.enableButton : styles.disableButton}
+                            labelStyle={styles.buttonLabel}
+                            enabled={chatButtonEnabled}
+                        />
+                    }
                 </View>
-                {
-                    status !== 'rejected' &&
-                    <CustomButton
-                        label='CHAT'
-                        containerStyle={chatButtonEnabled ? styles.enableButton : styles.disableButton}
-                        labelStyle={styles.buttonLabel}
-                        enabled={chatButtonEnabled}
-                    />
-                }
-            </View>
-        </LinearGradient>
+            </LinearGradient>
+        </View>
     )
 }
 
@@ -67,13 +69,15 @@ export default memo(ActivityCard)
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
         borderRadius: 10,
         minHeight: 160,
-        justifyContent: 'space-between',
         borderColor: colors.blue1,
         borderWidth: 1,
         overflow: 'hidden'
+    },
+    gradient1: {
+        flex: 1,
+        padding: 10,
     },
     flex1: {
         flex: 1

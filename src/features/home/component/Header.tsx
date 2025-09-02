@@ -63,7 +63,8 @@ export default memo(Header)
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        backgroundColor: colors.white
     },
     header: {
         flexDirection: 'row',

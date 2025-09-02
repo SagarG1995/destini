@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
         fontFamily: fonts.semibold,
         fontSize: 18,
         color: colors.black,
-        // lineHeight: 20
         includeFontPadding: false,
     },
     button: {
@@ -76,7 +75,6 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flexGrow: 1,
-        // backgroundColor: 'red'
         paddingBottom: 100
     },
     separator: {
