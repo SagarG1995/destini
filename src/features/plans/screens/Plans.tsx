@@ -1,17 +1,21 @@
-import { View, Text, StyleSheet, Image, FlatList } from 'react-native'
+import { View, StyleSheet, Image, FlatList } from 'react-native'
 import React, { useCallback } from 'react'
 import Header from '../component/Header'
 import { colors } from '../../../shared/constants/colors'
 import CustomButton from '../../../shared/component/CustomButton'
 import { icons } from '../../../shared/constants/icons'
+import PlanCard from '../component/PlanCard'
+import { useNavigation } from '@react-navigation/native'
+import TopTripCard from '../component/TopTripCard'
 
 const Plans = () => {
+
+    const navigation = useNavigation<any>()
 
 
     const renderItem = useCallback(() => {
         return (
-            <>
-            </>
+            <TopTripCard />
         )
     }, [])
 
@@ -24,13 +28,15 @@ const Plans = () => {
                 <CustomButton
                     label='Create a plan'
                     containerStyle={styles.button}
+                    // onPress={() => navigation.navigate('myplans')}
                     leftIcon={<Image source={icons.plans} style={styles.calenderIcon} resizeMode='contain' />}
                 />
                 <CustomButton
                     label='My plans'
                     badgeCount={10}
                     containerStyle={styles.button}
-                    leftIcon={<Image source={icons.calendarheart} style={styles.calenderIcon} resizeMode='contain' />}
+                    onPress={() => navigation.navigate('myplans')}
+                    leftIcon={<Image source={icons.calenderheart} style={styles.calenderIcon} resizeMode='contain' />}
                 />
             </View>
 
@@ -73,6 +79,7 @@ const styles = StyleSheet.create({
     listContainer: {
         flexGrow: 1,
         paddingBottom: 100,
+        paddingHorizontal: 20
     },
     separator: {
         marginTop: 15

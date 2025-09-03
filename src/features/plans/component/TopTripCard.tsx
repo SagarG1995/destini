@@ -1,28 +1,12 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { memo, useMemo } from 'react'
-import LinearGradient from 'react-native-linear-gradient'
+import React, { memo } from 'react'
 import { colors } from '../../../shared/constants/colors'
-import CustomButton from '../../../shared/component/CustomButton'
-import { icons } from '../../../shared/constants/icons'
 import { fonts } from '../../../shared/constants/fonts'
+import CustomButton from '../../../shared/component/CustomButton'
+import LinearGradient from 'react-native-linear-gradient'
+import { icons } from '../../../shared/constants/icons'
 
-const ActivityCard = () => {
-
-    const status: string = 'rejected'
-    const chatButtonEnabled: boolean = status === 'approved' ? true : status === 'pending' && false
-
-    const statusBgColor = useMemo(() => {
-        if (status === 'approved') {
-            return { backgroundColor: colors.yellow1 }
-        }
-        if (status === 'pending') {
-            return { backgroundColor: colors.green1 }
-        }
-        if (status === 'rejected') {
-            return { backgroundColor: colors.red1 }
-        }
-    }, [status])
-
+const TopTripCard = () => {
     return (
         <View style={styles.container}>
             <LinearGradient useAngle={true} angle={120} angleCenter={{ x: 0.3, y: 0.5 }} colors={[colors.blue2, colors.white]} style={styles.gradient1}>
@@ -31,8 +15,8 @@ const ActivityCard = () => {
                         <Image source={icons.profilecirclecolor} style={styles.profile} resizeMode='contain' />
                         <Text style={styles.tripName} numberOfLines={2} allowFontScaling={false} >Someone from Rajori Garden is headed to Bistro Cafe!! </Text>
                     </View>
-                    <View style={[styles.statusContainer, statusBgColor]}>
-                        <Text style={styles.status}>{status}</Text>
+                    <View style={[styles.statusContainer]}>
+                        <Text style={styles.status}>Top Pick</Text>
                     </View>
                 </View>
                 <Text style={[styles.description]} numberOfLines={2} allowFontScaling={false}>
@@ -51,12 +35,11 @@ const ActivityCard = () => {
                         </View>
                     </View>
                     {
-                        status !== 'rejected' &&
+
                         <CustomButton
-                            label='CHAT'
-                            containerStyle={chatButtonEnabled ? styles.enableButton : styles.disableButton}
+                            label='Request to Join'
+                            containerStyle={styles.button}
                             labelStyle={styles.buttonLabel}
-                            enabled={chatButtonEnabled}
                         />
                     }
                 </View>
@@ -65,7 +48,7 @@ const ActivityCard = () => {
     )
 }
 
-export default memo(ActivityCard)
+export default memo(TopTripCard)
 
 const styles = StyleSheet.create({
     container: {
@@ -88,9 +71,6 @@ const styles = StyleSheet.create({
     mt_15: {
         marginTop: 15
     },
-    mt_30: {
-        marginTop: 30
-    },
     cardHeader: {
         flexDirection: 'row',
     },
@@ -111,7 +91,7 @@ const styles = StyleSheet.create({
         includeFontPadding: false,
     },
     statusContainer: {
-        backgroundColor: colors.red1,
+        backgroundColor: colors.black,
         height: 16,
         paddingHorizontal: 5,
         borderRadius: 100,
@@ -144,17 +124,10 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         includeFontPadding: false,
     },
-    enableButton: {
+    button: {
         borderRadius: 100,
         backgroundColor: colors.black,
         height: 30,
-        width: '20%'
-    },
-    disableButton: {
-        borderRadius: 100,
-        backgroundColor: colors.grey3,
-        height: 30,
-        width: '20%'
     },
     buttonLabel: {
         fontFamily: fonts.semibold,

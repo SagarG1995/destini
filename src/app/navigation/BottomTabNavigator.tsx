@@ -11,16 +11,26 @@ import { fonts } from '../../shared/constants/fonts';
 import FooterTabMenu from './component/FooterTabMenu';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EditProfile from '../../features/profile/screens/EditProfile';
+import MyPlans from '../../features/plans/screens/MyPlans';
 
 
 const ProfileStackNavigator = createNativeStackNavigator();
-
 const ProfileStack = () => {
     return (
         <ProfileStackNavigator.Navigator screenOptions={{ headerShown: false }} initialRouteName='userprofile'>
             <ProfileStackNavigator.Screen name="userprofile" component={Profile} />
             <ProfileStackNavigator.Screen name="editprofile" component={EditProfile} />
         </ProfileStackNavigator.Navigator>
+    );
+};
+
+const PlanStackNavigator = createNativeStackNavigator();
+const PlanStack = () => {
+    return (
+        <PlanStackNavigator.Navigator screenOptions={{ headerShown: false }} initialRouteName='topplans'>
+            <PlanStackNavigator.Screen name="topplans" component={Plans} />
+            <PlanStackNavigator.Screen name="myplans" component={MyPlans} />
+        </PlanStackNavigator.Navigator>
     );
 };
 
@@ -47,16 +57,14 @@ const BottomTabNavigator = () => {
                 component={Home}
                 options={{
                     tabBarIcon: ({ _focused }: any) => renderIcon(icons.home),
-                    // tabBarLabel: ({ _focused }: any) => renderLabel('Home'),
                 }}
             />
 
             <Tab.Screen
                 name="plans"
-                component={Plans}
+                component={PlanStack}
                 options={{
                     tabBarIcon: ({ _focused }: any) => renderIcon(icons.plans),
-                    // tabBarLabel: ({ _focused }: any) => renderLabel('Plans'),
                 }}
             />
 
@@ -65,7 +73,6 @@ const BottomTabNavigator = () => {
                 component={Chat}
                 options={{
                     tabBarIcon: ({ _focused }: any) => renderIcon(icons.chat),
-                    // tabBarLabel: ({ _focused }: any) => renderLabel('Chat'),
                 }}
             />
 
@@ -74,7 +81,6 @@ const BottomTabNavigator = () => {
                 component={ProfileStack}
                 options={{
                     tabBarIcon: ({ _focused }: any) => renderIcon(icons.profile),
-                    // tabBarLabel: ({ _focused }: any) => renderLabel('Profile'),
                 }}
             />
 
