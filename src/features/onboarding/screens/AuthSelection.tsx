@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { colors } from '../../../shared/constants/colors'
-import FastImage from '@d11/react-native-fast-image'
+import FastImage from 'react-native-fast-image'
 import { gif } from '../../../shared/constants/gif'
 import CustomButton from '../../../shared/component/CustomButton'
 import AgreementText from '../component/AgreementText'
@@ -24,6 +24,7 @@ const AuthSelection = () => {
                 <CustomButton
                     label='Create an account'
                     containerStyle={styles.button}
+                    onPress={() => navigation.navigate('register')}
                 />
                 <CustomButton
                     label='I have an account'

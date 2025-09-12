@@ -26,4 +26,10 @@ export const icons = {
     calenderheart: require("../../assets/icons/calender-heart.png"),
     like: require("../../assets/icons/like.png"),
     dislike: require("../../assets/icons/dislike.png"),
+    user: require("../../assets/icons/user.png"),
+    arrowsmright: require("../../assets/icons/arrow-sm-right.png"),
+    dots: require("../../assets/icons/dots.png"),
+    nosound: require("../../assets/icons/no-sound.png"),
+    cancel: require("../../assets/icons/cancel.png"),
+    exit: require("../../assets/icons/exit.png"),
 }

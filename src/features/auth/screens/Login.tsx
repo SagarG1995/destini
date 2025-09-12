@@ -68,6 +68,7 @@ const Login = () => {
 
                     <CustomButton
                         label='Log In'
+                        onPress={() => navigation.navigate('tabs')}
                     />
                     <SocialLogin />
 

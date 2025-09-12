@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
-import React, { memo, useMemo } from 'react'
+import React, { FC, memo, useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CacheImage from '../../../shared/component/CacheImage';
@@ -7,7 +7,13 @@ import { icons } from '../../../shared/constants/icons';
 import { fonts } from '../../../shared/constants/fonts';
 import { colors } from '../../../shared/constants/colors';
 
-const Header = () => {
+interface HeaderInterface {
+    toogleModal?: () => void
+}
+
+const Header: FC<HeaderInterface> = ({
+    toogleModal
+}) => {
 
     const navigation = useNavigation<any>()
     const insets = useSafeAreaInsets();
@@ -46,7 +52,7 @@ const Header = () => {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.ml_10}>
+                <TouchableOpacity style={styles.ml_10} onPress={toogleModal}>
                     <Image
                         source={icons.filterbtncircle}
                         style={styles.search}

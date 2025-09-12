@@ -5,20 +5,22 @@ import { fonts } from '../constants/fonts';
 
 interface CustomInputInterface extends TextInputProps {
     initialValue?: any,
-    leftIcon?: () => React.ReactElement | null;
     rightIcon?: () => React.ReactElement | null;
     containerStyle?: StyleProp<ViewStyle>;
     inputStyle?: StyleProp<TextStyle>;
+    labelContainerStyle?: StyleProp<ViewStyle>;
+    label?: string,
     onTypingComplete?: (text: string) => void;
     onChangeText?: (text: string) => void;
 }
 
 const CustomInput: FC<CustomInputInterface> = ({
     initialValue,
-    leftIcon,
     rightIcon,
+    label,
     inputStyle,
     containerStyle,
+    labelContainerStyle,
     onChangeText,
     onTypingComplete,
     ...rest
@@ -47,6 +49,30 @@ const CustomInput: FC<CustomInputInterface> = ({
         }
     }, [isControlled, onChangeText]);
 
+    if (label) {
+        return (
+            <View style={[styles.labelContainer, labelContainerStyle]}>
+                {
+                    label &&
+                    <Text style={styles.label}>{label}</Text>
+                }
+                <View style={[styles.container, containerStyle]}>
+                    <TextInput
+                        {...rest}
+                        value={inputValue}
+                        style={[styles.input, inputStyle]}
+                        placeholderTextColor={rest?.placeholderTextColor || colors.black}
+                        onChangeText={handleTextChange}
+                        onEndEditing={handleEndEditing}
+                    />
+                    {
+                        rightIcon &&
+                        rightIcon()
+                    }
+                </View>
+            </View>
+        )
+    }
 
     return (
         <View style={[styles.container, containerStyle]}>
@@ -69,6 +95,15 @@ const CustomInput: FC<CustomInputInterface> = ({
 export default memo(CustomInput)
 
 const styles = StyleSheet.create({
+    labelContainer: {
+        // backgroundColor: 'pink'
+    },
+    label: {
+        fontFamily: fonts.semibold,
+        fontSize: 18,
+        color: colors.black,
+        includeFontPadding: false
+    },
     container: {
         flexDirection: 'row',
         height: 45,
@@ -77,7 +112,6 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         borderRadius: 10,
         overflow: 'hidden',
-        // backgroundColor: 'pink'
     },
     input: {
         flex: 1,
@@ -88,7 +122,6 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 0,
         paddingLeft: 10,
-        // backgroundColor: 'red',
-        // lineHeight: 30
+        includeFontPadding: false
     }
 })

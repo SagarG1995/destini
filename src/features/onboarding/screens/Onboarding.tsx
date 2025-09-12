@@ -5,7 +5,7 @@ import { gif } from '../../../shared/constants/gif'
 import { colors } from '../../../shared/constants/colors'
 import { fonts } from '../../../shared/constants/fonts'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants/dimensions'
-import FastImage from '@d11/react-native-fast-image'
+import FastImage from 'react-native-fast-image'
 import { useNavigation } from '@react-navigation/native'
 
 const Onboarding = () => {

@@ -26,11 +26,11 @@ const TripCard: FC<TripCardInterface> = ({
                 <View style={styles.flex1}>
                     <View style={styles.row}>
                         <Image source={icons.location} style={styles.icon} resizeMode='contain' />
-                        <Text style={styles.distance}>3 KM away from you</Text>
+                        <Text style={styles.distance} numberOfLines={1}>3 KM away from you</Text>
                     </View>
                     <View style={[styles.row, styles.mt_5]}>
                         <Image source={icons.calendar} style={styles.icon} resizeMode='contain' />
-                        <Text style={styles.distance}>July 30,2025</Text>
+                        <Text style={styles.distance} numberOfLines={1}>July 30,2025</Text>
                     </View>
                 </View>
                 <CustomButton

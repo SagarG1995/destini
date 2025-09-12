@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useEffect, useState } from 'react';
-import FastImage, { FastImageProps, ImageStyle } from '@d11/react-native-fast-image';
+import FastImage, { FastImageProps, ImageStyle } from 'react-native-fast-image';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { colors } from '../constants/colors';

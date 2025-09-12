@@ -12,6 +12,7 @@ import FooterTabMenu from './component/FooterTabMenu';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EditProfile from '../../features/profile/screens/EditProfile';
 import MyPlans from '../../features/plans/screens/MyPlans';
+import CreatePlan from '../../features/plans/screens/CreatePlan';
 
 
 const ProfileStackNavigator = createNativeStackNavigator();
@@ -30,6 +31,7 @@ const PlanStack = () => {
         <PlanStackNavigator.Navigator screenOptions={{ headerShown: false }} initialRouteName='topplans'>
             <PlanStackNavigator.Screen name="topplans" component={Plans} />
             <PlanStackNavigator.Screen name="myplans" component={MyPlans} />
+            <PlanStackNavigator.Screen name='createplan' component={CreatePlan} />
         </PlanStackNavigator.Navigator>
     );
 };

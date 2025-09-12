@@ -4,9 +4,11 @@ import { colors } from '../../../shared/constants/colors'
 import CustomInput from '../../../shared/component/CustomInput'
 import DOBInput from './DOBInput'
 import CustomButton from '../../../shared/component/CustomButton'
+import { useNavigation } from '@react-navigation/native'
 
 const ProfileForm2 = () => {
 
+    const navigation = useNavigation<any>()
     const [description, setDescription] = useState('')
     const [dob, setDob] = useState('')
 
@@ -33,6 +35,7 @@ const ProfileForm2 = () => {
 
                 <CustomButton
                     label='Let’s Get Started'
+                    onPress={() => navigation.navigate('tabs')}
                 />
             </View>
 
@@ -61,7 +64,8 @@ const styles = StyleSheet.create({
         flex: 1,
         height: undefined,
         borderBottomWidth: 0,
-        alignItems: undefined
+        alignItems: undefined,
+        // backgroundColor: 'red'
     },
     inputStyle: {
         flex: 1,

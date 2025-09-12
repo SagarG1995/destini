@@ -24,7 +24,7 @@ const PlanCard = () => {
                 easing: Easing.out(Easing.ease),
             })
         } else {
-            height.value = withTiming(100, {
+            height.value = withTiming(150, {
                 duration: 300,
                 easing: Easing.out(Easing.ease),
             })
@@ -45,7 +45,7 @@ const PlanCard = () => {
                     <Image source={images.logo} style={styles.logo} tintColor={colors.blue1} resizeMode='cover' />
                     <TouchableOpacity style={styles.descContainer} onPress={toggleExpandList}>
                         <View style={[styles.row, styles.justifyBtw]}>
-                            <Text style={styles.heading}>Headed to Bistro Cafe!!</Text>
+                            <Text style={styles.heading} numberOfLines={1}>Headed to Bistro Cafe!!</Text>
                             <Image source={icons.arrowdown} style={styles.downIcon} tintColor={colors.black} resizeMode='contain' />
                         </View>
                         <Text style={styles.desc} numberOfLines={2}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et .</Text>
@@ -102,7 +102,7 @@ export default PlanCard
 const styles = StyleSheet.create({
     container: {
         borderRadius: 10,
-        minHeight: 130,
+        minHeight: 140,
         borderColor: colors.blue1,
         borderWidth: 1,
         overflow: 'hidden'
@@ -135,15 +135,18 @@ const styles = StyleSheet.create({
     descContainer: {
         flex: 1,
         paddingLeft: 5,
+        justifyContent: 'space-between'
     },
     downIcon: {
         width: 20,
         height: 20,
     },
     heading: {
+        flexShrink: 1,
         fontFamily: fonts.bold,
         fontSize: 14,
-        color: colors.black
+        color: colors.black,
+        includeFontPadding: false
     },
     desc: {
         fontFamily: fonts.regular,
@@ -154,7 +157,8 @@ const styles = StyleSheet.create({
     footer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10
+        // marginTop: 'auto'
+        marginTop: 20
     },
     icon: {
         width: 18,

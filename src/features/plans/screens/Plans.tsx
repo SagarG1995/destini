@@ -28,7 +28,7 @@ const Plans = () => {
                 <CustomButton
                     label='Create a plan'
                     containerStyle={styles.button}
-                    // onPress={() => navigation.navigate('myplans')}
+                    onPress={() => navigation.navigate('createplan')}
                     leftIcon={<Image source={icons.plans} style={styles.calenderIcon} resizeMode='contain' />}
                 />
                 <CustomButton

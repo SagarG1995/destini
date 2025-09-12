@@ -12,9 +12,6 @@ const ExpandedRequest: FC<ExpandedRequestInterface> = ({
 }) => {
 
 
-
-
-
     return (
         <ScrollView style={styles.listStyle} nestedScrollEnabled showsVerticalScrollIndicator>
             {
@@ -31,7 +28,7 @@ export default memo(ExpandedRequest)
 const styles = StyleSheet.create({
     listStyle: {
         marginTop: 15,
-        maxHeight: 100,
+        maxHeight: 150,
     },
     listContainer: {
         paddingVertical: 8, // padding instead of flexGrow

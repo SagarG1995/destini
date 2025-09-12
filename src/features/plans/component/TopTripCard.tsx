@@ -27,11 +27,11 @@ const TopTripCard = () => {
                     <View style={styles.flex1}>
                         <View style={styles.row}>
                             <Image source={icons.locationcolor} style={styles.icon} resizeMode='contain' />
-                            <Text style={styles.text}>3 KM away from you</Text>
+                            <Text style={styles.text} numberOfLines={1}>3 KM away from you</Text>
                         </View>
                         <View style={[styles.row, styles.mt_5]}>
                             <Image source={icons.calendercolor} style={styles.icon} resizeMode='contain' />
-                            <Text style={styles.text}>July 30,2025</Text>
+                            <Text style={styles.text} numberOfLines={1}>July 30,2025</Text>
                         </View>
                     </View>
                     {
@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
         fontSize: 8,
         fontFamily: fonts.semibold,
         color: colors.white,
-        // lineHeight: 10,
         textTransform: 'uppercase',
         includeFontPadding: false,
     },

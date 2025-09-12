@@ -1,5 +1,7 @@
 package com.destini
-
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory
+import okhttp3.OkHttpClient
 import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -34,5 +36,13 @@ class MainApplication : Application(), ReactApplication {
   override fun onCreate() {
     super.onCreate()
     loadReactNative(this)
+     // Initialize Fresco with GIF/WebP support
+        val okHttpClient = OkHttpClient.Builder().build()
+        val config = OkHttpImagePipelineConfigFactory
+            .newBuilder(this, okHttpClient)
+            .setDownsampleEnabled(true)
+            .build()
+
+        Fresco.initialize(this, config)
   }
 }

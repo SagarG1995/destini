@@ -1,14 +1,21 @@
 import { View, Text, StyleSheet, FlatList } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import Header from '../component/Header'
 import TripCard from '../component/TripCard'
 import { ImageBackground } from 'react-native/types_generated/index'
 import { fonts } from '../../../shared/constants/fonts'
 import FooterTabMenu from '../../../app/navigation/component/FooterTabMenu'
+import ProfessionModal from '../../../shared/component/ProfessionModal'
 
 const Home = () => {
 
+
+    const [isOpen, setIsopen] = useState(false)
+
+    const toogleModal = useCallback(() => {
+        setIsopen(!isOpen)
+    }, [isOpen])
 
     const renderItem = useCallback(() => {
         return (
@@ -22,7 +29,7 @@ const Home = () => {
 
     return (
         <View style={styles.container}>
-            <Header />
+            <Header toogleModal={toogleModal} />
             <Text style={styles.heading}>Plans you might like!</Text>
             <FlatList
                 data={[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},]}
@@ -31,7 +38,11 @@ const Home = () => {
                 contentContainerStyle={styles.listContainer}
                 ItemSeparatorComponent={separator}
             />
-            {/* <FooterTabMenu /> */}
+            <ProfessionModal
+                addMarginBottom
+                isOpen={isOpen}
+                toggleModal={toogleModal}
+            />
         </View>
     )
 }
