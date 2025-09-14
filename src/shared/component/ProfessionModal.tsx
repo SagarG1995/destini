@@ -84,7 +84,7 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
                 renderSectionHeader={({ section: { title } }) => (
                     <ProfessionItemHead title={title} />
                 )}
-                style={[styles.list, addMarginBottom && styles.mb_100]}
+                style={[styles.list]}
                 contentContainerStyle={styles.listContainer}
                 showsVerticalScrollIndicator={false}
                 stickySectionHeadersEnabled={true} // set to true if you want sticky headers

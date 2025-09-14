@@ -88,12 +88,12 @@ export default memo(FooterTabMenu)
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.black2,
         height: 60,
-        flexDirection: 'row',
         width: SCREEN_WIDTH - 20,
-        position: 'absolute',
-        bottom: 20,
+        flexDirection: 'row',
+        backgroundColor: colors.black2,
+        // position: 'absolute',
+        bottom: 10,
         alignSelf: 'center',
         borderRadius: 10,
         boxShadow: [

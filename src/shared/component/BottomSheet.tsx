@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     bottom: 0,
-    maxHeight: SCREEN_HEIGHT * 0.9,
+    maxHeight: SCREEN_HEIGHT * 0.8,
     minHeight: SCREEN_HEIGHT * 0.5,
     borderTopRightRadius: 10,
     borderTopLeftRadius: 10,
     zIndex: 2,
     backgroundColor: colors.black,
-    // paddingTop: 10
+    paddingBottom: 10
   }
 })

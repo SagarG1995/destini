@@ -1,20 +1,33 @@
 
 import React, { useEffect, useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
+import DashboardNavigator from './DashboardNavigator'
 import AuthNavigator from './AuthNavigator'
 import Splash from '../../features/splash/screens/Splash'
-import Onboarding from '../../features/onboarding/screens/Onboarding'
-import Login from '../../features/auth/screens/Login'
-import DashboardNavigator from './DashboardNavigator'
 
 const Navigation = () => {
+
+    const [showSplash, setShowSplash] = useState(true)
+
+    useEffect(() => {
+        const t = setTimeout(() => {
+            setShowSplash(false)
+        }, 2500);
+
+        return () => clearTimeout(t)
+    }, [])
 
     return (
         <NavigationContainer>
             {/* {isLoading ? <Splash /> : <AuthNavigator />} */}
             {/* <Splash /> */}
-            {/* <AuthNavigator /> */}
-            <DashboardNavigator />
+            {
+                showSplash ?
+                    <Splash />
+                    :
+                    <AuthNavigator />
+            }
+            {/* <DashboardNavigator /> */}
         </NavigationContainer>
     )
 }

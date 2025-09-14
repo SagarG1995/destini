@@ -30,7 +30,7 @@ const Splash = () => {
                 0,
                 { duration: 1000, easing: Easing.linear },
                 () => {
-                    runOnJS(navigation.replace)('onboarding')
+                    // runOnJS(navigation.replace)('onboarding')
                 }
             )
         }, 2000) // ⏳ delay 2s before starting animation

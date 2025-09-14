@@ -18,9 +18,9 @@ const AuthNavigator = () => {
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName='splash'
+            initialRouteName='onboarding'
         >
-            <Stack.Screen name='splash' component={Splash} options={{ animation: 'simple_push' }} />
+            {/* <Stack.Screen name='splash' component={Splash} options={{ animation: 'simple_push' }} /> */}
             <Stack.Screen name='onboarding' component={Onboarding} options={{ animation: 'slide_from_bottom' }} />
             <Stack.Screen name='authselection' component={AuthSelection} />
             <Stack.Screen name='login' component={Login} />

@@ -32,14 +32,14 @@ const Home = () => {
             <Header toogleModal={toogleModal} />
             <Text style={styles.heading}>Plans you might like!</Text>
             <FlatList
-                data={[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},]}
+                data={[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]}
                 renderItem={renderItem}
                 style={styles.listStyle}
                 contentContainerStyle={styles.listContainer}
                 ItemSeparatorComponent={separator}
             />
             <ProfessionModal
-                addMarginBottom
+                // addMarginBottom
                 isOpen={isOpen}
                 toggleModal={toogleModal}
             />
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     listContainer: {
         flexGrow: 1,
         paddingHorizontal: 20,
-        paddingBottom: 100
+        paddingBottom: 30
     },
     separator: {
         marginTop: 15
