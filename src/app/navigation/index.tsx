@@ -4,9 +4,11 @@ import { NavigationContainer } from '@react-navigation/native'
 import DashboardNavigator from './DashboardNavigator'
 import AuthNavigator from './AuthNavigator'
 import Splash from '../../features/splash/screens/Splash'
+import { useAppSelector } from '../../redux/store'
 
 const Navigation = () => {
 
+    const { authdata } = useAppSelector(state => state?.auth)
     const [showSplash, setShowSplash] = useState(true)
 
     useEffect(() => {
@@ -19,15 +21,15 @@ const Navigation = () => {
 
     return (
         <NavigationContainer>
-            {/* {isLoading ? <Splash /> : <AuthNavigator />} */}
-            {/* <Splash /> */}
             {
                 showSplash ?
                     <Splash />
                     :
-                    <AuthNavigator />
+                    (authdata?.access_token && authdata?.completeProfile) ?
+                        <DashboardNavigator />
+                        :
+                        <AuthNavigator />
             }
-            {/* <DashboardNavigator /> */}
         </NavigationContainer>
     )
 }

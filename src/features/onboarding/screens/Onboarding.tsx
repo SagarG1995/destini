@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { images } from '../../../shared/constants/images'
 import { gif } from '../../../shared/constants/gif'
 import { colors } from '../../../shared/constants/colors'
@@ -7,13 +7,20 @@ import { fonts } from '../../../shared/constants/fonts'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants/dimensions'
 import FastImage from 'react-native-fast-image'
 import { useNavigation } from '@react-navigation/native'
+import { useAppDispatch } from '../../../redux/store'
+import { setShowOnboarding } from '../../auth/authSlice'
 
 const Onboarding = () => {
 
+    const dispatch = useAppDispatch()
     const navigation = useNavigation<any>()
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef: any = useRef(null);
 
+
+    useEffect(() => {
+        dispatch(setShowOnboarding(false))
+    }, [])
 
     const handleScroll = (event: any) => {
         const index = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH);

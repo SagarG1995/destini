@@ -6,34 +6,40 @@ import { fonts } from '../../../shared/constants/fonts'
 import { colors } from '../../../shared/constants/colors'
 
 interface ProfileForm1Interface {
-    toogleModal?: () => void
+    profession?: string,
+    toogleModal?: () => void,
+    onNickName?: (value: string) => void,
+    onFullName?: (value: string) => void,
+    onGender?: (value: string) => void,
+    // onNickName?: (value: string) => void
 }
 
 const ProfileForm1: FC<ProfileForm1Interface> = ({
-    toogleModal
+    profession = '',
+    toogleModal,
+    onFullName,
+    onGender,
+    onNickName,
 }) => {
 
-    const [gender, setGender] = useState('female')
-    const [nickname, setNickname] = useState('')
-    const [fullname, setFullname] = useState('')
 
     return (
         <View style={styles.contianer}>
             <GenderSelection
-                onSelectedGender={setGender}
+                onSelectedGender={onGender}
             />
             <CustomInput
                 placeholder='Nickname*'
-                onTypingComplete={setNickname}
+                onTypingComplete={onNickName}
                 containerStyle={styles.mt_30}
             />
             <CustomInput
                 placeholder='Full Name*'
-                onTypingComplete={setFullname}
+                onTypingComplete={onFullName}
                 containerStyle={styles.mt_30}
             />
             <TouchableOpacity style={styles.profession} onPress={toogleModal}>
-                <Text style={styles.professionLabel}>Profession*</Text>
+                <Text style={styles.professionLabel}>{profession || 'Profession*'}</Text>
             </TouchableOpacity>
         </View>
     )

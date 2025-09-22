@@ -1,24 +1,33 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { FC } from 'react'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import React, { FC, useEffect, useState } from 'react'
 import { colors } from '../constants/colors'
 import { fonts } from '../constants/fonts'
 import { icons } from '../constants/icons'
 
 interface ProfessionItemInterface {
-    item?: any
+    selectedProfession: string,
+    item?: any,
+    onChooseProfession?: (value: string) => void
 }
 
 const ProfessionItem: FC<ProfessionItemInterface> = ({
-    item
+    item,
+    selectedProfession,
+    onChooseProfession
 }) => {
 
-    // console.log(item);
 
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={() => onChooseProfession?.(item?.title)}>
             <Text style={styles.title}>{item?.title}</Text>
-            <Image source={icons.checkboxfilluncheck} style={styles.checkbox} resizeMode='contain' />
-        </View>
+            {
+                selectedProfession === item?.title ?
+                    <Image source={icons.checkboxfillcheck} style={styles.checkbox} resizeMode='contain' />
+                    :
+                    <Image source={icons.checkboxfilluncheck} style={styles.checkbox} resizeMode='contain' />
+            }
+
+        </TouchableOpacity>
     )
 }
 

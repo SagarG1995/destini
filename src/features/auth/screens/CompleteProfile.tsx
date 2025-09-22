@@ -14,19 +14,39 @@ import { gif } from '../../../shared/constants/gif'
 import ProfileForm1 from '../component/ProfileForm1'
 import ProfileForm2 from '../component/ProfileForm2'
 import { runOnJS } from 'react-native-worklets'
+import { useAppSelector } from '../../../redux/store'
+import { showToast } from '../../../shared/utils/toast'
 
 const CompleteProfile = () => {
 
+    const auth = useAppSelector(state => state?.auth)
 
     const [step, setStep] = useState(1)
     const [isOpen, setIsopen] = useState(false)
-
-
-
+    const [nickname, setNickname] = useState('')
+    const [fullname, setFullname] = useState('')
+    const [prof, setProf] = useState('')
+    const [desc, setDesc] = useState('')
+    const [dob, setDob] = useState('')
+    const [gender, setGender] = useState('')
 
     const onSwipeUp = () => {
         if (step === 1) {
-            setStep(prev => prev + 1)
+            if (!nickname) {
+                showToast("Please provide nickname")
+                return
+            }
+            else if (!fullname) {
+                showToast("Please provide full name")
+                return
+            }
+            else if (!prof) {
+                showToast("Please choose your profession")
+                return
+            } else if (nickname && fullname && prof) {
+                setStep(prev => prev + 1)
+            }
+
         }
         if (step === 2) {
 
@@ -55,6 +75,9 @@ const CompleteProfile = () => {
         setIsopen(!isOpen)
     }, [isOpen])
 
+    console.log(prof);
+
+
     return (
         <View style={styles.container}>
             <Header
@@ -67,7 +90,13 @@ const CompleteProfile = () => {
 
                     {
                         step === 1 ?
-                            <ProfileForm1 toogleModal={toogleModal} />
+                            <ProfileForm1
+                                profession={prof}
+                                toogleModal={toogleModal}
+                                onFullName={setFullname}
+                                onNickName={setNickname}
+                                onGender={setGender}
+                            />
                             :
                             <ProfileForm2 />
                     }
@@ -89,6 +118,7 @@ const CompleteProfile = () => {
             <ProfessionModal
                 isOpen={isOpen}
                 toggleModal={toogleModal}
+                onChooseProfession={setProf}
             />
         </View>
     )

@@ -10,15 +10,51 @@ import CustomButton from '../../../shared/component/CustomButton'
 import SocialLogin from '../component/SocialLogin'
 import AgreementText from '../../onboarding/component/AgreementText'
 import { useNavigation } from '@react-navigation/native'
+import { login } from '../authApi'
+import { showToast } from '../../../shared/utils/toast'
+import { setAuthData } from '../authSlice'
+import { useAppDispatch } from '../../../redux/store'
 
 const Login = () => {
 
     const navigation = useNavigation<any>()
+    const dispatch = useAppDispatch()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+    const [loader, setLoader] = useState(false)
 
+
+    const handleLogin = useCallback(() => {
+
+        const param = {
+            email,
+            password,
+        }
+        // console.log(param);
+        setLoader(true)
+        login(param).then(res => {
+            // console.log(res);
+            if (res?.success) {
+                dispatch(setAuthData({
+                    completeProfile: res?.data?.user?.completeProfile,
+                    access_token: res?.data?.token,
+                    refresh_token: res?.data?.refresh_token ?? ''
+                }))
+                if (!res?.data?.user?.completeProfile) {
+                    navigation.navigate('completeprofile')
+                }
+            } else {
+                showToast(res?.message)
+            }
+
+        }).catch(err => {
+            console.log(err);
+
+        }).finally(() => setLoader(false))
+
+    }, [email, password])
 
     const subHeading = useCallback(() => {
         return (
@@ -30,7 +66,6 @@ const Login = () => {
             </View>
         )
     }, [])
-    //sagar
     const eyeIcon = useCallback(() => {
         return <TouchableOpacity style={styles.eyeContainer} onPress={() => setIsPasswordHidden(!isPasswordHidden)}>
             <Image source={isPasswordHidden ? icons.eyeshow : icons.eyeshow} style={styles.eye} />
@@ -47,14 +82,16 @@ const Login = () => {
             <KeyboardAwareScrollView contentContainerStyle={styles.content}>
                 <View style={styles.form}>
                     <CustomInput
+                        value={email}
                         placeholder='Email'
-                        onTypingComplete={setEmail}
+                        onChangeText={setEmail}
                         keyboardType='email-address'
                         textAlignVertical='bottom'
                     />
                     <CustomInput
+                        value={password}
                         placeholder='Password'
-                        onTypingComplete={setPassword}
+                        onChangeText={setPassword}
                         containerStyle={styles.mt_30}
                         rightIcon={eyeIcon}
                         secureTextEntry={isPasswordHidden}
@@ -68,7 +105,9 @@ const Login = () => {
 
                     <CustomButton
                         label='Log In'
-                        onPress={() => navigation.navigate('tabs')}
+                        // onPress={() => navigation.navigate('tabs')}
+                        onPress={handleLogin}
+                        loading={loader}
                     />
                     <SocialLogin />
 

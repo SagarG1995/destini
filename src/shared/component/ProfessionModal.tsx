@@ -5,36 +5,74 @@ import {
     TouchableOpacity,
     Image,
     TextInput,
-    SectionList
+    SectionList,
+    ActivityIndicator
 } from 'react-native'
-import React, { FC, memo, useCallback, useState } from 'react'
+import React, { FC, memo, useCallback, useEffect, useState } from 'react'
 import { icons } from '../constants/icons'
 import { colors } from '../constants/colors'
 import { fonts } from '../constants/fonts'
-import { profession } from '../constants/_dev_profession'
+// import { profession } from '../constants/_dev_profession'
 import ProfessionItem from './ProfessionItem'
 import ProfessionItemHead from './ProfessionItemHead'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import BottomSheet from './BottomSheet'
+import { getProfessions } from '../../features/auth/authApi'
+import { showToast } from '../utils/toast'
 
 interface ProfessionModalInterface {
     isOpen?: boolean,
     toggleModal?: () => void,
     isFilter?: boolean,
-    addMarginBottom?: boolean
+    addMarginBottom?: boolean,
+    onChooseProfession?: (value: string) => void
 }
 
 const ProfessionModal: FC<ProfessionModalInterface> = ({
     isOpen = false,
     toggleModal,
     isFilter = false,
-    addMarginBottom = false
+    onChooseProfession
 }) => {
 
-    const insets = useSafeAreaInsets()
-    // const snapPoints = useMemo(() => ["50%", "90%"], []);
+    // const insets = useSafeAreaInsets()
 
     const [searchText, setSearchText] = useState('')
+    const [loader, setLoader] = useState(true)
+    const [profession, setProfession] = useState([])
+    const [selectedProfession, setSelectedProfession] = useState('')
+
+    useEffect(() => {
+        getAllProfessions()
+    }, [])
+
+    const getAllProfessions = () => {
+        setLoader(true)
+        getProfessions().then(res => {
+            if (res?.success) {
+                setProfession(res?.data?.data ?? [])
+            } else {
+                showToast(res?.message)
+            }
+
+        }).finally(() => setLoader(false))
+    }
+
+    const handleOnSave = useCallback(() => {
+        if (!isFilter) {
+            onChooseProfession?.(selectedProfession)
+        }
+        toggleModal?.()
+    }, [])
+
+    const renderItem = useCallback(({ item, index }: any) => {
+        return (
+            <ProfessionItem
+                selectedProfession={selectedProfession}
+                item={item}
+                onChooseProfession={setSelectedProfession} />
+        )
+    }, [selectedProfession])
 
 
     const headerComponent = useCallback(() => {
@@ -50,7 +88,7 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
                         />
                     </TouchableOpacity>
                     <Text style={styles.heading}>Professions</Text>
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity style={styles.btn} onPress={handleOnSave}>
                         <Text style={styles.btnText}>
                             {isFilter ? 'Reset' : 'Save'}
                         </Text>
@@ -77,19 +115,27 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
 
     return (
         <BottomSheet isOpen={isOpen} toggleModal={toggleModal}>
-            <SectionList
-                sections={profession}
-                keyExtractor={(item, index) => item.title + index}
-                renderItem={({ item }) => <ProfessionItem item={item} />}
-                renderSectionHeader={({ section: { title } }) => (
-                    <ProfessionItemHead title={title} />
-                )}
-                style={[styles.list]}
-                contentContainerStyle={styles.listContainer}
-                showsVerticalScrollIndicator={false}
-                stickySectionHeadersEnabled={true} // set to true if you want sticky headers
-                ListHeaderComponent={headerComponent}
-            />
+            {
+                loader ?
+                    <ActivityIndicator animating color={colors.white} />
+                    :
+                    <SectionList
+                        sections={profession}
+                        keyExtractor={(item, index) => item.title + index}
+                        renderItem={renderItem}
+                        renderSectionHeader={({ section: { title } }) => (
+                            <ProfessionItemHead title={title} />
+                        )}
+                        style={[styles.list]}
+                        contentContainerStyle={styles.listContainer}
+                        showsVerticalScrollIndicator={false}
+                        stickySectionHeadersEnabled={true} // set to true if you want sticky headers
+                        ListHeaderComponent={headerComponent}
+
+                    />
+            }
+
+            {/* */}
         </BottomSheet>
     )
 }

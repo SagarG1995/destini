@@ -11,16 +11,19 @@ import CreateNewPassword from '../../features/auth/screens/CreateNewPassword'
 import Register from '../../features/auth/screens/Register'
 import VerifyOtp from '../../features/auth/screens/VerifyOtp'
 import CompleteProfile from '../../features/auth/screens/CompleteProfile'
+import { useAppSelector } from '../../redux/store'
 
 const Stack = createNativeStackNavigator()
 
 const AuthNavigator = () => {
+
+    const { authdata } = useAppSelector(state => state?.auth)
+
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName='onboarding'
+            initialRouteName={!authdata?.access_token ? 'onboarding' : 'authselection'}
         >
-            {/* <Stack.Screen name='splash' component={Splash} options={{ animation: 'simple_push' }} /> */}
             <Stack.Screen name='onboarding' component={Onboarding} options={{ animation: 'slide_from_bottom' }} />
             <Stack.Screen name='authselection' component={AuthSelection} />
             <Stack.Screen name='login' component={Login} />

@@ -7,13 +7,42 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import CustomOtpInput from '../component/CustomOtpInput'
 import CustomButton from '../../../shared/component/CustomButton'
 import SocialLogin from '../component/SocialLogin'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { verifyOtp } from '../authApi'
+import { showToast } from '../../../shared/utils/toast'
+import { useDispatch } from 'react-redux'
+import { setAuthData } from '../authSlice'
+import { useAppDispatch } from '../../../redux/store'
 
 const VerifyOtp = () => {
 
+    const dispatch = useAppDispatch()
     const navigation = useNavigation<any>()
+    const { email } = useRoute<any>()?.params
 
     const [otp, setOtp] = useState('')
+    const [loader, setLoader] = useState(false)
+
+    const handleVerifyOtp = () => {
+        const param = {
+            email: email,
+            code: otp
+        }
+        setLoader(true)
+        verifyOtp(param).then(res => {
+            console.log(res);
+
+            showToast(res?.message)
+            if (res?.success) {
+                dispatch(setAuthData({
+                    completeProfile: res?.data?.user?.completeProfile,
+                    access_token: res?.data?.token,
+                    refresh_token: res?.data?.refresh_token ?? ''
+                }))
+                // navigation.navigate("completeprofile")
+            }
+        }).finally(() => setLoader(false))
+    }
 
 
     const subHeading = useCallback(() => {
@@ -45,7 +74,8 @@ const VerifyOtp = () => {
 
                     <CustomButton
                         label={'Verify'}
-                        onPress={() => navigation.navigate("completeprofile")}
+                        onPress={handleVerifyOtp}
+                        loading={loader}
                     />
                     {/* <SocialLogin
                         isLoginScreen={false}

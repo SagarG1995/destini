@@ -5,14 +5,18 @@ import Navigation from './navigation'
 import AppStatusBar from '../shared/component/AppStatusBar'
 import { colors } from '../shared/constants/colors'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Provider } from 'react-redux'
+import { store } from '../redux/store'
 
 const App = () => {
 
     return (
         <GestureHandlerRootView style={styles.container}>
             <SafeAreaView style={{ flex: 1 }}>
-                <AppStatusBar backgroundColor={colors.white} barStyle='dark-content' />
-                <Navigation />
+                <Provider store={store}>
+                    <AppStatusBar backgroundColor={colors.white} barStyle='dark-content' />
+                    <Navigation />
+                </Provider>
             </SafeAreaView>
         </GestureHandlerRootView>
     )
