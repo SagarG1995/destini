@@ -1,18 +1,29 @@
-import { View, Text, StyleSheet, TextInput } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { View, StyleSheet, } from 'react-native'
+import React, { FC } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import CustomInput from '../../../shared/component/CustomInput'
 import DOBInput from './DOBInput'
 import CustomButton from '../../../shared/component/CustomButton'
-import { useNavigation } from '@react-navigation/native'
 
-const ProfileForm2 = () => {
+interface ProfileForm2Interface {
+    onDescription?: (value: string) => void,
+    onDob?: (value: string) => void,
+    onPress?: () => void
+}
 
-    const navigation = useNavigation<any>()
-    const [description, setDescription] = useState('')
-    const [dob, setDob] = useState('')
+const ProfileForm2: FC<ProfileForm2Interface> = ({
+    onDescription,
+    onDob,
+    onPress
+}) => {
 
+    const changeDob = (_dob: any) => {
+        onDob?.(_dob?.fullDate)
+    }
 
+    const changeDescription = (e: string) => {
+        onDescription?.(e)
+    }
 
     return (
         <View style={styles.container}>
@@ -23,19 +34,21 @@ const ProfileForm2 = () => {
                     placeholder='Describe Yourself In 250 Characters'
                     textAlignVertical='top'
                     maxLength={250}
+                    onTypingComplete={changeDescription}
                     inputStyle={styles.inputStyle}
                     containerStyle={styles.inputContainerStyle}
                 />
             </View>
             <DOBInput
-                onChangeDOB={(_dob: any) => setDob(_dob?.fullDate)}
+                onChangeDOB={changeDob}
             />
 
             <View style={styles.footer}>
 
                 <CustomButton
                     label='Let’s Get Started'
-                    onPress={() => navigation.navigate('tabs')}
+                    // onPress={() => navigation.navigate('tabs')}
+                    onPress={onPress}
                 />
             </View>
 

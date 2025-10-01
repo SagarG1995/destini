@@ -8,7 +8,7 @@ import CustomOtpInput from '../component/CustomOtpInput'
 import CustomButton from '../../../shared/component/CustomButton'
 import SocialLogin from '../component/SocialLogin'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { verifyOtp } from '../authApi'
+import { verifyRegisterOtp } from '../authApi'
 import { showToast } from '../../../shared/utils/toast'
 import { useDispatch } from 'react-redux'
 import { setAuthData } from '../authSlice'
@@ -29,7 +29,7 @@ const VerifyOtp = () => {
             code: otp
         }
         setLoader(true)
-        verifyOtp(param).then(res => {
+        verifyRegisterOtp(param).then(res => {
             console.log(res);
 
             showToast(res?.message)

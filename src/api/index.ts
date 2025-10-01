@@ -9,7 +9,16 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
     const token = store.getState()?.auth?.authdata?.access_token
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    const reset_token = store.getState()?.auth?.resetToken
+    if (token || reset_token) config.headers.Authorization = `Bearer ${token || reset_token}`;
+
+
+    if (config.data instanceof FormData) {
+        config.headers['Content-Type'] = 'multipart/form-data';
+    } else {
+        config.headers['Content-Type'] = 'application/json';
+    }
+
     return config;
 },
     (error) => Promise.reject(error)

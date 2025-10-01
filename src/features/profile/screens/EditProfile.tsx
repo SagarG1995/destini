@@ -10,15 +10,17 @@ import { fonts } from '../../../shared/constants/fonts'
 import ProfessionModal from '../../../shared/component/ProfessionModal'
 import CustomButton from '../../../shared/component/CustomButton'
 import { icons } from '../../../shared/constants/icons'
+import { useAppSelector } from '../../../redux/store'
 
 const EditProfile = () => {
 
     const avgCharWidth = 9; // adjust based on font
     const lineHeight = 20;
+    const { userdata } = useAppSelector(state => state?.profile)
 
-    const [name, setName] = useState('ELLIOT RAWAT')
-    const [profession, setProfession] = useState("SECURITY ANALYST")
-    const [description, setDescription] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
+    const [name, setName] = useState(userdata?.full_name)
+    const [profession, setProfession] = useState(userdata?.professions)
+    const [description, setDescription] = useState(userdata?.description)
     const [isOpen, setIsopen] = useState(false)
 
 
@@ -38,7 +40,7 @@ const EditProfile = () => {
                     <View style={styles.row}>
                         <View style={styles.imageContainer}>
                             <CacheImage
-                                uri='https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
+                                uri={userdata?.image}
                                 style={styles.profileImage}
                                 resizeMode='cover'
                             />

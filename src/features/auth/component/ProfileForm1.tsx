@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { FC, memo, useState } from 'react'
+import React, { FC, memo, useEffect, useState } from 'react'
 import CustomInput from '../../../shared/component/CustomInput'
 import GenderSelection from './GenderSelection'
 import { fonts } from '../../../shared/constants/fonts'
@@ -22,6 +22,10 @@ const ProfileForm1: FC<ProfileForm1Interface> = ({
     onNickName,
 }) => {
 
+    useEffect(() => {
+        console.log('ProfileForm1 =>> ', profession);
+
+    }, [])
 
     return (
         <View style={styles.contianer}>

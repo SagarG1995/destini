@@ -14,14 +14,15 @@ import { login } from '../authApi'
 import { showToast } from '../../../shared/utils/toast'
 import { setAuthData } from '../authSlice'
 import { useAppDispatch } from '../../../redux/store'
+import { _dev_email, _dev_password } from '../../../shared/constants/__dev_variable'
 
 const Login = () => {
 
     const navigation = useNavigation<any>()
     const dispatch = useAppDispatch()
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState(__DEV__ ? _dev_email : '')
+    const [password, setPassword] = useState(__DEV__ ? _dev_password : '')
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const [loader, setLoader] = useState(false)
 
@@ -32,10 +33,8 @@ const Login = () => {
             email,
             password,
         }
-        // console.log(param);
         setLoader(true)
         login(param).then(res => {
-            // console.log(res);
             if (res?.success) {
                 dispatch(setAuthData({
                     completeProfile: res?.data?.user?.completeProfile,
@@ -58,12 +57,9 @@ const Login = () => {
 
     const subHeading = useCallback(() => {
         return (
-            <View style={styles.subheadingContainer}>
-                <Text style={styles.subHeading}>
-                    Destini to plan, meet & grow with <Text style={styles.blackText}>like-minded professionals</Text> nearby
-                </Text>
-
-            </View>
+            <Text style={styles.subHeading}>
+                Destini to plan, meet & grow with <Text style={styles.blackText}>like-minded professionals</Text> nearby
+            </Text>
         )
     }, [])
     const eyeIcon = useCallback(() => {
@@ -76,7 +72,9 @@ const Login = () => {
         <View style={styles.container}>
             <Header
                 heading='Where connections find'
+                showBack={false}
                 highlightText='Purpous'
+                headingStyle={styles.headingStyle}
                 subHeadingComponent={subHeading}
             />
             <KeyboardAwareScrollView contentContainerStyle={styles.content}>
@@ -129,6 +127,9 @@ const styles = StyleSheet.create({
     },
     mt_30: {
         marginTop: 30
+    },
+    headingStyle: {
+        textAlign: 'left'
     },
     subheadingContainer: {
         flex: 1,

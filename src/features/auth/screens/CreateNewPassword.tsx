@@ -10,12 +10,44 @@ import { fonts } from '../../../shared/constants/fonts'
 import CustomInput from '../../../shared/component/CustomInput'
 import CustomButton from '../../../shared/component/CustomButton'
 import { icons } from '../../../shared/constants/icons'
+import { changePassword } from '../authApi'
+import { showToast } from '../../../shared/utils/toast'
+import { CommonActions, useNavigation } from '@react-navigation/native'
+import { useAppDispatch } from '../../../redux/store'
+import { setResetToken } from '../authSlice'
 
 const CreateNewPassword = () => {
 
+    const navigation = useNavigation<any>()
+    const dispatch = useAppDispatch()
     const [password, setPassword] = useState('')
     const [confpassword, setConfPassword] = useState('')
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+    const [loader, setLoader] = useState(false)
+
+    const handleSave = () => {
+        const param = {
+            newPassword: password,
+            confirmPassword: confpassword
+        }
+        setLoader(true)
+        changePassword(param).then(res => {
+            showToast(res?.message)
+            if (res?.success) {
+                dispatch(setResetToken(null))
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 1,
+                        routes: [
+                            {
+                                name: 'login',
+                            }
+                        ],
+                    })
+                );
+            }
+        }).finally(() => setLoader(false))
+    }
 
 
     const eyeIcon = useCallback(() => {
@@ -54,7 +86,8 @@ const CreateNewPassword = () => {
                     </View>
                     <CustomButton
                         label='Save'
-                    // onPress={() => navigation.navigate('verifyemail')}
+                        onPress={handleSave}
+                        loading={loader}
                     />
 
                 </View>

@@ -19,9 +19,18 @@ const post = async <T>(url: string, data = {}, config = {}) => {
     })
 };
 
+const patch = async <T>(url: string, data = {}, config = {}) => {
+    return await api.patch<T>(url, data, config).then((res: any) => {
+        return formatSuccess(res)
+    }).catch((err: any) => {
+        return formatError(err)
+    })
+};
+
 const apiClient = {
     get,
     post,
+    patch
 };
 
 export default apiClient;

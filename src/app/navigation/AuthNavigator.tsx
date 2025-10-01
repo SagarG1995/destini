@@ -17,12 +17,12 @@ const Stack = createNativeStackNavigator()
 
 const AuthNavigator = () => {
 
-    const { authdata } = useAppSelector(state => state?.auth)
+    const { authdata, showOnboarding } = useAppSelector(state => state?.auth)
 
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName={!authdata?.access_token ? 'onboarding' : 'authselection'}
+            initialRouteName={(!authdata?.access_token && showOnboarding) ? 'onboarding' : (!authdata?.access_token && !showOnboarding) ? 'authselection' : (authdata?.access_token && !authdata?.completeProfile) ? 'completeprofile' : 'onboarding'}
         >
             <Stack.Screen name='onboarding' component={Onboarding} options={{ animation: 'slide_from_bottom' }} />
             <Stack.Screen name='authselection' component={AuthSelection} />

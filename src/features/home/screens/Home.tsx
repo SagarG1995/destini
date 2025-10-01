@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import Header from '../component/Header'
 import TripCard from '../component/TripCard'
@@ -7,11 +7,29 @@ import { ImageBackground } from 'react-native/types_generated/index'
 import { fonts } from '../../../shared/constants/fonts'
 import FooterTabMenu from '../../../app/navigation/component/FooterTabMenu'
 import ProfessionModal from '../../../shared/component/ProfessionModal'
+import { getMe } from '../../profile/profileApi'
+import { useAppDispatch } from '../../../redux/store'
+import { setUserData } from '../../profile/profileSlice'
 
 const Home = () => {
 
-
+    const dispatch = useAppDispatch()
     const [isOpen, setIsopen] = useState(false)
+
+    useEffect(() => {
+        getProfile()
+
+    }, [])
+
+    const getProfile = () => {
+        getMe().then(res => {
+            console.log(res);
+
+            if (res?.success) {
+                dispatch(setUserData(res?.data?.user))
+            }
+        })
+    }
 
     const toogleModal = useCallback(() => {
         setIsopen(!isOpen)

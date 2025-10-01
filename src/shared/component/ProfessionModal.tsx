@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
     View,
     Text,
@@ -15,7 +16,6 @@ import { fonts } from '../constants/fonts'
 // import { profession } from '../constants/_dev_profession'
 import ProfessionItem from './ProfessionItem'
 import ProfessionItemHead from './ProfessionItemHead'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import BottomSheet from './BottomSheet'
 import { getProfessions } from '../../features/auth/authApi'
 import { showToast } from '../utils/toast'
@@ -24,7 +24,6 @@ interface ProfessionModalInterface {
     isOpen?: boolean,
     toggleModal?: () => void,
     isFilter?: boolean,
-    addMarginBottom?: boolean,
     onChooseProfession?: (value: string) => void
 }
 
@@ -59,20 +58,21 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
     }
 
     const handleOnSave = useCallback(() => {
+        // console.log('handleOnSave ==> ', selectedProfession);
         if (!isFilter) {
             onChooseProfession?.(selectedProfession)
         }
         toggleModal?.()
-    }, [])
+    }, [selectedProfession, searchText])
 
-    const renderItem = useCallback(({ item, index }: any) => {
+    const renderItem = useCallback(({ item, _index }: any) => {
         return (
             <ProfessionItem
                 selectedProfession={selectedProfession}
                 item={item}
                 onChooseProfession={setSelectedProfession} />
         )
-    }, [selectedProfession])
+    }, [selectedProfession, searchText])
 
 
     const headerComponent = useCallback(() => {
@@ -111,7 +111,7 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
                 </View>
             </View>
         )
-    }, [isFilter])
+    }, [isFilter, searchText, selectedProfession])
 
     return (
         <BottomSheet isOpen={isOpen} toggleModal={toggleModal}>
@@ -131,11 +131,8 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
                         showsVerticalScrollIndicator={false}
                         stickySectionHeadersEnabled={true} // set to true if you want sticky headers
                         ListHeaderComponent={headerComponent}
-
                     />
             }
-
-            {/* */}
         </BottomSheet>
     )
 }
@@ -175,7 +172,6 @@ const styles = StyleSheet.create({
     btn: {
         flex: 0.2,
         justifyContent: 'center',
-        // backgroundColor: 'red',
         paddingVertical: 10
     },
     btnText: {

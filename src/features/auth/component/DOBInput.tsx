@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, memo, useEffect, useRef, useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { colors } from "../../../shared/constants/colors";
@@ -23,9 +24,9 @@ const DOBInput: FC<DOBInputInterface> = ({
         const fullDate =
             day.length === 2 && month.length === 2 && year.length === 4
                 ? `${year}-${month}-${day}` // standard YYYY-MM-DD format
-                : null;
-
-        onChangeDOB?.({ day, month, year, fullDate });
+                : '';
+        if (day.length === 2 && month.length === 2 && year.length === 4)
+            onChangeDOB?.({ day, month, year, fullDate });
     }, [day, month, year]);
 
     const handleDayChange = (text: string) => {

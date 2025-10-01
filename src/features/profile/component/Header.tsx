@@ -4,6 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { icons } from '../../../shared/constants/icons';
 import { colors } from '../../../shared/constants/colors';
 import { fonts } from '../../../shared/constants/fonts';
+import { useDispatch } from 'react-redux';
+import { clearAuth } from '../../auth/authSlice';
 
 interface HeaderInterface {
     isEditing?: boolean
@@ -14,11 +16,16 @@ const Header: FC<HeaderInterface> = ({
 }) => {
 
     const insets = useSafeAreaInsets();
+    const dispatch = useDispatch()
 
 
     const rootHeaderContainer = useMemo(() => {
         return { paddingTop: insets.top }
     }, [insets])
+
+    const logout = () => {
+        dispatch(clearAuth())
+    }
 
     return (
         <View style={[styles.container, rootHeaderContainer]}>
@@ -34,7 +41,7 @@ const Header: FC<HeaderInterface> = ({
             </View>
             {
                 !isEditing &&
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={logout}>
                     <Image source={icons.logout} style={styles.logout} resizeMode='contain' />
                 </TouchableOpacity>
             }

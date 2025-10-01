@@ -9,13 +9,36 @@ import { SCREEN_WIDTH } from '../../../shared/constants/dimensions'
 import { fonts } from '../../../shared/constants/fonts'
 import CustomOtpInput from '../component/CustomOtpInput'
 import CustomButton from '../../../shared/component/CustomButton'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { verifyForgotPasswordOtp } from '../authApi'
+import { showToast } from '../../../shared/utils/toast'
+import { useAppDispatch } from '../../../redux/store'
+import { setResetToken } from '../authSlice'
 
 const VerifyEmail = () => {
 
+    const { email } = useRoute<any>()?.params
     const navigation = useNavigation<any>()
-
+    const dispatch = useAppDispatch()
+    const [loader, setLoader] = useState(false)
     const [otp, setOtp] = useState('')
+
+
+    const handleVerify = () => {
+        const param = {
+            email: email,
+            code: otp
+        }
+
+        setLoader(true)
+        verifyForgotPasswordOtp(param).then(res => {
+            showToast(res?.message)
+            if (res?.success) {
+                dispatch(setResetToken(res?.data?.resetToken))
+                navigation.navigate('createnewpassword')
+            }
+        }).finally(() => setLoader(false))
+    }
 
     return (
         <View style={styles.container}>
@@ -29,7 +52,7 @@ const VerifyEmail = () => {
                     resizeMode='contain'
                 />
                 <Text style={[styles.heading, styles.mt_10]}>Please Enter The 6 Digit Code Sent To</Text>
-                <Text style={[styles.heading, styles.boldText]}>elliot.black06@gmail.com</Text>
+                <Text style={[styles.heading, styles.boldText]}>{email ?? ''}</Text>
 
 
                 <View style={styles.form}>
@@ -39,7 +62,9 @@ const VerifyEmail = () => {
                     <View>
                         <CustomButton
                             label='Verify'
-                            onPress={() => navigation.navigate('createnewpassword')}
+                            // onPress={() => navigation.navigate('createnewpassword')}
+                            onPress={handleVerify}
+                            loading={loader}
                         />
                         <TouchableOpacity style={styles.resendButton}>
                             <Text style={styles.resendButtonLabel}>Resend <Text style={styles.codeText}>Code</Text></Text>

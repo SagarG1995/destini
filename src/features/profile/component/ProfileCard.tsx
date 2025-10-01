@@ -6,6 +6,7 @@ import { SCREEN_WIDTH } from '../../../shared/constants/dimensions'
 import { fonts } from '../../../shared/constants/fonts'
 import { icons } from '../../../shared/constants/icons'
 import { useNavigation } from '@react-navigation/native'
+import { useAppSelector } from '../../../redux/store'
 
 interface ProfileCardInterface {
 
@@ -13,21 +14,22 @@ interface ProfileCardInterface {
 
 const ProfileCard: FC<ProfileCardInterface> = () => {
 
+    const { userdata } = useAppSelector(state => state?.profile)
     const navigation = useNavigation<any>()
 
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <CacheImage
-                    uri='https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
+                    uri={userdata?.image}
                     style={styles.profileImage}
                     resizeMode='cover'
                 />
             </View>
             <View style={styles.details}>
                 <View style={styles.personalDetails}>
-                    <Text style={styles.name} numberOfLines={1} allowFontScaling={false}>ELLIOT RAWAT</Text>
-                    <Text style={styles.prof} numberOfLines={1} allowFontScaling={false}>SECURITY ANALYST </Text>
+                    <Text style={styles.name} numberOfLines={1} allowFontScaling={false}>{userdata?.full_name}</Text>
+                    <Text style={styles.prof} numberOfLines={1} allowFontScaling={false}>{userdata?.professions}</Text>
                 </View>
                 <View style={styles.descriptionContainer}>
                     <Text
@@ -35,8 +37,7 @@ const ProfileCard: FC<ProfileCardInterface> = () => {
                         allowFontScaling={false}
                         numberOfLines={Math.floor((SCREEN_WIDTH * 0.21) / 14)}
                     >
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        {userdata?.description}
                     </Text>
                 </View>
             </View>
@@ -73,7 +74,6 @@ const styles = StyleSheet.create({
     details: {
         flex: 1,
         paddingLeft: 10,
-        justifyContent: 'space-between'
     },
     personalDetails: {
         flexDirection: 'row',
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     descriptionContainer: {
         maxHeight: SCREEN_WIDTH * 0.21, // same as imageContainer height
         overflow: 'hidden',
+        marginTop: 10
     },
     description: {
         fontFamily: fonts.regular,

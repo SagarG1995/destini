@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import Header from '../component/Header'
 import { fonts } from '../../../shared/constants/fonts'
@@ -10,11 +10,29 @@ import { SCREEN_WIDTH } from '../../../shared/constants/dimensions'
 import CustomInput from '../../../shared/component/CustomInput'
 import CustomButton from '../../../shared/component/CustomButton'
 import { useNavigation } from '@react-navigation/native'
+import { sendForgotPasswordOtp } from '../authApi'
+import { _dev_email } from '../../../shared/constants/__dev_variable'
+import { showToast } from '../../../shared/utils/toast'
 
 const ForgotPassword = () => {
 
     const navigation = useNavigation<any>()
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState(__DEV__ ? _dev_email : '')
+    const [loader, setLoader] = useState(false)
+
+    const handleSend = () => {
+        const param = {
+            email: email
+        }
+
+        setLoader(true)
+        sendForgotPasswordOtp(param).then(res => {
+            showToast(res?.message)
+            if (res?.success) {
+                navigation.navigate('verifyemail', { email: email })
+            }
+        }).finally(() => setLoader(false))
+    }
 
     return (
         <View style={styles.container}>
@@ -37,7 +55,9 @@ const ForgotPassword = () => {
                     />
                     <CustomButton
                         label='Send'
-                        onPress={() => navigation.navigate('verifyemail')}
+                        loading={loader}
+                        // onPress={() => navigation.navigate('verifyemail')}
+                        onPress={handleSend}
                     />
 
                 </View>

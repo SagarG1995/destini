@@ -1,24 +1,24 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import Header from '../component/Header'
 import { colors } from '../../../shared/constants/colors'
 import { fonts } from '../../../shared/constants/fonts'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import GenderSelection from '../component/GenderSelection'
-import CustomInput from '../../../shared/component/CustomInput'
 import ProfessionModal from '../../../shared/component/ProfessionModal'
-import Animated from 'react-native-reanimated'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import FastImage from 'react-native-fast-image'
 import { gif } from '../../../shared/constants/gif'
 import ProfileForm1 from '../component/ProfileForm1'
 import ProfileForm2 from '../component/ProfileForm2'
 import { runOnJS } from 'react-native-worklets'
-import { useAppSelector } from '../../../redux/store'
+import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { showToast } from '../../../shared/utils/toast'
+import { completeProfile } from '../authApi'
+import { setAuthData } from '../authSlice'
 
 const CompleteProfile = () => {
 
+    const dispatch = useAppDispatch()
     const auth = useAppSelector(state => state?.auth)
 
     const [step, setStep] = useState(1)
@@ -44,13 +44,36 @@ const CompleteProfile = () => {
                 showToast("Please choose your profession")
                 return
             } else if (nickname && fullname && prof) {
+                console.log(fullname, nickname, prof);
+
                 setStep(prev => prev + 1)
             }
-
         }
-        if (step === 2) {
+    }
 
+    const onCompleteProfile = () => {
+        if (!desc) {
+            showToast("Please provide description")
+            return
         }
+        else if (!dob) {
+            showToast("Please provide DOB")
+            return
+        }
+        const param = {
+            full_name: fullname,
+            nickname: nickname,
+            professions: prof,
+            description: desc,
+            dob: dob,
+            gender: gender
+        }
+        completeProfile(param).then(res => {
+            if (res?.success) {
+                dispatch(setAuthData({ ...auth.authdata, completeProfile: true }))
+            }
+            showToast(res?.message)
+        })
     }
 
     const swipe = Gesture.Pan()
@@ -63,11 +86,8 @@ const CompleteProfile = () => {
 
     const subHeading = useCallback(() => {
         return (
-            <View style={styles.subheadingContainer}>
-                <Text style={styles.subHeading}>
-                    This helps others know who you are and what you’re interested in.
-                </Text>
-            </View>
+            <Text style={styles.subHeading}>This helps others know who you are and what you’re interested in.
+            </Text>
         )
     }, [])
 
@@ -75,13 +95,11 @@ const CompleteProfile = () => {
         setIsopen(!isOpen)
     }, [isOpen])
 
-    console.log(prof);
-
-
     return (
         <View style={styles.container}>
             <Header
                 heading='Complete Your Profile'
+                showBack={false}
                 subHeadingComponent={subHeading}
                 headingStyle={styles.headingStyle}
             />
@@ -98,7 +116,11 @@ const CompleteProfile = () => {
                                 onGender={setGender}
                             />
                             :
-                            <ProfileForm2 />
+                            <ProfileForm2
+                                onDescription={setDesc}
+                                onDob={setDob}
+                                onPress={onCompleteProfile}
+                            />
                     }
 
                     {
@@ -131,15 +153,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.white
     },
-
-    subheadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-    },
     subHeading: {
         fontFamily: fonts.light,
         fontSize: 12,
         color: colors.grey1,
+        includeFontPadding: false
     },
     headingStyle: {
         textAlign: 'left'
@@ -149,6 +167,7 @@ const styles = StyleSheet.create({
         width: '80%',
         alignSelf: 'center',
         paddingBottom: 40,
+        // backgroundColor: 'red'
     },
     swipeInfoContainer: {
         alignItems: 'center',

@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from '../features/auth/authSlice'
+import profileReducer from '../features/profile/profileSlice'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistReducer, persistStore } from 'redux-persist';
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
@@ -7,13 +8,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 // 1. Combine reducers
 export const rootReducer = combineReducers({
     auth: authReducer,
+    profile: profileReducer
 });
 
 // 2. Set up persist config
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['auth'], // persist only these slices
+    whitelist: ['auth', 'profile'], // persist only these slices
     blacklist: ['navigation']
 };
 

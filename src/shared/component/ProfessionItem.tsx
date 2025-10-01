@@ -16,9 +16,13 @@ const ProfessionItem: FC<ProfessionItemInterface> = ({
     onChooseProfession
 }) => {
 
+    const onPress = (data: any) => {
+        // console.log("Item pressed: ", data?.title, " | Selected: ", selectedProfession);
+        onChooseProfession?.(data?.title)
+    }
 
     return (
-        <TouchableOpacity style={styles.container} onPress={() => onChooseProfession?.(item?.title)}>
+        <TouchableOpacity style={styles.container} onPress={() => onPress?.(item)}>
             <Text style={styles.title}>{item?.title}</Text>
             {
                 selectedProfession === item?.title ?

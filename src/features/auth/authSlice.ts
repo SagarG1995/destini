@@ -1,20 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type UserAuthDataType = null | {
-    access_token: string;
+    access_token?: string;
     refresh_token?: string,
     isGoogleLogin?: boolean;
     isAppleLogin?: boolean;
     completeProfile?: boolean,
 }
 
-interface accountInterface {
+interface authInterface {
     authdata: UserAuthDataType;
-    showOnboarding?: boolean
+    showOnboarding?: boolean,
+    resetToken?: string | null
 }
 
-const initialState: accountInterface = {
+const initialState: authInterface = {
     authdata: null,
+    resetToken: null,
     showOnboarding: true
 };
 
@@ -22,10 +24,13 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setShowOnboarding(state, action: PayloadAction<accountInterface['showOnboarding']>) {
+        setShowOnboarding(state, action: PayloadAction<authInterface['showOnboarding']>) {
             state.showOnboarding = action.payload
         },
-        setAuthData(state, action: PayloadAction<accountInterface['authdata']>) {
+        setResetToken(state, action: PayloadAction<authInterface['resetToken']>) {
+            state.resetToken = action.payload
+        },
+        setAuthData(state, action: PayloadAction<authInterface['authdata']>) {
             state.authdata = action.payload;
         },
         clearAuth(state) {
@@ -34,5 +39,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { setAuthData, setShowOnboarding, clearAuth } = authSlice.actions;
+export const { setAuthData, setResetToken, setShowOnboarding, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

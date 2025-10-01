@@ -15,14 +15,15 @@ import { showToast } from '../../../shared/utils/toast'
 import VerifyEmail from './VerifyEmail'
 import { validateEmail, validatePassword } from '../Validator'
 import { register } from '../authApi'
+import { _dev_email, _dev_password } from '../../../shared/constants/__dev_variable'
 
 const Register = () => {
 
     const navigation = useNavigation<any>()
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confPassword, setConfPassword] = useState('')
+    const [email, setEmail] = useState(__DEV__ ? _dev_email : '')
+    const [password, setPassword] = useState(__DEV__ ? _dev_password : '')
+    const [confPassword, setConfPassword] = useState(__DEV__ ? _dev_password : '')
     const [step, setStep] = useState(1)
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const [loader, setLoader] = useState(false)
@@ -60,6 +61,7 @@ const Register = () => {
             password,
             confirmPassword: confPassword
         }
+        console.log(param);
 
         setLoader(true)
         register(param).then(res => {
