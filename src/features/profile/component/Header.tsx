@@ -6,6 +6,7 @@ import { colors } from '../../../shared/constants/colors';
 import { fonts } from '../../../shared/constants/fonts';
 import { useDispatch } from 'react-redux';
 import { clearAuth } from '../../auth/authSlice';
+import { useNavigation } from '@react-navigation/native';
 
 interface HeaderInterface {
     isEditing?: boolean
@@ -17,6 +18,7 @@ const Header: FC<HeaderInterface> = ({
 
     const insets = useSafeAreaInsets();
     const dispatch = useDispatch()
+    const navigation = useNavigation<any>()
 
 
     const rootHeaderContainer = useMemo(() => {
@@ -32,7 +34,7 @@ const Header: FC<HeaderInterface> = ({
             <View style={styles.row} >
                 {
                     isEditing &&
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
                         <Image source={icons.arrowback} style={styles.back} resizeMode='contain' />
                     </TouchableOpacity>
                 }

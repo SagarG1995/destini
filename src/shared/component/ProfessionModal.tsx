@@ -48,6 +48,8 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
     const getAllProfessions = () => {
         setLoader(true)
         getProfessions().then(res => {
+            // console.log('', res);
+
             if (res?.success) {
                 setProfession(res?.data?.data ?? [])
             } else {

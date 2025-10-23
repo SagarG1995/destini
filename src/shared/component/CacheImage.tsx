@@ -40,14 +40,6 @@ const CachedImage: FC<CachedImageProps> = ({
 
     return (
         <View style={[style, styles.container]}>
-            {
-                // loading &&
-                // (
-                //     <View style={[styles.loader, animatedLoaderStyle]}>
-                //         <ActivityIndicator size={'small'} color={colors.white} />
-                //     </View>
-                // )
-            }
             <FastImage
                 {...rest}
                 source={{

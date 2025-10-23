@@ -12,6 +12,8 @@ api.interceptors.request.use((config) => {
     const reset_token = store.getState()?.auth?.resetToken
     if (token || reset_token) config.headers.Authorization = `Bearer ${token || reset_token}`;
 
+    // console.log(config);
+
 
     if (config.data instanceof FormData) {
         config.headers['Content-Type'] = 'multipart/form-data';

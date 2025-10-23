@@ -11,6 +11,9 @@ export const endpoints = {
     completeprofile: "auth/edit",
 
     getme: "auth/me",
+    updateme: "auth/edit",
 
-    professions: 'professions/grouped'
+    professions: 'professions/grouped',
+
+    homeapi: 'plans/nearby?'
 }

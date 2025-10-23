@@ -11,6 +11,9 @@ import ProfessionModal from '../../../shared/component/ProfessionModal'
 import CustomButton from '../../../shared/component/CustomButton'
 import { icons } from '../../../shared/constants/icons'
 import { useAppSelector } from '../../../redux/store'
+import { images } from '../../../shared/constants/images'
+import { updateMe } from '../profileApi'
+import { showToast } from '../../../shared/utils/toast'
 
 const EditProfile = () => {
 
@@ -22,6 +25,7 @@ const EditProfile = () => {
     const [profession, setProfession] = useState(userdata?.professions)
     const [description, setDescription] = useState(userdata?.description)
     const [isOpen, setIsopen] = useState(false)
+    const [loader, setLoader] = useState(false)
 
 
     const descriptionBoxHeight = useMemo(() => {
@@ -30,6 +34,24 @@ const EditProfile = () => {
         return { height: linesNeeded * lineHeight };
     }, []);
 
+
+    const updateProfile = () => {
+
+        const param = {
+            full_name: name,
+            professions: profession,
+            description: description
+        }
+
+        updateMe(param).then(res => {
+            // console.log(res);
+            if (res?.success) {
+
+            } else {
+                showToast(res?.message)
+            }
+        })
+    }
 
 
     return (
@@ -43,6 +65,7 @@ const EditProfile = () => {
                                 uri={userdata?.image}
                                 style={styles.profileImage}
                                 resizeMode='cover'
+                                fallbackComponent={<Image source={userdata?.gender === 'male' ? images.boy : images.girl} style={styles.profileImage} resizeMode='contain' />}
                             />
                         </View>
                         <View style={styles.inputBoxContainer}>
@@ -51,6 +74,7 @@ const EditProfile = () => {
                                 onTypingComplete={setName}
                                 placeholder='Name'
                                 inputStyle={[styles.inputStyle, styles.nameInput]}
+                                placeholderTextColor={colors.grey1}
                                 containerStyle={styles.inputContainer}
                             />
                             <TouchableOpacity style={styles.profession} onPress={() => setIsopen(true)}>
@@ -74,15 +98,17 @@ const EditProfile = () => {
                     <CustomButton
                         label='Confirm Change'
                         containerStyle={styles.button}
+                        onPress={updateProfile}
+                        loading={loader}
                     />
                 </View>
             </KeyboardAwareScrollView>
             {
                 // isOpen &&
                 <ProfessionModal
-                    addMarginBottom
                     isOpen={isOpen}
                     toggleModal={() => setIsopen(false)}
+                    onChooseProfession={setProfession}
                 />
             }
         </View>

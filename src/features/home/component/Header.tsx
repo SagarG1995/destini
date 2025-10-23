@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
-import React, { FC, memo, useMemo } from 'react'
+import React, { FC, memo, useMemo, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CacheImage from '../../../shared/component/CacheImage';
@@ -8,23 +8,21 @@ import { fonts } from '../../../shared/constants/fonts';
 import { colors } from '../../../shared/constants/colors';
 
 interface HeaderInterface {
-    toogleModal?: () => void
+    toogleModal?: () => void,
+    onSearch?: (value: string) => void
 }
 
 const Header: FC<HeaderInterface> = ({
-    toogleModal
+    toogleModal,
+    onSearch
 }) => {
 
     const navigation = useNavigation<any>()
-    const insets = useSafeAreaInsets();
+    const [value, setValue] = useState('')
 
-
-    const rootHeaderContainer = useMemo(() => {
-        return { paddingTop: insets.top + 20 }
-    }, [insets])
 
     return (
-        <View style={[styles.container, rootHeaderContainer]}>
+        <View style={[styles.container]}>
             <View style={[styles.header]}>
                 <CacheImage
                     uri='https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
@@ -39,12 +37,13 @@ const Header: FC<HeaderInterface> = ({
             <View style={[styles.mt_20, styles.row]}>
                 <View style={styles.searchBox}>
                     <TextInput
-                        value=''
+                        value={value}
                         placeholder='Search Smart. Connect Better.'
                         style={styles.input}
                         placeholderTextColor={colors.grey3}
+                        onChangeText={setValue}
                     />
-                    <TouchableOpacity >
+                    <TouchableOpacity onPress={() => onSearch?.(value)}>
                         <Image
                             source={icons.searchbtncircle}
                             style={styles.search}
@@ -70,7 +69,8 @@ export default memo(Header)
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
-        backgroundColor: colors.white
+        backgroundColor: colors.white,
+        paddingTop: 10
     },
     header: {
         flexDirection: 'row',

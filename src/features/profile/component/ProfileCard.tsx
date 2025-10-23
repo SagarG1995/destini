@@ -7,6 +7,7 @@ import { fonts } from '../../../shared/constants/fonts'
 import { icons } from '../../../shared/constants/icons'
 import { useNavigation } from '@react-navigation/native'
 import { useAppSelector } from '../../../redux/store'
+import { images } from '../../../shared/constants/images'
 
 interface ProfileCardInterface {
 
@@ -16,6 +17,7 @@ const ProfileCard: FC<ProfileCardInterface> = () => {
 
     const { userdata } = useAppSelector(state => state?.profile)
     const navigation = useNavigation<any>()
+    // console.log(userdata);
 
     return (
         <View style={styles.container}>
@@ -24,6 +26,7 @@ const ProfileCard: FC<ProfileCardInterface> = () => {
                     uri={userdata?.image}
                     style={styles.profileImage}
                     resizeMode='cover'
+                    fallbackComponent={<Image source={userdata?.gender === 'male' ? images.boy : images.girl} style={styles.profileImage} resizeMode='contain' />}
                 />
             </View>
             <View style={styles.details}>

@@ -22,10 +22,10 @@ const ProfileForm1: FC<ProfileForm1Interface> = ({
     onNickName,
 }) => {
 
-    useEffect(() => {
-        console.log('ProfileForm1 =>> ', profession);
+    // useEffect(() => {
+    //     console.log('ProfileForm1 =>> ', profession);
 
-    }, [])
+    // }, [])
 
     return (
         <View style={styles.contianer}>
