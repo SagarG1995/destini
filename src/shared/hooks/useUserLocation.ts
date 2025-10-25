@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
-import { Platform, Alert, AppState } from 'react-native';
+import { Platform, Alert, AppState, Linking } from 'react-native';
 import GetLocation from 'react-native-get-location';
 import DeviceInfo from 'react-native-device-info';
 import {
@@ -10,10 +10,13 @@ import {
     PERMISSIONS,
     RESULTS,
 } from 'react-native-permissions';
+import { setLocationGranted } from '../../features/location/locationSlice';
+import { useAppDispatch } from '../../redux/store';
 
 export const useUserLocation = () => {
 
     const appStateRef = useRef(AppState.currentState);
+    const dispatch = useAppDispatch()
 
     const [location, setLocation] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -90,6 +93,19 @@ export const useUserLocation = () => {
         }
     };
 
+    // ---- Check Location Permission ----
+    const checkLocationPermission = async () => {
+        const result = await check(locationPermission);
+        if (result === RESULTS.GRANTED) {
+            dispatch(setLocationGranted(true))
+            return true
+        } else {
+            dispatch(setLocationGranted(false))
+            return false
+        }
+    };
+
+
     // ---- Detect when app returns from background ----
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextState => {
@@ -122,8 +138,8 @@ export const useUserLocation = () => {
 
     // ---- Initial Check ----
     useEffect(() => {
-        checkAndRequestLocation();
+        // checkAndRequestLocation();
     }, []);
 
-    return { location, locationLoading: loading, refresh: checkAndRequestLocation, isLocationEnabled };
+    return { location, locationLoading: loading, checkAndRequestLocation, checkLocationPermission, isLocationEnabled };
 };

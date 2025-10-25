@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import Header from '../component/Header'
@@ -35,6 +36,8 @@ const Login = () => {
         }
         setLoader(true)
         login(param).then(res => {
+            // console.log(res);
+
             if (res?.success) {
                 dispatch(setAuthData({
                     completeProfile: res?.data?.user?.completeProfile,

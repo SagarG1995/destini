@@ -15,5 +15,9 @@ export const endpoints = {
 
     professions: 'professions/grouped',
 
-    homeapi: 'plans/nearby?'
+    homeapi: 'plans/nearby?',
+
+    getplacesuggestion: 'location/autocomplete',
+    createplan: 'plans'
+
 }

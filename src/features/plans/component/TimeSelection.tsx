@@ -20,16 +20,50 @@ const TimeSelection: FC<TimeSelectionInterface> = ({
 
 
     const handleComplete = () => {
-        if (onCompleteEditTime) {
-            const formattedTime = `${hours || '00'}:${minutes || '00'}`;
-            onCompleteEditTime(formattedTime);
+
+        let _hours = parseInt(hours || '0', 10);
+        let _minutes = parseInt(minutes || '0', 10);
+
+        // Validate hours (1–12)
+        if (isNaN(_hours) || _hours < 1) _hours = 1;
+        if (_hours > 12) {
+            _hours = 12;
+            setHours('12')
         }
+
+        // Validate minutes (0–59)
+        if (isNaN(_minutes) || _minutes < 0) _minutes = 0;
+        if (_minutes > 59) {
+            _minutes = 59;
+            setMinutes('59')
+        }
+
+        // Format with leading zeros
+        const formattedTime = `${_hours.toString().padStart(2, '0')}:${_minutes
+            .toString()
+            .padStart(2, '0')}`;
+
+
+        // const formattedTime = `${hours || '00'}:${minutes || '00'}`;
+        onCompleteEditTime?.(formattedTime);
+
     };
 
     const onUnitSelection = (_unit: string) => {
         setUnit((_prev: string) => _unit)
         onSelectTimeUnit?.(_unit)
     }
+
+    const onChangeHours = (val: string) => {
+        // Allow only numbers and max 2 digits
+        const clean = val.replace(/[^0-9]/g, '').slice(0, 2);
+        setHours(clean);
+    };
+
+    const onChangeMinutes = (val: string) => {
+        const clean = val.replace(/[^0-9]/g, '').slice(0, 2);
+        setMinutes(clean);
+    };
 
     return (
         <View style={styles.container}>
@@ -46,8 +80,8 @@ const TimeSelection: FC<TimeSelectionInterface> = ({
                         containerStyle={styles.inputContainerStyle}
                         keyboardType='number-pad'
                         textAlignVertical='center'
-                        onChangeText={setHours}
-                        onEndEditing={handleComplete}
+                        onChangeText={onChangeHours}
+                        onTypingComplete={handleComplete}
                     />
                     <Text style={styles.dot}>:</Text>
                     <CustomInput
@@ -60,8 +94,8 @@ const TimeSelection: FC<TimeSelectionInterface> = ({
                         containerStyle={styles.inputContainerStyle}
                         keyboardType='number-pad'
                         textAlignVertical='center'
-                        onChangeText={setMinutes}
-                        onEndEditing={handleComplete}
+                        onChangeText={onChangeMinutes}
+                        onTypingComplete={handleComplete}
                     />
                 </View>
 

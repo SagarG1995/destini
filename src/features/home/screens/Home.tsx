@@ -10,14 +10,12 @@ import { getMe } from '../../profile/profileApi'
 import { useAppDispatch } from '../../../redux/store'
 import { setUserData } from '../../profile/profileSlice'
 import { getHomePlans } from '../homeApi'
-import { useUserLocation } from '../../../shared/hooks/useUserLocation'
-import LocationNotEnabledContent from '../component/LocationNotEnabledContent'
 import { showToast } from '../../../shared/utils/toast'
 import NoTripComponent from '../component/NoTripComponent'
 
 const Home = () => {
     const dispatch = useAppDispatch()
-    const { locationLoading, isLocationEnabled, location } = useUserLocation()
+
 
     const [isOpen, setIsopen] = useState(false)
     const [profession, setProfession] = useState('')
@@ -37,7 +35,7 @@ const Home = () => {
         setPage(1)
         setPlans([])
         fetchPlans(1, true)
-    }, [search, profession, isLocationEnabled])
+    }, [search, profession])
 
     const getProfile = useCallback(() => {
         getMe().then(res => {
@@ -49,13 +47,11 @@ const Home = () => {
 
     const fetchPlans = useCallback(
         async (pageNumber = 1, isRefreshing = false) => {
-            if (!isLocationEnabled || !location) return
-
             if (isRefreshing) setLoading(true)
             else setFooterLoading(true)
 
             try {
-                const res = await getHomePlans(location, search, profession, pageNumber)
+                const res = await getHomePlans(search, profession, pageNumber)
                 if (res?.success) {
                     const newData = res?.data?.data ?? []
                     setPlans(prev => (pageNumber === 1 ? newData : [...prev, ...newData]))
@@ -70,7 +66,7 @@ const Home = () => {
                 setFooterLoading(false)
             }
         },
-        [isLocationEnabled, location, search, profession]
+        [search, profession]
     )
 
     const handleLoadMore = useCallback(() => {
@@ -91,7 +87,7 @@ const Home = () => {
         setIsopen(!isOpen)
     }, [isOpen])
 
-    const renderItem = useCallback(({ item }: any) => <TripCard />, [])
+    const renderItem = useCallback(({ _item }: any) => <TripCard />, [])
 
     const listEmptyComponent = useCallback(
         () => !loading && <NoTripComponent />,
@@ -112,34 +108,33 @@ const Home = () => {
     return (
         <View style={styles.container}>
             <Header toogleModal={toogleModal} onSearch={setSearch} />
-            {!isLocationEnabled && !locationLoading ? (
-                <LocationNotEnabledContent />
-            ) : (
-                <>
-                    {plans?.length > 0 && (
-                        <Text style={styles.heading}>Plans you might like!</Text>
-                    )}
-                    <FlatList
-                        data={plans}
-                        renderItem={renderItem}
-                        keyExtractor={(_, index) => index.toString()}
-                        style={styles.listStyle}
-                        contentContainerStyle={styles.listContainer}
-                        ItemSeparatorComponent={separator}
-                        ListEmptyComponent={listEmptyComponent}
-                        ListFooterComponent={renderFooter}
-                        onEndReachedThreshold={0.5}
-                        onEndReached={handleLoadMore}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={loading}
-                                onRefresh={onRefresh}
-                                colors={[colors.black]}
-                            />
-                        }
-                    />
-                </>
-            )}
+            {
+                (
+                    <>
+                        {plans?.length > 0 && (
+                            <Text style={styles.heading}>Plans you might like!</Text>
+                        )}
+                        <FlatList
+                            data={plans}
+                            renderItem={renderItem}
+                            keyExtractor={(_, index) => index.toString()}
+                            style={styles.listStyle}
+                            contentContainerStyle={styles.listContainer}
+                            ItemSeparatorComponent={separator}
+                            ListEmptyComponent={listEmptyComponent}
+                            ListFooterComponent={renderFooter}
+                            onEndReachedThreshold={0.5}
+                            onEndReached={handleLoadMore}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={loading}
+                                    onRefresh={onRefresh}
+                                    colors={[colors.black]}
+                                />
+                            }
+                        />
+                    </>
+                )}
 
             <ProfessionModal
                 isOpen={isOpen}

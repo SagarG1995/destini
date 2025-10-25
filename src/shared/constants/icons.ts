@@ -10,6 +10,7 @@ export const icons = {
     distance: require("../../assets/icons/distance.png"),
     filterbtncircle: require("../../assets/icons/filter-btn-circle.png"),
     location: require("../../assets/icons/location.png"),
+    locationblack: require("../../assets/icons/location-black.png"),
     calendar: require("../../assets/icons/calendar.png"),
     profilecircle: require("../../assets/icons/profile-circle.png"),
     chat: require("../../assets/icons/chat.png"),

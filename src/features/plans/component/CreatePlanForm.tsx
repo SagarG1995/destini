@@ -10,17 +10,22 @@ import { fonts } from '../../../shared/constants/fonts'
 import TimeSelection from './TimeSelection'
 import ExpandedCalender from './ExpandedCalender'
 import CustomButton from '../../../shared/component/CustomButton'
+import LocationSuggestion from '../../../shared/component/LocationSuggestion'
+import { toISODateTime } from '../../../shared/utils/dateTimeConversion'
+import { showToast } from '../../../shared/utils/toast'
+import { createPlan } from '../plansApi'
 
 const CreatePlanForm = () => {
 
     const today = new Date().toISOString().split("T")[0]
-    const [selectedDate, setSelectedDate] = useState<any>(null);
+    const [selectedDate, setSelectedDate] = useState<any>(today);
     const [selectedMonth, setSelectedMonth] = useState('')
     const [time, setTime] = useState('')
-    const [timeUnit, setTimeUnit] = useState('')
-    const [location, setLocation] = useState('')
+    const [timeUnit, setTimeUnit] = useState('am')
+    const [currentLocation, setCurrentLocation] = useState('')
     const [planLocation, setPlanLocation] = useState('')
     const [desc, setDesc] = useState('')
+    const [loader, setLoader] = useState(false)
 
 
     useEffect(() => {
@@ -29,6 +34,8 @@ const CreatePlanForm = () => {
 
 
     const onDateChange = (date: any) => {
+        console.log(date);
+
         setSelectedDate(date);
         setSelectedMonth(moment(date).format("MMMM, yyyy"))
     }
@@ -43,16 +50,36 @@ const CreatePlanForm = () => {
         };
     }, [selectedDate]);
 
-    const onCreate = () => {
-        const param = {
+    const onCreatePlan = () => {
 
+        if (!currentLocation) { showToast('Please select current location!'); return; }
+        if (!planLocation) { showToast('Please select plan location!'); return; }
+        if (!desc) { showToast('Please add description!'); return; }
+        if (!time || !timeUnit) { showToast('Please select time!'); return; }
+
+        const param = {
+            title: desc,
+            planLocation: planLocation,
+            creatorCurrentLocation: currentLocation,
+            planAt: toISODateTime(selectedDate, time + ' ' + timeUnit)
         }
+
+        console.log(param);
+
+
+        setLoader(true)
+
+        createPlan(param).then(res => {
+            console.log(res);
+
+        }).finally(() => setLoader(false))
+
     }
 
 
     return (
         <CalendarProvider
-            date={selectedDate ?? today}
+            date={selectedDate || today}
             onDateChanged={onDateChange}
             disableAutoDaySelection={[ExpandableCalendar.navigationTypes.MONTH_SCROLL, ExpandableCalendar.navigationTypes.MONTH_ARROWS, ExpandableCalendar.navigationTypes.WEEK_SCROLL, ExpandableCalendar.navigationTypes.TODAY_PRESS]}
         >
@@ -63,21 +90,19 @@ const CreatePlanForm = () => {
                 markedDate={markedDate}
             />
 
-            <KeyboardAwareScrollView contentContainerStyle={styles.content} enableOnAndroid enableAutomaticScroll extraHeight={100} extraScrollHeight={150}>
+            <KeyboardAwareScrollView contentContainerStyle={styles.content} enableOnAndroid enableAutomaticScroll extraHeight={100} extraScrollHeight={150} keyboardShouldPersistTaps='handled'>
 
-                <CustomInput
+                <LocationSuggestion
+                    locationType='current'
                     label='Your Current Location*'
                     placeholder='Noble Enclave, Palam Vihar'
-                    inputStyle={styles.inputStyle}
-                    onTypingComplete={setLocation}
                 />
 
-                <CustomInput
+                <LocationSuggestion
+                    locationType='plan'
                     label='Where is this plan happening?*'
                     placeholder='Choose Location'
-                    labelContainerStyle={styles.mt_25}
-                    inputStyle={styles.inputStyle}
-                    onTypingComplete={setPlanLocation}
+                    containerStyle={styles.mt_25}
                 />
 
                 <Text style={[styles.label, styles.mt_25]}>Describe the Plan*</Text>
@@ -102,6 +127,7 @@ const CreatePlanForm = () => {
                 <CustomButton
                     label='Create Plan'
                     containerStyle={styles.mt_25}
+                    onPress={onCreatePlan}
                 />
 
             </KeyboardAwareScrollView>
@@ -120,10 +146,6 @@ const styles = StyleSheet.create({
     },
     mt_25: {
         marginTop: 25
-    },
-    inputStyle: {
-        fontSize: 14,
-        color: colors.black,
     },
     label: {
         fontFamily: fonts.semibold,
