@@ -9,3 +9,7 @@ export const getPlaceSuggestion = async (query: string) => {
 export const createPlan = async (param: {} | undefined) => {
     return await apiClient.post(endpoints.createplan, param)
 }
+
+export const getMyPlans = async () => {
+    return await apiClient.get(endpoints.myplans)
+}

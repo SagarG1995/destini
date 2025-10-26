@@ -21,7 +21,7 @@ interface LocationSuggestionInterface {
     placeholder?: string,
 }
 
-const LocationSuggestion: FC<LocationSuggestionInterface> = ({
+const LocationSuggestionBox: FC<LocationSuggestionInterface> = ({
     locationType = 'current',
     label,
     placeholder,
@@ -58,7 +58,7 @@ const LocationSuggestion: FC<LocationSuggestionInterface> = ({
     )
 }
 
-export default memo(LocationSuggestion)
+export default memo(LocationSuggestionBox)
 
 const styles = StyleSheet.create({
     container: {

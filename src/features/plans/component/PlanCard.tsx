@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import CustomButton from '../../../shared/component/CustomButton'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from '../../../shared/constants/colors'
@@ -9,8 +9,16 @@ import { images } from '../../../shared/constants/images'
 import AvatarGroup from './AvatarGroup'
 import ExpandedRequest from './ExpandedRequest'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import moment from 'moment'
 
-const PlanCard = () => {
+
+interface PlanCardInterface {
+    data?: any
+}
+
+const PlanCard: FC<PlanCardInterface> = ({
+    data = null
+}) => {
 
     const height = useSharedValue(0)
     const [expandList, setExpandList] = useState(false)
@@ -38,6 +46,7 @@ const PlanCard = () => {
         }
     })
 
+    if (!data) return null
     return (
         <View style={styles.container}>
             <LinearGradient useAngle={true} angle={120} angleCenter={{ x: 0.3, y: 0.5 }} colors={[colors.blue2, colors.white]} style={styles.gradient1}>
@@ -48,20 +57,19 @@ const PlanCard = () => {
                             <Text style={styles.heading} numberOfLines={1}>Headed to Bistro Cafe!!</Text>
                             <Image source={icons.arrowdown} style={styles.downIcon} tintColor={colors.black} resizeMode='contain' />
                         </View>
-                        <Text style={styles.desc} numberOfLines={2}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et .</Text>
+                        <Text style={styles.desc} numberOfLines={2}>{data?.title}</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.footer}>
                     <View style={styles.flex1}>
-                        <View style={styles.row}>
-                            <Image source={icons.locationblue} style={styles.icon} resizeMode='contain' />
-                            <Text style={styles.text}>3 KM away from you</Text>
-                        </View>
-
-                        <View style={[styles.row, styles.mt_5]}>
+                        <View style={[styles.row]}>
                             <Image source={icons.calendarblue} style={styles.icon} resizeMode='contain' />
-                            <Text style={styles.text}>August 15,2025</Text>
+                            <Text style={styles.text}>
+                                {
+                                    moment(data?.planAt).format("MMMM DD, YYYY")
+                                }
+                            </Text>
                         </View>
 
                     </View>
@@ -102,7 +110,7 @@ export default PlanCard
 const styles = StyleSheet.create({
     container: {
         borderRadius: 10,
-        minHeight: 140,
+        minHeight: 120,
         borderColor: colors.blue1,
         borderWidth: 1,
         overflow: 'hidden'
@@ -135,7 +143,8 @@ const styles = StyleSheet.create({
     descContainer: {
         flex: 1,
         paddingLeft: 5,
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        // backgroundColor: 'red'
     },
     downIcon: {
         width: 20,
@@ -157,8 +166,7 @@ const styles = StyleSheet.create({
     footer: {
         flexDirection: 'row',
         alignItems: 'center',
-        // marginTop: 'auto'
-        marginTop: 20
+        marginTop: 20,
     },
     icon: {
         width: 18,

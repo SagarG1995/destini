@@ -18,6 +18,7 @@ export const endpoints = {
     homeapi: 'plans/nearby?',
 
     getplacesuggestion: 'location/autocomplete',
-    createplan: 'plans'
+    createplan: 'plans',
+    myplans: 'plans/mine'
 
 }

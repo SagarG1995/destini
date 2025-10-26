@@ -10,14 +10,21 @@ import { fonts } from '../../../shared/constants/fonts'
 import TimeSelection from './TimeSelection'
 import ExpandedCalender from './ExpandedCalender'
 import CustomButton from '../../../shared/component/CustomButton'
-import LocationSuggestion from '../../../shared/component/LocationSuggestion'
+import LocationSuggestionBox from '../../../shared/component/LocationSuggestionBox'
 import { toISODateTime } from '../../../shared/utils/dateTimeConversion'
 import { showToast } from '../../../shared/utils/toast'
 import { createPlan } from '../plansApi'
+import { useAppDispatch, useAppSelector } from '../../../redux/store'
+import { useNavigation } from '@react-navigation/native'
+import { clearCreatePlanLocation, setCreatePlanLocation } from '../planSlice'
 
 const CreatePlanForm = () => {
 
     const today = new Date().toISOString().split("T")[0]
+    const { createPlanLocation } = useAppSelector(state => state?.plan)
+    const dispatch = useAppDispatch()
+    const navigation = useNavigation<any>()
+
     const [selectedDate, setSelectedDate] = useState<any>(today);
     const [selectedMonth, setSelectedMonth] = useState('')
     const [time, setTime] = useState('')
@@ -32,10 +39,13 @@ const CreatePlanForm = () => {
         setSelectedMonth(moment(new Date()).format("MMMM, yyyy"))
     }, [])
 
+    useEffect(() => {
+        setCurrentLocation(createPlanLocation?.currentLocId)
+        setPlanLocation(createPlanLocation?.planLocId)
+    }, [createPlanLocation])
+
 
     const onDateChange = (date: any) => {
-        console.log(date);
-
         setSelectedDate(date);
         setSelectedMonth(moment(date).format("MMMM, yyyy"))
     }
@@ -64,13 +74,16 @@ const CreatePlanForm = () => {
             planAt: toISODateTime(selectedDate, time + ' ' + timeUnit)
         }
 
-        console.log(param);
-
-
         setLoader(true)
 
         createPlan(param).then(res => {
-            console.log(res);
+            if (res?.success) {
+                showToast("Plan has been created successfully!!!")
+                navigation.goBack()
+                dispatch(clearCreatePlanLocation())
+            } else {
+                showToast(res?.message)
+            }
 
         }).finally(() => setLoader(false))
 
@@ -92,13 +105,13 @@ const CreatePlanForm = () => {
 
             <KeyboardAwareScrollView contentContainerStyle={styles.content} enableOnAndroid enableAutomaticScroll extraHeight={100} extraScrollHeight={150} keyboardShouldPersistTaps='handled'>
 
-                <LocationSuggestion
+                <LocationSuggestionBox
                     locationType='current'
                     label='Your Current Location*'
                     placeholder='Noble Enclave, Palam Vihar'
                 />
 
-                <LocationSuggestion
+                <LocationSuggestionBox
                     locationType='plan'
                     label='Where is this plan happening?*'
                     placeholder='Choose Location'
@@ -128,6 +141,7 @@ const CreatePlanForm = () => {
                     label='Create Plan'
                     containerStyle={styles.mt_25}
                     onPress={onCreatePlan}
+                    loading={loader}
                 />
 
             </KeyboardAwareScrollView>

@@ -5,19 +5,21 @@ import { icons } from '../../../shared/constants/icons'
 import { colors } from '../../../shared/constants/colors'
 import { fonts } from '../../../shared/constants/fonts'
 import { useNavigation } from '@react-navigation/native'
+import { useAppSelector } from '../../../redux/store'
 
 interface HeaderInterface {
     showSearchBox?: boolean,
-    showPlanCounter?: number
+    showPlanCounter?: boolean
 }
 
 const Header: FC<HeaderInterface> = ({
     showSearchBox = true,
-    showPlanCounter = 0
+    showPlanCounter = false
 }) => {
 
     const insets = useSafeAreaInsets()
     const navigation = useNavigation<any>()
+    const { myPlans } = useAppSelector(state => state?.plan)
 
     const rootHeaderContainer = useMemo(() => {
         return { paddingTop: insets.top + 20 }
@@ -53,7 +55,7 @@ const Header: FC<HeaderInterface> = ({
                 </View>
             }
             {
-                (typeof showPlanCounter === 'number' && showPlanCounter !== 0) &&
+                (showPlanCounter) &&
                 <View style={[styles.row, styles.justifyBtw]}>
                     <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                         <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' />
@@ -64,7 +66,7 @@ const Header: FC<HeaderInterface> = ({
                     <View style={styles.counterContainer}>
                         <Text style={styles.counterText}>Total Plans</Text>
                         <View style={styles.counterBox}>
-                            <Text style={styles.counter}>10</Text>
+                            <Text style={styles.counter}>{myPlans?.length ?? 0}</Text>
                         </View>
                     </View>
                 </View>

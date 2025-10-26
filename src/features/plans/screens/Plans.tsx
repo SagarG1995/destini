@@ -7,10 +7,12 @@ import { icons } from '../../../shared/constants/icons'
 import PlanCard from '../component/PlanCard'
 import { useNavigation } from '@react-navigation/native'
 import TopTripCard from '../component/TopTripCard'
+import { useAppSelector } from '../../../redux/store'
 
 const Plans = () => {
 
     const navigation = useNavigation<any>()
+    const { myPlans } = useAppSelector(state => state?.plan)
 
 
     const renderItem = useCallback(() => {
@@ -33,7 +35,7 @@ const Plans = () => {
                 />
                 <CustomButton
                     label='My plans'
-                    badgeCount={10}
+                    badgeCount={myPlans?.length ?? 0}
                     containerStyle={styles.button}
                     onPress={() => navigation.navigate('myplans')}
                     leftIcon={<Image source={icons.calenderheart} style={styles.calenderIcon} resizeMode='contain' />}

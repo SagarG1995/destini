@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     },
     badge: {
         fontFamily: fonts.bold,
-        fontSize: 8,
+        fontSize: 10,
         color: colors.white,
         includeFontPadding: false,
     },

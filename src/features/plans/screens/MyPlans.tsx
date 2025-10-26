@@ -1,32 +1,70 @@
 import { View, Text, StyleSheet, FlatList } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import Header from '../component/Header'
 import PlanCard from '../component/PlanCard'
+import { fonts } from '../../../shared/constants/fonts'
+import { getMyPlans } from '../plansApi'
+import { showToast } from '../../../shared/utils/toast'
+import { useAppDispatch } from '../../../redux/store'
+import { setMyPlans } from '../planSlice'
 
 const MyPlans = () => {
 
-    const renderItem = useCallback(() => {
+    const dispatch = useAppDispatch()
+
+
+    const [plans, setPlans] = useState([])
+    const [loader, setLoader] = useState(false)
+
+
+    useEffect(() => {
+        getPlans()
+    }, [])
+
+    const getPlans = () => {
+        setLoader(true)
+        getMyPlans().then(res => {
+            if (res?.success) {
+                setPlans(res?.data?.data ?? [])
+                dispatch(setMyPlans(res?.data?.data))
+            } else {
+                showToast(res?.message)
+            }
+        }).finally(() => setLoader(false))
+    }
+
+    const renderItem = useCallback(({ item, _index }: any) => {
         return (
-            <PlanCard />
+            <PlanCard data={item} />
         )
     }, [])
 
     const separator = useCallback(() => <View style={styles.separator} />, [])
 
+    const listEmptyComponent = useCallback(() =>
+        !loader ?
+            <Text style={styles.label}>No Plans created</Text>
+            :
+            null
+        , [loader])
+
     return (
         <View style={styles.container}>
-            <Header showSearchBox={false} showPlanCounter={10} />
+            <Header showSearchBox={false} showPlanCounter />
 
             <FlatList
-                data={[{}, {}, {}, {}, {}, {}, {}, {}]}
-                keyExtractor={(item, index) => index + ''}
+                data={plans}
+                keyExtractor={(item: any, index) => index + '' + item?._id}
                 renderItem={renderItem}
                 style={styles.listStyle}
                 contentContainerStyle={styles.listContainer}
                 ItemSeparatorComponent={separator}
                 scrollEnabled
                 nestedScrollEnabled
+                ListEmptyComponent={listEmptyComponent}
+                refreshing={loader}
+                onRefresh={getPlans}
             />
 
         </View>
@@ -50,5 +88,11 @@ const styles = StyleSheet.create({
     },
     separator: {
         marginTop: 15
+    },
+    label: {
+        fontFamily: fonts.bold,
+        fontSize: 14,
+        color: colors.black,
+        textAlign: 'center'
     }
 })
