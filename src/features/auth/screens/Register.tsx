@@ -61,7 +61,7 @@ const Register = () => {
             password,
             confirmPassword: confPassword
         }
-        console.log(param);
+        // console.log(param);
 
         setLoader(true)
         register(param).then(res => {

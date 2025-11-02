@@ -16,13 +16,15 @@ import { useAppSelector } from '../../redux/store'
 
 interface LocationSuggestionInterface {
     locationType?: 'current' | 'plan'
+    textValue?: string
     containerStyle?: StyleProp<ViewStyle>
     label?: string
     placeholder?: string,
 }
 
 const LocationSuggestionBox: FC<LocationSuggestionInterface> = ({
-    locationType = 'current',
+    locationType = 'plan',
+    textValue,
     label,
     placeholder,
     containerStyle,
@@ -31,16 +33,18 @@ const LocationSuggestionBox: FC<LocationSuggestionInterface> = ({
     const navigation = useNavigation<any>()
     const { createPlanLocation } = useAppSelector(state => state?.plan)
 
-    const [value, setValue] = useState<string>('')
+    const [value, setValue] = useState<string>(textValue ?? '')
 
 
     useEffect(() => {
-        if (locationType === 'current') {
-            setValue(createPlanLocation?.currentLocation)
-        } else if (locationType === 'plan') {
-            setValue(createPlanLocation?.planLocation)
+        if (locationType === 'plan') {
+            const locationValue =
+                createPlanLocation?.planLocation?.trim() !== ''
+                    ? createPlanLocation?.planLocation!
+                    : textValue ?? ''
+            setValue(locationValue)
         }
-    }, [locationType, createPlanLocation])
+    }, [locationType, createPlanLocation, textValue])
 
     const onRedirectToChooseLocation = useCallback(() => {
         navigation.navigate('chooselocation', { loc_type: locationType })

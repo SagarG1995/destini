@@ -8,11 +8,13 @@ import { fonts } from '../../../shared/constants/fonts'
 import { useNavigation } from '@react-navigation/native'
 
 interface CalenderHeaderInterface {
-    selectedMonth?: string
+    selectedMonth?: string,
+    heading?: string
 }
 
 const CalenderHeader: FC<CalenderHeaderInterface> = ({
-    selectedMonth
+    selectedMonth,
+    heading = 'Create a plan'
 }) => {
 
     const navigation = useNavigation<any>()
@@ -28,7 +30,7 @@ const CalenderHeader: FC<CalenderHeaderInterface> = ({
             <TouchableOpacity style={styles.row} onPress={() => navigation.goBack()}>
                 <Image source={icons.arrowback} style={styles.icon} resizeMode='contain' tintColor={colors.white} />
                 <Image source={icons.calenderheart} style={[styles.icon, styles.ml_10]} resizeMode='contain' tintColor={colors.white} />
-                <Text style={styles.heading}>Create a plan</Text>
+                <Text style={styles.heading}>{heading}</Text>
             </TouchableOpacity>
             <Text style={styles.dateLabel}>{selectedMonth}</Text>
         </View>

@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React, { FC, memo, useMemo } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,6 +8,9 @@ import { fonts } from '../../../shared/constants/fonts';
 import { useDispatch } from 'react-redux';
 import { clearAuth } from '../../auth/authSlice';
 import { useNavigation } from '@react-navigation/native';
+import { clearLocation } from '../../location/locationSlice';
+import { clearProfileData } from '../profileSlice';
+import { clearPlan } from '../../plans/planSlice';
 
 interface HeaderInterface {
     isEditing?: boolean
@@ -27,6 +31,9 @@ const Header: FC<HeaderInterface> = ({
 
     const logout = () => {
         dispatch(clearAuth())
+        dispatch(clearLocation())
+        dispatch(clearProfileData())
+        dispatch(clearPlan())
     }
 
     return (
@@ -34,7 +41,7 @@ const Header: FC<HeaderInterface> = ({
             <View style={styles.row} >
                 {
                     isEditing &&
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity style={[styles.button, { marginLeft: -8 }]} onPress={() => navigation.goBack()}>
                         <Image source={icons.arrowback} style={styles.back} resizeMode='contain' />
                     </TouchableOpacity>
                 }
@@ -43,7 +50,7 @@ const Header: FC<HeaderInterface> = ({
             </View>
             {
                 !isEditing &&
-                <TouchableOpacity style={styles.button} onPress={logout}>
+                <TouchableOpacity style={[styles.button, { alignItems: 'center' }]} onPress={logout}>
                     <Image source={icons.logout} style={styles.logout} resizeMode='contain' />
                 </TouchableOpacity>
             }
@@ -55,23 +62,24 @@ export default memo(Header)
 
 const styles = StyleSheet.create({
     container: {
-        height: 100,
+        height: 60,
         paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     row: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     back: {
         width: 30,
         height: 30,
+        alignSelf: 'flex-start'
     },
     profile: {
-        width: 30,
-        height: 30,
+        width: 25,
+        height: 25,
     },
     heading: {
         fontFamily: fonts.medium,
@@ -85,7 +93,10 @@ const styles = StyleSheet.create({
         height: 20
     },
     button: {
-        padding: 8,
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        // backgroundColor: 'pink'
     }
 
 })

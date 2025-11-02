@@ -19,6 +19,14 @@ const post = async <T>(url: string, data = {}, config = {}) => {
     })
 };
 
+const put = async <T>(url: string, data = {}, config = {}) => {
+    return await api.put<T>(url, data, config).then((res: any) => {
+        return formatSuccess(res)
+    }).catch((err: any) => {
+        return formatError(err)
+    })
+};
+
 const patch = async <T>(url: string, data = {}, config = {}) => {
     return await api.patch<T>(url, data, config).then((res: any) => {
         return formatSuccess(res)
@@ -30,7 +38,8 @@ const patch = async <T>(url: string, data = {}, config = {}) => {
 const apiClient = {
     get,
     post,
-    patch
+    patch,
+    put
 };
 
 export default apiClient;

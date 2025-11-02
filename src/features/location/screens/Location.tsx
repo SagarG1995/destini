@@ -1,32 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native'
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import { icons } from '../../../shared/constants/icons'
 import { fonts } from '../../../shared/constants/fonts'
 import CustomButton from '../../../shared/component/CustomButton'
 import { useUserLocation } from '../../../shared/hooks/useUserLocation'
-import { useAppDispatch } from '../../../redux/store'
-import { setCoords, setLocationGranted } from '../locationSlice'
+import { useAppDispatch, useAppSelector } from '../../../redux/store'
+import { setCoords } from '../locationSlice'
 
 const Location = () => {
 
 
-    const { locationLoading, isLocationEnabled, location, checkAndRequestLocation, checkLocationPermission } = useUserLocation()
+    const { isLocationEnabled, location, checkAndRequestLocation, checkLocationPermission } = useUserLocation()
     const dispatch = useAppDispatch()
-
-    const [permissionGranted, setPermissionGranted] = useState(false)
+    const { coords, locationGranted } = useAppSelector(state => state?.location)
 
 
     useEffect(() => {
         (async () => {
-            const res = await checkLocationPermission()
-            setPermissionGranted(res)
+            await checkLocationPermission()
         })()
     }, [checkLocationPermission, isLocationEnabled])
 
     const onPressAllow = async () => {
-        if (!permissionGranted) {
+        if (!locationGranted) {
             checkAndRequestLocation()
         }
     }
@@ -46,32 +44,32 @@ const Location = () => {
             />
             <Text style={styles.heading}>
                 {
-                    (permissionGranted && !isLocationEnabled) ?
+                    (locationGranted && !isLocationEnabled) ?
                         'Please turn on GPS'
                         :
-                        !permissionGranted ?
+                        !locationGranted ?
                             'Allow your location'
                             :
-                            permissionGranted && isLocationEnabled &&
-                            'Got your location'
+                            (locationGranted && isLocationEnabled && coords) &&
+                            'Fetching your location...'
 
                 }
             </Text>
             {
-                !permissionGranted &&
+                !locationGranted &&
                 <Text style={styles.subHeading}>
                     We need your location to give you better permission
                 </Text>
             }
 
             {
-                (permissionGranted && !isLocationEnabled) ?
+                (locationGranted && !isLocationEnabled) ?
                     <>
                         <ActivityIndicator animating color={colors.black} style={styles.mt_20} />
                         <Text style={styles.label}>waiting...</Text>
                     </>
                     :
-                    !permissionGranted &&
+                    !locationGranted &&
                     <CustomButton
                         label={'Allow'}
                         containerStyle={styles.button}

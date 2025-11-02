@@ -56,15 +56,15 @@ const ChooseLocation = () => {
 
     const handleSelect = useCallback((item: any) => {
         setText(item.label)
-        if (loc_type === 'current') {
-            dispatch(setCreatePlanLocation(
-                {
-                    ...createPlanLocation,
-                    currentLocation: item?.label,
-                    currentLocId: item?.id
-                }
-            ))
-        }
+        // if (loc_type === 'current') {
+        //     dispatch(setCreatePlanLocation(
+        //         {
+        //             ...createPlanLocation,
+        //             currentLocation: item?.label,
+        //             currentLocId: item?.id
+        //         }
+        //     ))
+        // }
         if (loc_type === 'plan') {
             dispatch(setCreatePlanLocation(
                 {

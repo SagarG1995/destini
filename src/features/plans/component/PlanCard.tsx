@@ -10,6 +10,7 @@ import AvatarGroup from './AvatarGroup'
 import ExpandedRequest from './ExpandedRequest'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import moment from 'moment'
+import { useNavigation } from '@react-navigation/native'
 
 
 interface PlanCardInterface {
@@ -21,6 +22,7 @@ const PlanCard: FC<PlanCardInterface> = ({
 }) => {
 
     const height = useSharedValue(0)
+    const navigation = useNavigation<any>()
     const [expandList, setExpandList] = useState(false)
 
 
@@ -46,18 +48,20 @@ const PlanCard: FC<PlanCardInterface> = ({
         }
     })
 
+
+
     if (!data) return null
     return (
         <View style={styles.container}>
             <LinearGradient useAngle={true} angle={120} angleCenter={{ x: 0.3, y: 0.5 }} colors={[colors.blue2, colors.white]} style={styles.gradient1}>
                 <View style={styles.header}>
                     <Image source={images.logo} style={styles.logo} tintColor={colors.blue1} resizeMode='cover' />
-                    <TouchableOpacity style={styles.descContainer} onPress={toggleExpandList}>
+                    <TouchableOpacity disabled={data?.requests?.length > 0 ? false : true} style={styles.descContainer} onPress={toggleExpandList}>
                         <View style={[styles.row, styles.justifyBtw]}>
-                            <Text style={styles.heading} numberOfLines={1}>Headed to Bistro Cafe!!</Text>
+                            <Text style={styles.heading} numberOfLines={1}>{data?.title}</Text>
                             <Image source={icons.arrowdown} style={styles.downIcon} tintColor={colors.black} resizeMode='contain' />
                         </View>
-                        <Text style={styles.desc} numberOfLines={2}>{data?.title}</Text>
+                        <Text style={styles.desc} numberOfLines={2}>{data?.description}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -73,15 +77,30 @@ const PlanCard: FC<PlanCardInterface> = ({
                         </View>
 
                     </View>
-                    <AvatarGroup
-                        avatars={[
-                            'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                            'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
-                            'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                            'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                            'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
-                            'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
-                        ]}
+
+                    {
+                        data?.requests?.length > 0 &&
+                        <AvatarGroup
+                            avatars={[
+                                'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
+                                'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+                                'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
+                                'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
+                                'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+                                'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
+                            ]}
+                        />
+                    }
+                </View>
+                <View style={styles.buttonContainer}>
+                    <CustomButton
+                        label='Edit Plan'
+                        containerStyle={styles.button}
+                        onPress={() => navigation?.navigate('editplan', { plan_details: data })}
+                    />
+                    <CustomButton
+                        label='Delete Plan'
+                        containerStyle={styles.button}
                     />
                 </View>
 
@@ -179,5 +198,13 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         includeFontPadding: false,
     },
-
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20
+    },
+    button: {
+        flex: 0.49,
+        height: 30
+    }
 })

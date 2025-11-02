@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import Header from '../component/Header'
 import { colors } from '../../../shared/constants/colors'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -10,16 +10,19 @@ import { fonts } from '../../../shared/constants/fonts'
 import ProfessionModal from '../../../shared/component/ProfessionModal'
 import CustomButton from '../../../shared/component/CustomButton'
 import { icons } from '../../../shared/constants/icons'
-import { useAppSelector } from '../../../redux/store'
+import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { images } from '../../../shared/constants/images'
-import { updateMe } from '../profileApi'
+import { getMe, updateMe } from '../profileApi'
 import { showToast } from '../../../shared/utils/toast'
+import { setUserData } from '../profileSlice'
 
 const EditProfile = () => {
 
     const avgCharWidth = 9; // adjust based on font
     const lineHeight = 20;
+    const dispatch = useAppDispatch()
     const { userdata } = useAppSelector(state => state?.profile)
+    // console.log(userdata);
 
     const [name, setName] = useState(userdata?.full_name)
     const [profession, setProfession] = useState(userdata?.professions)
@@ -36,28 +39,25 @@ const EditProfile = () => {
 
 
     const updateProfile = () => {
-
         const param = {
             full_name: name,
             professions: profession,
             description: description
         }
-
+        // console.log(param);
+        setLoader(true)
         updateMe(param).then(res => {
-            // console.log(res);
             if (res?.success) {
-
-            } else {
-                showToast(res?.message)
+                getMe()
             }
-        })
+            showToast(res?.message)
+        }).finally(() => setLoader(false))
     }
-
 
     return (
         <View style={styles.container}>
             <Header isEditing />
-            <KeyboardAwareScrollView style={styles.mt_20} contentContainerStyle={styles.content}>
+            <KeyboardAwareScrollView contentContainerStyle={styles.content}>
                 <View style={styles.form}>
                     <View style={styles.row}>
                         <View style={styles.imageContainer}>

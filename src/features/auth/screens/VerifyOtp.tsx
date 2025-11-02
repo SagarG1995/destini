@@ -30,7 +30,7 @@ const VerifyOtp = () => {
         }
         setLoader(true)
         verifyRegisterOtp(param).then(res => {
-            console.log(res);
+            // console.log(res);
 
             showToast(res?.message)
             if (res?.success) {
@@ -39,7 +39,7 @@ const VerifyOtp = () => {
                     access_token: res?.data?.token,
                     refresh_token: res?.data?.refresh_token ?? ''
                 }))
-                // navigation.navigate("completeprofile")
+                navigation.navigate("completeprofile")
             }
         }).finally(() => setLoader(false))
     }

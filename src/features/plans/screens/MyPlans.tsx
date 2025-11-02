@@ -6,15 +6,15 @@ import PlanCard from '../component/PlanCard'
 import { fonts } from '../../../shared/constants/fonts'
 import { getMyPlans } from '../plansApi'
 import { showToast } from '../../../shared/utils/toast'
-import { useAppDispatch } from '../../../redux/store'
+import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { setMyPlans } from '../planSlice'
 
 const MyPlans = () => {
 
     const dispatch = useAppDispatch()
+    const { myPlans } = useAppSelector(state => state?.plan)
 
-
-    const [plans, setPlans] = useState([])
+    const [plans, setPlans] = useState<Array<any>>([])
     const [loader, setLoader] = useState(false)
 
 
@@ -22,11 +22,14 @@ const MyPlans = () => {
         getPlans()
     }, [])
 
+    useEffect(() => {
+        setPlans(myPlans)
+    }, [myPlans])
+
     const getPlans = () => {
         setLoader(true)
         getMyPlans().then(res => {
             if (res?.success) {
-                setPlans(res?.data?.data ?? [])
                 dispatch(setMyPlans(res?.data?.data))
             } else {
                 showToast(res?.message)

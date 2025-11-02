@@ -7,7 +7,7 @@ export const getHomePlans = async (search = '', profession = '', page = 1) => {
 
     const { coords } = store.getState()?.location
 
-    let url = endpoints.homeapi + 'radiusKm=15&limit=100'
+    let url = endpoints.homeapi + 'radiusKm=200&limit=100'
 
     if (coords) {
         url += '&lat=' + coords?.latitude + '&lng=' + coords?.longitude

@@ -1,15 +1,19 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { FC, memo, useState } from 'react'
+import React, { FC, memo, useEffect, useState } from 'react'
 import { fonts } from '../../../shared/constants/fonts'
 import { colors } from '../../../shared/constants/colors'
 import CustomInput from '../../../shared/component/CustomInput'
+import moment from 'moment'
+import { getLocalTimeBreakdown } from '../../../shared/utils/dateTimeConversion'
 
 interface TimeSelectionInterface {
+    timeData?: string,
     onCompleteEditTime?: (time: string) => void;
     onSelectTimeUnit?: (unit: string) => void
 }
 
 const TimeSelection: FC<TimeSelectionInterface> = ({
+    timeData = '',
     onCompleteEditTime,
     onSelectTimeUnit
 }) => {
@@ -17,6 +21,15 @@ const TimeSelection: FC<TimeSelectionInterface> = ({
     const [hours, setHours] = useState('');
     const [minutes, setMinutes] = useState('');
     const [unit, setUnit] = useState('am')
+
+    useEffect(() => {
+        if (timeData) {
+            const t = getLocalTimeBreakdown(timeData)
+            setHours(t?.hours)
+            setMinutes(t?.minutes)
+            setUnit(t?.ampm)
+        }
+    }, [timeData])
 
 
     const handleComplete = () => {
@@ -43,8 +56,6 @@ const TimeSelection: FC<TimeSelectionInterface> = ({
             .toString()
             .padStart(2, '0')}`;
 
-
-        // const formattedTime = `${hours || '00'}:${minutes || '00'}`;
         onCompleteEditTime?.(formattedTime);
 
     };

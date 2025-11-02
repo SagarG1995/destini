@@ -19,6 +19,7 @@ export const endpoints = {
 
     getplacesuggestion: 'location/autocomplete',
     createplan: 'plans',
+    updateplan: "plans/",
     myplans: 'plans/mine'
 
 }

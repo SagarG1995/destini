@@ -44,7 +44,7 @@ const CompleteProfile = () => {
                 showToast("Please choose your profession")
                 return
             } else if (nickname && fullname && prof) {
-                console.log(fullname, nickname, prof);
+                // console.log(fullname, nickname, prof);
 
                 setStep(prev => prev + 1)
             }

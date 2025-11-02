@@ -6,7 +6,7 @@ import { colors } from '../../../shared/constants/colors'
 const NoTripComponent = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>There is no trip around you.</Text>
+            <Text style={styles.label}>There is no plans around you.</Text>
         </View>
     )
 }

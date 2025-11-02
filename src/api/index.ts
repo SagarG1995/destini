@@ -12,7 +12,9 @@ api.interceptors.request.use((config) => {
     const reset_token = store.getState()?.auth?.resetToken
     if (token || reset_token) config.headers.Authorization = `Bearer ${token || reset_token}`;
 
-    // console.log(config);
+    // console.log(config.headers);
+    // console.log(token);
+
 
 
     if (config.data instanceof FormData) {

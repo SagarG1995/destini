@@ -6,17 +6,21 @@ import GroupChat from '../../features/chat/screens/GroupChat'
 import Location from '../../features/location/screens/Location'
 import { useAppSelector } from '../../redux/store'
 import ChooseLocation from '../../features/plans/screens/ChooseLocation'
+import { useUserLocation } from '../../shared/hooks/useUserLocation'
 
 const Stack = createNativeStackNavigator()
 
 const DashboardNavigator = () => {
 
     const { coords } = useAppSelector(state => state?.location)
+    const { isLocationEnabled } = useUserLocation()
+    // console.log(isLocationEnabled, coords, 'kkdkd');
+
     return (
         <Stack.Navigator
             screenOptions={{ headerShown: false }}
         >
-            {coords ? (
+            {(coords && isLocationEnabled) ? (
                 // If we have coords, show main tabs
                 <>
                     <Stack.Screen name="tabs" component={BottomTabNavigator} />

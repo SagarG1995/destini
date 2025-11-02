@@ -10,7 +10,7 @@ import {
     PERMISSIONS,
     RESULTS,
 } from 'react-native-permissions';
-import { setLocationGranted } from '../../features/location/locationSlice';
+import { setCoords, setLocationGranted } from '../../features/location/locationSlice';
 import { useAppDispatch } from '../../redux/store';
 
 export const useUserLocation = () => {
@@ -20,7 +20,7 @@ export const useUserLocation = () => {
 
     const [location, setLocation] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const [isLocationEnabled, setIsLocationEnabled] = useState<boolean>(true);
+    const [isLocationEnabled, setIsLocationEnabled] = useState<boolean>(false);
 
 
     const locationPermission =
@@ -34,8 +34,10 @@ export const useUserLocation = () => {
             const result = await request(locationPermission);
 
             if (result === RESULTS.GRANTED) {
+                dispatch(setLocationGranted(true))
                 getCurrentLocation();
             } else if (result === RESULTS.BLOCKED) {
+                dispatch(setLocationGranted(false))
                 Alert.alert(
                     'Permission Required',
                     'Please enable location permission in settings.',
@@ -46,6 +48,7 @@ export const useUserLocation = () => {
                 );
                 setLoading(false);
             } else {
+                dispatch(setLocationGranted(false))
                 setLoading(false);
             }
         } catch (error) {
@@ -70,6 +73,8 @@ export const useUserLocation = () => {
                 enableHighAccuracy: true,
                 timeout: 60000,
             });
+
+            dispatch(setCoords(loc))
             setLocation(loc);
             setLoading(false);
         } catch (error: any) {
@@ -87,8 +92,10 @@ export const useUserLocation = () => {
     const checkAndRequestLocation = async () => {
         const result = await check(locationPermission);
         if (result === RESULTS.GRANTED) {
+            dispatch(setLocationGranted(true))
             getCurrentLocation();
         } else {
+            dispatch(setLocationGranted(false))
             requestPermission();
         }
     };
@@ -136,10 +143,6 @@ export const useUserLocation = () => {
         return () => clearInterval(interval);
     }, [isLocationEnabled]);
 
-    // ---- Initial Check ----
-    useEffect(() => {
-        // checkAndRequestLocation();
-    }, []);
 
     return { location, locationLoading: loading, checkAndRequestLocation, checkLocationPermission, isLocationEnabled };
 };

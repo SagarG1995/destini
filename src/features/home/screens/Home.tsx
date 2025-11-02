@@ -27,7 +27,7 @@ const Home = () => {
     const [footerLoading, setFooterLoading] = useState(false)
 
     useEffect(() => {
-        getProfile()
+        getMe()
     }, [])
 
     useEffect(() => {
@@ -37,14 +37,6 @@ const Home = () => {
         fetchPlans(1, true)
     }, [search, profession])
 
-    const getProfile = useCallback(() => {
-        getMe().then(res => {
-            if (res?.success) {
-                dispatch(setUserData(res?.data?.user))
-            }
-        })
-    }, [])
-
     const fetchPlans = useCallback(
         async (pageNumber = 1, isRefreshing = false) => {
             if (isRefreshing) setLoading(true)
@@ -52,6 +44,8 @@ const Home = () => {
 
             try {
                 const res = await getHomePlans(search, profession, pageNumber)
+                // console.log(res);
+
                 if (res?.success) {
                     const newData = res?.data?.data ?? []
                     setPlans(prev => (pageNumber === 1 ? newData : [...prev, ...newData]))

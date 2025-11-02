@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { CalendarProvider, ExpandableCalendar } from 'react-native-calendars'
 import CalenderHeader from './CalenderHeader'
 import moment from 'moment'
@@ -11,36 +11,52 @@ import TimeSelection from './TimeSelection'
 import ExpandedCalender from './ExpandedCalender'
 import CustomButton from '../../../shared/component/CustomButton'
 import LocationSuggestionBox from '../../../shared/component/LocationSuggestionBox'
-import { toISODateTime } from '../../../shared/utils/dateTimeConversion'
+import { getLocalTimeBreakdown, toISODateTime } from '../../../shared/utils/dateTimeConversion'
 import { showToast } from '../../../shared/utils/toast'
-import { createPlan } from '../plansApi'
+import { createPlan, updatePlan } from '../plansApi'
 import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { useNavigation } from '@react-navigation/native'
 import { clearCreatePlanLocation } from '../planSlice'
 
-const CreatePlanForm = () => {
+interface EditPlanFormInterface {
+    data?: any
+}
+
+const EditPlanForm: FC<EditPlanFormInterface> = ({
+    data = null
+}) => {
 
     const today = new Date().toISOString().split("T")[0]
     const { createPlanLocation } = useAppSelector(state => state?.plan)
     const dispatch = useAppDispatch()
     const navigation = useNavigation<any>()
 
-    const [selectedDate, setSelectedDate] = useState<any>(today);
+    const [selectedDate, setSelectedDate] = useState<string>(today);
     const [selectedMonth, setSelectedMonth] = useState('')
     const [time, setTime] = useState('')
     const [timeUnit, setTimeUnit] = useState('am')
     const [title, setTitle] = useState('')
-    const [planLocation, setPlanLocation] = useState('')
+    const [planLocationName, setPlanLocationName] = useState('')
+    const [planLocationId, setPlanLocationId] = useState('')
     const [desc, setDesc] = useState('')
     const [loader, setLoader] = useState(false)
 
 
     useEffect(() => {
-        setSelectedMonth(moment(new Date()).format("MMMM, yyyy"))
-    }, [])
+        setSelectedDate(data?.planAt.split("T")[0] ?? today)
+        setSelectedMonth(moment(data?.planAt).format("MMMM, yyyy"))
+        setTitle(data?.title)
+        setDesc(data?.description)
+        setPlanLocationName(data?.planLocation?.address?.formatted ?? '')
+        setPlanLocationId(data?.planLocation?.address?.placeId ?? '')
+        const t = getLocalTimeBreakdown(data?.planAt)
+        setTime(t?.hours + ":" + t?.minutes)
+        setTimeUnit(t?.ampm)
+    }, [data, today])
 
     useEffect(() => {
-        setPlanLocation(createPlanLocation?.planLocId)
+        if (createPlanLocation?.planLocId)
+            setPlanLocationId(createPlanLocation?.planLocId)
     }, [createPlanLocation])
 
 
@@ -54,32 +70,36 @@ const CreatePlanForm = () => {
         return {
             [selectedDate]: {
                 selected: true,
+                selectedColor: colors.blue1,
                 disableTouchEvent: true,
             },
         };
     }, [selectedDate]);
 
-    const onCreatePlan = () => {
+    const onUpdatePlan = () => {
 
         if (!title) { showToast('Please enter plan title!'); return; }
-        if (!planLocation) { showToast('Please select plan location!'); return; }
+        if (!planLocationId) { showToast('Please select plan location!'); return; }
         if (!desc) { showToast('Please add description!'); return; }
         if (!time || !timeUnit) { showToast('Please select time!'); return; }
 
         const param = {
             title: title,
             description: desc,
-            planLocation: planLocation,
+            planLocation: planLocationId,
             planAt: toISODateTime(selectedDate, time + ' ' + timeUnit)
         }
 
+        console.log(param);
+
+
         setLoader(true)
 
-        createPlan(param).then(res => {
-            // console.log(res);
+        updatePlan(param).then(res => {
+            console.log(res);
 
             if (res?.success) {
-                showToast("Plan has been created successfully!!!")
+                showToast("Plan has been updated successfully!!!")
                 navigation.goBack()
                 dispatch(clearCreatePlanLocation())
             } else {
@@ -90,14 +110,17 @@ const CreatePlanForm = () => {
 
     }
 
-
+    if (!data) return null
     return (
         <CalendarProvider
-            date={selectedDate || today}
+            date={selectedDate}
+            key={selectedDate}
             onDateChanged={onDateChange}
+            showTodayButton={false}
             disableAutoDaySelection={[ExpandableCalendar.navigationTypes.MONTH_SCROLL, ExpandableCalendar.navigationTypes.MONTH_ARROWS, ExpandableCalendar.navigationTypes.WEEK_SCROLL, ExpandableCalendar.navigationTypes.TODAY_PRESS]}
         >
             <CalenderHeader
+                heading={"Edit Plan"}
                 selectedMonth={selectedMonth}
             />
             <ExpandedCalender
@@ -108,6 +131,7 @@ const CreatePlanForm = () => {
 
                 <CustomInput
                     label='Title*'
+                    value={title}
                     placeholder='Enter your trip title'
                     textAlignVertical='top'
                     maxLength={50}
@@ -116,6 +140,7 @@ const CreatePlanForm = () => {
 
                 <LocationSuggestionBox
                     locationType='plan'
+                    textValue={planLocationName}
                     label='Where is this plan happening?*'
                     placeholder='Choose Location'
                     containerStyle={styles.mt_25}
@@ -124,6 +149,7 @@ const CreatePlanForm = () => {
                 <Text style={[styles.label, styles.mt_25]}>Describe the Plan*</Text>
                 <View style={styles.describeBox}>
                     <CustomInput
+                        value={desc}
                         multiline
                         numberOfLines={5}
                         placeholder='Share what’s happening.'
@@ -136,14 +162,15 @@ const CreatePlanForm = () => {
                 </View>
 
                 <TimeSelection
+                    timeData={data?.planAt}
                     onCompleteEditTime={setTime}
                     onSelectTimeUnit={setTimeUnit}
                 />
 
                 <CustomButton
-                    label='Create Plan'
+                    label='Edit Plan'
                     containerStyle={styles.mt_25}
-                    onPress={onCreatePlan}
+                    onPress={onUpdatePlan}
                     loading={loader}
                 />
 
@@ -153,7 +180,7 @@ const CreatePlanForm = () => {
     )
 }
 
-export default CreatePlanForm
+export default EditPlanForm
 
 const styles = StyleSheet.create({
     content: {
