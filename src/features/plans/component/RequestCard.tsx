@@ -1,10 +1,13 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, ViewStyle, StyleProp } from 'react-native'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useEffect, useMemo, useState } from 'react'
 import CacheImage from '../../../shared/component/CacheImage'
 import { fonts } from '../../../shared/constants/fonts'
 import { colors } from '../../../shared/constants/colors'
 import { images } from '../../../shared/constants/images'
 import { icons } from '../../../shared/constants/icons'
+import { acceptDeclineRequest } from '../plansApi'
+import { showToast } from '../../../shared/utils/toast'
+import { ACCEPTED, DECLINED, PENDING } from '../../../shared/constants/planStatus'
 
 interface RequestCardInterface {
     data?: any,
@@ -16,24 +19,72 @@ const RequestCard: FC<RequestCardInterface> = ({
     containerStyle
 }) => {
 
+    const [status, setStatus] = useState<string>(data?.status ?? PENDING)
+
+    useEffect(() => {
+        setStatus(data?.status ?? PENDING)
+    }, [data?.status])
+
+    const statusBgColor = useMemo(() => {
+        if (data?.status === ACCEPTED || status === ACCEPTED) {
+            return { backgroundColor: colors.yellow1 }
+        }
+        if (data?.status === DECLINED || status === DECLINED) {
+            return { backgroundColor: colors.red1 }
+        }
+    }, [data?.status, status])
+
+
+    const onTrigger = (type: string) => {
+
+        const newStatus = type === 'accept' ? ACCEPTED : DECLINED
+        setStatus(newStatus)
+
+        acceptDeclineRequest(data?.requestId, type).then(res => {
+            if (res?.success) {
+                showToast(res?.message)
+            } else {
+                // If failed, revert the change
+                setStatus(data?.status ?? PENDING)
+                showToast('Something went wrong. Please try again.')
+            }
+        })
+    }
+
     if (!data) return null
 
     return (
         <View style={[styles.container, containerStyle]}>
             <CacheImage
-                uri='https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
+                uri={''}
                 style={styles.image}
                 resizeMode='cover'
+                fallbackComponent={
+                    <Image
+                        source={data?.gender === 'male' ? images.boy : images.girl}
+                        style={styles.image}
+                        resizeMode='cover'
+                    />
+                }
             />
-            <Text style={styles.label}>Raghav requested to join your plan.</Text>
-            <View style={styles.actionContainer}>
-                <TouchableOpacity style={styles.button}>
-                    <Image source={icons.like} style={styles.icon} resizeMode='contain' />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                    <Image source={icons.dislike} style={styles.icon} resizeMode='contain' />
-                </TouchableOpacity>
-            </View>
+            <Text style={styles.label} numberOfLines={1}>{data?.full_name} requested to join your plan.</Text>
+            {
+                (status === PENDING) &&
+                <View style={styles.actionContainer}>
+                    <TouchableOpacity style={styles.button} onPress={() => onTrigger('accept')}>
+                        <Image source={icons.like} style={styles.icon} resizeMode='contain' />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => onTrigger('decline')}>
+                        <Image source={icons.dislike} style={styles.icon} resizeMode='contain' />
+                    </TouchableOpacity>
+                </View>
+            }
+            {
+                status !== PENDING &&
+                <View style={[styles.statusContainer, statusBgColor]}>
+                    <Text style={styles.status}>{status}</Text>
+                </View>
+            }
         </View>
     )
 }
@@ -69,5 +120,20 @@ const styles = StyleSheet.create({
     icon: {
         width: 30,
         height: 30
-    }
+    },
+    statusContainer: {
+        backgroundColor: colors.red1,
+        height: 16,
+        paddingHorizontal: 10,
+        borderRadius: 100,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    status: {
+        fontSize: 10,
+        fontFamily: fonts.bold,
+        color: colors.white,
+        textTransform: 'uppercase',
+        includeFontPadding: false,
+    },
 })

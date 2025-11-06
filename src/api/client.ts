@@ -27,6 +27,16 @@ const put = async <T>(url: string, data = {}, config = {}) => {
     })
 };
 
+const _delete = async <T>(url: string, data = {}, config = {}) => {
+    return await api
+        .delete<T>(url, { ...config, data }) // ✅ merge data inside config
+        .then(res => formatSuccess(res))
+        .catch(err => {
+            const er = formatError(err)
+            return er
+        });
+};
+
 const patch = async <T>(url: string, data = {}, config = {}) => {
     return await api.patch<T>(url, data, config).then((res: any) => {
         return formatSuccess(res)
@@ -39,7 +49,8 @@ const apiClient = {
     get,
     post,
     patch,
-    put
+    put,
+    _delete
 };
 
 export default apiClient;

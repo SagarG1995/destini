@@ -4,24 +4,25 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { colors } from "../../../shared/constants/colors";
 import CacheImage from "../../../shared/component/CacheImage";
 import { fonts } from "../../../shared/constants/fonts";
+import { images } from "../../../shared/constants/images";
 
 interface AvatarGroupInterface {
-    avatars: any[];   // array of image URLs
+    data: Array<any>;   // array of image URLs
 };
 
-const AvatarGroup: React.FC<AvatarGroupInterface> = ({ avatars = [] }) => {
-    const displayAvatars = avatars.length > 0 ? avatars.slice(0, 3) : []
-    const extra = avatars.length - 3;
+const AvatarGroup: React.FC<AvatarGroupInterface> = ({ data = [] }) => {
+    const displayAvatars = data.length > 0 ? data.slice(0, 3) : []
+    const extra = data.length - 3;
 
 
-    if (avatars.length === 0) return null
+    if (data.length === 0) return null
 
     return (
         <View style={styles.container}>
             {displayAvatars.map((uri, index) => (
                 <Image
                     key={index}
-                    source={{ uri }}
+                    source={images.boy}
                     style={[
                         styles.avatar,
                         index !== 0 && styles.overlap, { zIndex: displayAvatars.length - index }

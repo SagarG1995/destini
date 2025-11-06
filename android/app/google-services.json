@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "93983227030",
+    "project_id": "destini-9afeb",
+    "storage_bucket": "destini-9afeb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93983227030:android:c815372ec473b3df2996b7",
+        "android_client_info": {
+          "package_name": "com.destini"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "93983227030-dc89bnj3sij7ajhc13pjlo6h4tkusao5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.destini",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "93983227030-9kd5ees8tameci0ve0p4n09cft1pq8di.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQSEcNMqUsVdHFhz0pcA2DLgxQTFKAiXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "93983227030-9kd5ees8tameci0ve0p4n09cft1pq8di.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

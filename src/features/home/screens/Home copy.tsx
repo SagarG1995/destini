@@ -7,6 +7,7 @@ import TripCard from '../component/TripCard'
 import { fonts } from '../../../shared/constants/fonts'
 import ProfessionModal from '../../../shared/component/ProfessionModal'
 import { getMe } from '../../profile/profileApi'
+import { useAppDispatch } from '../../../redux/store'
 import { getHomePlans } from '../homeApi'
 import { showToast } from '../../../shared/utils/toast'
 import NoTripComponent from '../component/NoTripComponent'
@@ -14,16 +15,17 @@ import { getActivities, getMyPlans } from '../../plans/plansApi'
 
 const Home = () => {
 
+    const dispatch = useAppDispatch()
     const onEndReachedCalledDuringMomentum = useRef(true)
 
     const [isOpen, setIsopen] = useState(false)
     const [profession, setProfession] = useState('')
     const [search, setSearch] = useState('')
-    const [plans, setPlans] = useState<Array<any>>([])
+    const [plans, setPlans] = useState([])
     const [loading, setLoading] = useState(false) // initial or refresh loader
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(false)
-    const [refreshing, setRefreshing] = useState(false);
+    const [footerLoading, setFooterLoading] = useState(false)
 
     useEffect(() => {
         getMe()
@@ -32,78 +34,60 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        loadInitial();
-    }, [profession, search]);
+        // reset list when profession or search changes
+        setPage(1)
+        setPlans([])
+        fetchPlans(1, true)
+    }, [search, profession])
 
     useEffect(() => {
-        if (page === 1 || refreshing) return;
-        loadMore();
+        if (page > 1) {
+            fetchPlans(page);
+        }
     }, [page]);
 
-    const loadInitial = async () => {
-        setLoading(true);
-        setRefreshing(true)
-        try {
-            const result = await getHomePlans(search, profession, page)
-            const resdata = result?.data?.data ?? []
-            // console.log(resdata?.length);
+    const fetchPlans = useCallback(
+        async (pageNumber = 1, isRefreshing = false) => {
 
-            if (result?.success) {
-                setPlans(resdata)
-                setHasMore(resdata?.length > 0);
-                setPage(1)
-            } else {
-                showToast(result?.message)
-            }
+            if (isRefreshing) setLoading(true)
+            else setFooterLoading(true)
 
-        } catch (error) {
-            console.error('Initial load error:', error);
-        } finally {
-            setLoading(false);
-            setRefreshing(false)
-        }
-    };
+            try {
+                const res = await getHomePlans(search, profession, pageNumber)
+                // console.log(res);
 
-    const loadMore = async () => {
-
-        if (loading || !hasMore) return;
-        setLoading(true);
-        try {
-            const result: any = await getHomePlans("", "", page);
-            const resdata = result?.data?.data
-            if (result?.success) {
-                if (result?.data?.page === result?.data?.totalPages) {
-                    setHasMore(false)
+                if (res?.success) {
+                    const newData = res?.data?.data ?? []
+                    setPlans(prev => (pageNumber === 1 ? newData : [...prev, ...newData]))
+                    setHasMore(newData.length > 0)
+                } else {
+                    showToast(res?.message)
                 }
-                setPlans(prev => [...prev, ...resdata]);
-            } else {
-                showToast(result?.message)
+            } catch (error) {
+                console.log('Error fetching plans:', error)
+            } finally {
+                setLoading(false)
+                setFooterLoading(false)
             }
-        } catch (error) {
-            console.error('load more error:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+        },
+        [search, profession]
+    )
 
-    const onRefresh = useCallback(async () => {
-        setRefreshing(true);
-        try {
-            const result: any = await getHomePlans("", "", 1);
-            const resdata = result?.data?.data
-            if (result?.success) {
-                setPlans(resdata);
-                setPage(1);
-                setHasMore(resdata?.length > 0);
-            } else {
-                showToast(result?.message)
-            }
-        } catch (error) {
-            console.error('Refresh error:', error);
-        } finally {
-            setRefreshing(false);
+    const handleLoadMore = useCallback(() => {
+        if (!footerLoading && hasMore && plans.length > 0 &&
+            !onEndReachedCalledDuringMomentum.current) {
+            const nextPage = page + 1
+            setPage(nextPage)
+            // fetchPlans(nextPage)
+            onEndReachedCalledDuringMomentum.current = true
         }
-    }, [getHomePlans]);
+    }, [footerLoading, hasMore, page])
+
+    const onRefresh = useCallback(() => {
+        setPage(1)
+        setPlans([])
+        fetchPlans(1, true)
+    }, [])
 
     const toogleModal = useCallback(() => {
         setIsopen(!isOpen)
@@ -112,20 +96,20 @@ const Home = () => {
     const renderItem = useCallback(({ item }: any) => <TripCard data={item} />, [])
 
     const listEmptyComponent = useCallback(
-        () => (!loading && !refreshing) && <NoTripComponent />,
-        [loading, refreshing]
+        () => !loading && <NoTripComponent />,
+        [loading]
     )
 
     const separator = useCallback(() => <View style={styles.separator} />, [])
 
     const renderFooter = useCallback(() => {
-        if (!loading || refreshing || plans.length === 0) return null
+        if (loading || !footerLoading) return null
         return (
             <View style={styles.footerLoader}>
                 <ActivityIndicator size="small" color={colors.black} />
             </View>
         )
-    }, [loading, refreshing])
+    }, [footerLoading])
 
     return (
         <View style={styles.container}>
@@ -146,20 +130,13 @@ const Home = () => {
                             ListEmptyComponent={listEmptyComponent}
                             ListFooterComponent={renderFooter}
                             onMomentumScrollBegin={() => {
-                                onEndReachedCalledDuringMomentum.current = false;
+                                onEndReachedCalledDuringMomentum.current = false
                             }}
                             onEndReachedThreshold={0.5}
-                            onEndReached={() => {
-                                if (!onEndReachedCalledDuringMomentum.current) {
-                                    if (!loading && hasMore) {
-                                        setPage(prev => prev + 1);
-                                        onEndReachedCalledDuringMomentum.current = true;
-                                    }
-                                }
-                            }}
+                            onEndReached={handleLoadMore}
                             refreshControl={
                                 <RefreshControl
-                                    refreshing={refreshing}
+                                    refreshing={loading}
                                     onRefresh={onRefresh}
                                     colors={[colors.black]}
                                 />
@@ -168,14 +145,11 @@ const Home = () => {
                     </>
                 )}
 
-            {
-                isOpen &&
-                <ProfessionModal
-                    isOpen={isOpen}
-                    toggleModal={toogleModal}
-                    onChooseProfession={setProfession}
-                />
-            }
+            <ProfessionModal
+                isOpen={isOpen}
+                toggleModal={toogleModal}
+                onChooseProfession={setProfession}
+            />
         </View>
     )
 }

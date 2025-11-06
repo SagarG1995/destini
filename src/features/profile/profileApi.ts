@@ -13,7 +13,5 @@ export const getMe = async () => {
 }
 
 export const updateMe = async (param: {} | undefined) => {
-    // console.log(param);
-
     return await apiClient.patch(endpoints.updateme, param)
 }

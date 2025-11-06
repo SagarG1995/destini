@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { icons } from '../../../shared/constants/icons';
 import { fonts } from '../../../shared/constants/fonts';
 import { colors } from '../../../shared/constants/colors';
+import RootHeader from '../../../shared/component/RootHeader';
 
 interface HeaderInterface {
 
@@ -13,18 +14,14 @@ const Header: FC<HeaderInterface> = ({
 
 }) => {
 
-    const insets = useSafeAreaInsets();
-
-
-    const rootHeaderContainer = useMemo(() => {
-        return { paddingTop: insets.top }
-    }, [insets])
 
     return (
-        <View style={[styles.container, rootHeaderContainer]}>
-            <Image source={icons.chat} resizeMode='contain' style={styles.icon} tintColor={colors.black} />
-            <Text style={styles.heading}>Chats</Text>
-        </View>
+        <RootHeader>
+            <View style={[styles.container,]}>
+                <Image source={icons.chat} resizeMode='contain' style={styles.icon} tintColor={colors.black} />
+                <Text style={styles.heading}>Chats</Text>
+            </View>
+        </RootHeader>
     )
 }
 
@@ -32,7 +29,6 @@ export default memo(Header)
 
 const styles = StyleSheet.create({
     container: {
-        height: 100,
         paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',

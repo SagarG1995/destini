@@ -17,7 +17,7 @@ const ProfileCard: FC<ProfileCardInterface> = () => {
 
     const { userdata } = useAppSelector(state => state?.profile)
     const navigation = useNavigation<any>()
-    // console.log(userdata);
+
 
     return (
         <View style={styles.container}>
@@ -34,6 +34,7 @@ const ProfileCard: FC<ProfileCardInterface> = () => {
                     <Text style={styles.name} numberOfLines={1} allowFontScaling={false}>{userdata?.full_name}</Text>
                     <Text style={styles.prof} numberOfLines={1} allowFontScaling={false}>{userdata?.professions}</Text>
                 </View>
+                <Text style={styles.description}>{userdata?.email}</Text>
                 <View style={styles.descriptionContainer}>
                     <Text
                         style={styles.description}

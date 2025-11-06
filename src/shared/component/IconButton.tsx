@@ -29,7 +29,7 @@ const IconButton: FC<IconButtonInterface> = ({
     return (
         <TouchableOpacity style={[styles.container, containerStyle, (!enabled || loading) && styles.disabledButton]} disabled={(!enabled || loading)} onPress={onPress}>
             {
-                leftIcon &&
+                (leftIcon && !loading) &&
                 leftIcon()
             }
             {

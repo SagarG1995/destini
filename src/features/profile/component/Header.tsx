@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { clearLocation } from '../../location/locationSlice';
 import { clearProfileData } from '../profileSlice';
 import { clearPlan } from '../../plans/planSlice';
+import RootHeader from '../../../shared/component/RootHeader';
 
 interface HeaderInterface {
     isEditing?: boolean
@@ -25,10 +26,6 @@ const Header: FC<HeaderInterface> = ({
     const navigation = useNavigation<any>()
 
 
-    const rootHeaderContainer = useMemo(() => {
-        return { paddingTop: insets.top }
-    }, [insets])
-
     const logout = () => {
         dispatch(clearAuth())
         dispatch(clearLocation())
@@ -37,24 +34,26 @@ const Header: FC<HeaderInterface> = ({
     }
 
     return (
-        <View style={[styles.container, rootHeaderContainer]}>
-            <View style={styles.row} >
+        <RootHeader>
+            <View style={[styles.container,]}>
+                <View style={styles.row} >
+                    {
+                        isEditing &&
+                        <TouchableOpacity style={[styles.button, { marginLeft: -8 }]} onPress={() => navigation.goBack()}>
+                            <Image source={icons.arrowback} style={styles.back} resizeMode='contain' />
+                        </TouchableOpacity>
+                    }
+                    <Image source={icons.profile} style={styles.profile} resizeMode='contain' tintColor={colors.black} />
+                    <Text style={styles.heading}>{isEditing ? 'Edit Profile' : 'Profile Section'}</Text>
+                </View>
                 {
-                    isEditing &&
-                    <TouchableOpacity style={[styles.button, { marginLeft: -8 }]} onPress={() => navigation.goBack()}>
-                        <Image source={icons.arrowback} style={styles.back} resizeMode='contain' />
+                    !isEditing &&
+                    <TouchableOpacity style={[styles.button, { alignItems: 'center' }]} onPress={logout}>
+                        <Image source={icons.logout} style={styles.logout} resizeMode='contain' />
                     </TouchableOpacity>
                 }
-                <Image source={icons.profile} style={styles.profile} resizeMode='contain' tintColor={colors.black} />
-                <Text style={styles.heading}>{isEditing ? 'Edit Profile' : 'Profile Section'}</Text>
             </View>
-            {
-                !isEditing &&
-                <TouchableOpacity style={[styles.button, { alignItems: 'center' }]} onPress={logout}>
-                    <Image source={icons.logout} style={styles.logout} resizeMode='contain' />
-                </TouchableOpacity>
-            }
-        </View>
+        </RootHeader>
     )
 }
 
@@ -62,7 +61,6 @@ export default memo(Header)
 
 const styles = StyleSheet.create({
     container: {
-        height: 60,
         paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',

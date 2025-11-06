@@ -1,17 +1,17 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import Header from '../component/Header'
 import PlanCard from '../component/PlanCard'
 import { fonts } from '../../../shared/constants/fonts'
 import { getMyPlans } from '../plansApi'
+import { useAppSelector } from '../../../redux/store'
 import { showToast } from '../../../shared/utils/toast'
-import { useAppDispatch, useAppSelector } from '../../../redux/store'
-import { setMyPlans } from '../planSlice'
 
 const MyPlans = () => {
 
-    const dispatch = useAppDispatch()
+
     const { myPlans } = useAppSelector(state => state?.plan)
 
     const [plans, setPlans] = useState<Array<any>>([])
@@ -28,13 +28,7 @@ const MyPlans = () => {
 
     const getPlans = () => {
         setLoader(true)
-        getMyPlans().then(res => {
-            if (res?.success) {
-                dispatch(setMyPlans(res?.data?.data))
-            } else {
-                showToast(res?.message)
-            }
-        }).finally(() => setLoader(false))
+        getMyPlans().then(res => (!res.success) && showToast(res?.message)).finally(() => setLoader(false))
     }
 
     const renderItem = useCallback(({ item, _index }: any) => {
@@ -66,8 +60,7 @@ const MyPlans = () => {
                 scrollEnabled
                 nestedScrollEnabled
                 ListEmptyComponent={listEmptyComponent}
-                refreshing={loader}
-                onRefresh={getPlans}
+                refreshControl={<RefreshControl refreshing={loader} onRefresh={getPlans} />}
             />
 
         </View>
@@ -82,7 +75,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white
     },
     listStyle: {
-        marginTop: 20
+        marginTop: 10
     },
     listContainer: {
         flexGrow: 1,

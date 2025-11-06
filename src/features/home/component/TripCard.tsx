@@ -1,42 +1,67 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from '../../../shared/constants/colors'
 import { icons } from '../../../shared/constants/icons'
 import { fonts } from '../../../shared/constants/fonts'
 import CustomButton from '../../../shared/component/CustomButton'
+import moment from 'moment'
+import { requestPlan } from '../../plans/plansApi'
+import { showToast } from '../../../shared/utils/toast'
 
 interface TripCardInterface {
-
+    data?: any
 }
 
 const TripCard: FC<TripCardInterface> = ({
-
+    data = null
 }) => {
 
+    const [loader, setLoader] = useState(false)
 
+    const onRequest = () => {
+        setLoader(true)
+        requestPlan(data?._id)
+            .then(res => {
+                if (res?.success) {
+                    showToast('Plan Requested')
+                } else {
+                    showToast(res?.message)
+                }
+            })
+            .finally(() => setLoader(false))
+    }
+
+
+    if (!data) return null
     return (
         <LinearGradient useAngle={true} angle={160} angleCenter={{ x: 1, y: 0.5 }} colors={[colors.black, colors.blue1]} style={styles.container}>
             <View style={styles.row}>
                 <Image source={icons.profilecircle} style={styles.profile} resizeMode='contain' />
-                <Text style={styles.tripName} numberOfLines={2} allowFontScaling={false} >Someone from Rajori Garden is headed to Bistro Cafe!!</Text>
+                <Text style={styles.tripName} numberOfLines={2} allowFontScaling={false} >{data?.title}</Text>
             </View>
 
             <View style={[styles.row, styles.mt_30]}>
                 <View style={styles.flex1}>
                     <View style={styles.row}>
                         <Image source={icons.location} style={styles.icon} resizeMode='contain' />
-                        <Text style={styles.distance} numberOfLines={1}>3 KM away from you</Text>
+                        <Text style={styles.distance} numberOfLines={1}>{data?.distanceKm} KM away from you</Text>
                     </View>
                     <View style={[styles.row, styles.mt_5]}>
                         <Image source={icons.calendar} style={styles.icon} resizeMode='contain' />
-                        <Text style={styles.distance} numberOfLines={1}>July 30,2025</Text>
+                        <Text style={styles.distance} numberOfLines={1}>
+                            {
+                                moment(data?.planAt).format('MMM, DD YYYY')
+                            }
+                        </Text>
                     </View>
                 </View>
                 <CustomButton
                     label='Request to Join'
                     containerStyle={styles.reqButton}
                     labelStyle={styles.reqButtonLabel}
+                    loading={loader}
+                    onPress={onRequest}
                 />
             </View>
         </LinearGradient>

@@ -48,7 +48,7 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
     const getAllProfessions = () => {
         setLoader(true)
         getProfessions().then(res => {
-            // console.log('', res);
+            console.log('', res);
 
             if (res?.success) {
                 setProfession(res?.data?.data ?? [])
@@ -60,7 +60,7 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
     }
 
     const handleOnSave = useCallback(() => {
-        // console.log('handleOnSave ==> ', selectedProfession);
+
         if (!isFilter) {
             onChooseProfession?.(selectedProfession)
         }
@@ -133,6 +133,8 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
                         showsVerticalScrollIndicator={false}
                         stickySectionHeadersEnabled={true} // set to true if you want sticky headers
                         ListHeaderComponent={headerComponent}
+                        onRefresh={getAllProfessions}
+                        refreshing={loader}
                     />
             }
         </BottomSheet>
@@ -177,7 +179,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10
     },
     btnText: {
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: fonts.bold,
         color: colors.white,
         textAlign: 'center',

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React from 'react'
 import { colors } from '../../../shared/constants/colors'
 import EditPlanForm from '../component/EditPlanForm'
@@ -7,7 +7,7 @@ import { useRoute } from '@react-navigation/native'
 const EditPlan = () => {
 
     const { plan_details } = useRoute<any>()?.params
-    // console.log(plan_details);
+    console.log(plan_details);
 
     return (
         <View style={styles.container}>

@@ -20,6 +20,7 @@ const Chat = () => {
                 keyExtractor={(item, index) => index + ''}
                 renderItem={renderItem}
                 ItemSeparatorComponent={separator}
+                style={styles.listStyle}
                 contentContainerStyle={styles.listContainer}
             />
         </View>
@@ -34,6 +35,9 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white
     },
     separator: {
+        marginTop: 10
+    },
+    listStyle: {
         marginTop: 10
     },
     listContainer: {

@@ -13,7 +13,7 @@ import CustomButton from '../../../shared/component/CustomButton'
 import LocationSuggestionBox from '../../../shared/component/LocationSuggestionBox'
 import { getLocalTimeBreakdown, toISODateTime } from '../../../shared/utils/dateTimeConversion'
 import { showToast } from '../../../shared/utils/toast'
-import { createPlan, updatePlan } from '../plansApi'
+import { getMyPlans, updatePlan } from '../plansApi'
 import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { useNavigation } from '@react-navigation/native'
 import { clearCreatePlanLocation } from '../planSlice'
@@ -47,7 +47,7 @@ const EditPlanForm: FC<EditPlanFormInterface> = ({
         setSelectedMonth(moment(data?.planAt).format("MMMM, yyyy"))
         setTitle(data?.title)
         setDesc(data?.description)
-        setPlanLocationName(data?.planLocation?.address?.formatted ?? '')
+        setPlanLocationName(data?.planLocation?.address?.formatted ?? data?.address ?? '')
         setPlanLocationId(data?.planLocation?.address?.placeId ?? '')
         const t = getLocalTimeBreakdown(data?.planAt)
         setTime(t?.hours + ":" + t?.minutes)
@@ -78,6 +78,9 @@ const EditPlanForm: FC<EditPlanFormInterface> = ({
 
     const onUpdatePlan = () => {
 
+        console.log(data);
+
+
         if (!title) { showToast('Please enter plan title!'); return; }
         if (!planLocationId) { showToast('Please select plan location!'); return; }
         if (!desc) { showToast('Please add description!'); return; }
@@ -95,13 +98,13 @@ const EditPlanForm: FC<EditPlanFormInterface> = ({
 
         setLoader(true)
 
-        updatePlan(param).then(res => {
-            console.log(res);
+        updatePlan(param, data?._id).then(res => {
 
             if (res?.success) {
                 showToast("Plan has been updated successfully!!!")
                 navigation.goBack()
                 dispatch(clearCreatePlanLocation())
+                getMyPlans()
             } else {
                 showToast(res?.message)
             }
@@ -135,7 +138,7 @@ const EditPlanForm: FC<EditPlanFormInterface> = ({
                     placeholder='Enter your trip title'
                     textAlignVertical='top'
                     maxLength={50}
-                    onTypingComplete={setTitle}
+                    onChangeText={setTitle}
                 />
 
                 <LocationSuggestionBox
@@ -157,7 +160,7 @@ const EditPlanForm: FC<EditPlanFormInterface> = ({
                         maxLength={50}
                         inputStyle={styles.multilineInputStyle}
                         containerStyle={styles.inputContainerStyle}
-                        onTypingComplete={setDesc}
+                        onChangeText={setDesc}
                     />
                 </View>
 
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
     multilineInputStyle: {
         flex: 1,
         textAlignVertical: 'top',
-        fontSize: 14,
+        fontSize: 16,
         color: colors.black
     },
     inputContainerStyle: {

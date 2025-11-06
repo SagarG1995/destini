@@ -55,7 +55,7 @@ const LocationSuggestionBox: FC<LocationSuggestionInterface> = ({
             {label && <Text style={styles.label}>{label}</Text>}
 
             <TouchableOpacity style={styles.box} onPress={onRedirectToChooseLocation}>
-                <Text style={styles.boxLabel} numberOfLines={2}>{value || placeholder}</Text>
+                <Text style={styles.boxLabel} numberOfLines={1}>{value || placeholder}</Text>
             </TouchableOpacity>
 
         </View>
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     },
     boxLabel: {
         color: colors.black,
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: fonts.regular,
         includeFontPadding: false
     },

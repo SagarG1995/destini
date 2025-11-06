@@ -1,57 +1,34 @@
-Got it 👍 You can sign in to GitHub directly from the GitHub CLI (gh) — it’s much easier than messing with tokens manually.
+# home -
 
-🛠 Install GitHub CLI (if not installed)
+    search, filer - done
 
-On macOS, run:
+# plans -
 
-brew install gh
+    top pick - search, filter - done
+    create plan - done
+    my plans -
+        accept / decline plan - done
+        edit , delete - done
 
-🔑 Sign in with the CLI
+# profile -
 
-Once installed, just run:
+    edit profile - done
+    activity listing - done
+    logout - done
 
-gh auth login
+# Auth
 
-It will walk you through these steps:
+    email login - dione
+    signup - done
+    otp verify - done
+    profile setup - done
+    forgot password - done
 
-Choose GitHub.com (or GitHub Enterprise if you use work’s GitHub server).
+# chat
 
-Choose HTTPS (recommended).
+    chat list - pending
+    P2P chatting - pending
 
-When asked about authentication:
+# google auth
 
-Select “Login with a web browser”.
-
-It will give you a one-time code.
-
-Open the link it shows, paste the code, and approve.
-
-Done ✅
-
-✅ Verify login
-
-Check which account is signed in:
-
-gh auth status
-
-Example output:
-
-github.com
-✓ Logged in to github.com as your-username (user)
-✓ Git operations for github.com configured to use https protocol.
-
-🔄 Switching Between Multiple Accounts
-
-The CLI can handle multiple accounts:
-
-Log in your work account:
-
-\*\* gh auth login --hostname github.com --git-protocol https
-
-(approve with your work account in browser)
-
-When you want to use another account:
-
-gh auth switch
-
-and pick the account you need.
+    login, signup - pending

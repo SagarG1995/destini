@@ -9,9 +9,11 @@ export const endpoints = {
     verifyforgotpasswordotp: "auth/verify-reset-otp",
     changepassword: "auth/reset-password",
     completeprofile: "auth/edit",
+    googlelogin: "auth/google-login",
 
     getme: "auth/me",
     updateme: "auth/edit",
+
 
     professions: 'professions/grouped',
 
@@ -20,6 +22,10 @@ export const endpoints = {
     getplacesuggestion: 'location/autocomplete',
     createplan: 'plans',
     updateplan: "plans/",
-    myplans: 'plans/mine'
+    deleteplan: "plans/",
+    myplans: 'plans/mine',
+    acceptdeclinerequest: "plans/request/",
+    requestplan: "plans/request/",
+    activities: "plans/activity/mine",
 
 }

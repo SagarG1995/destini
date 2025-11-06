@@ -1,21 +1,45 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import React, { useCallback } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, RefreshControl } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import Header from '../component/Header'
 import ProfileCard from '../component/ProfileCard'
 import { fonts } from '../../../shared/constants/fonts'
 import ActivityCard from '../component/ActivityCard'
+import { getActivities } from '../../plans/plansApi'
+import { useAppSelector } from '../../../redux/store'
+import { showToast } from '../../../shared/utils/toast'
 
 const Profile = () => {
 
+    const { activities } = useAppSelector(state => state?.plan)
+    const [activity, setActivity] = useState<Array<any>>([])
+    const [loader, setLoader] = useState(false)
 
-    const renderItem = useCallback(() => {
+    useEffect(() => setActivity(activities), [activities])
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = () => {
+        setLoader(true)
+        getActivities().then(res => (!res.success) && showToast(res?.message)).finally(() => setLoader(false))
+    }
+
+
+    const renderItem = useCallback(({ item }: any) => {
         return (
-            <ActivityCard />
+            <ActivityCard data={item} />
         )
     }, [])
 
     const separator = useCallback(() => <View style={styles.separator} />, [])
+
+    const listEmptyComponent = useCallback(() => {
+        return (<View style={styles.activityContainer}>
+            <Text style={styles.activityLabel}>No Activities</Text>
+        </View>)
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -24,16 +48,19 @@ const Profile = () => {
                 <ProfileCard />
                 <View style={styles.listHeader}>
                     <Text style={styles.heading}>My Activities</Text>
-                    <TouchableOpacity style={styles.button}>
+                    {/* <TouchableOpacity style={styles.button}>
                         <Text style={styles.btnText}>See All {'>>'}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <FlatList
-                    data={[{}, {}, {}, {}]}
+                    data={activity}
                     keyExtractor={(item, index) => index + ''}
                     renderItem={renderItem}
+                    style={styles.listStyle}
                     contentContainerStyle={styles.listContainer}
                     ItemSeparatorComponent={separator}
+                    ListEmptyComponent={listEmptyComponent}
+                    refreshControl={<RefreshControl refreshing={loader} onRefresh={getData} />}
                 />
             </View>
         </View>
@@ -54,7 +81,7 @@ const styles = StyleSheet.create({
     listHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 25,
+        marginTop: 35,
         justifyContent: 'space-between'
     },
     heading: {
@@ -73,11 +100,24 @@ const styles = StyleSheet.create({
         color: colors.blue1,
         includeFontPadding: false,
     },
+    listStyle: {
+        marginTop: 10
+    },
     listContainer: {
         flexGrow: 1,
         paddingBottom: 100
     },
     separator: {
         marginTop: 15
+    },
+    activityContainer: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    activityLabel: {
+        fontFamily: fonts.bold,
+        fontSize: 14,
+        color: colors.black,
+        textAlign: 'center'
     }
 })

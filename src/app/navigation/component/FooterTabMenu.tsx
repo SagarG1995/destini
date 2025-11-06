@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useMemo } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import { useLinkBuilder } from '@react-navigation/native'
 import { SCREEN_WIDTH } from '../../../shared/constants/dimensions'
@@ -7,6 +7,7 @@ import { fonts } from '../../../shared/constants/fonts'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { PlatformPressable } from '@react-navigation/elements'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const TAB_WIDTH = (SCREEN_WIDTH - 20) / 4
 
@@ -14,6 +15,7 @@ const FooterTabMenu = ({ state, descriptors, navigation }: BottomTabBarProps) =>
 
     const translateX = useSharedValue(0);
     const { buildHref } = useLinkBuilder();
+    const insets = useSafeAreaInsets();
 
 
     const circleStyle = useAnimatedStyle(() => {
@@ -24,12 +26,19 @@ const FooterTabMenu = ({ state, descriptors, navigation }: BottomTabBarProps) =>
 
     useEffect(() => {
         translateX.value = withTiming(state.index * TAB_WIDTH, { duration: 300 });
-    }, [state.index]);
+    }, [state.index, translateX]);
+
+    const containerStyle = useMemo(() => {
+        return {
+            height: 60,
+            bottom: insets.bottom + 10,
+        };
+    }, [insets.bottom]);
 
 
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
 
             <Animated.View style={[styles.circle, circleStyle]} />
 
@@ -88,12 +97,9 @@ export default memo(FooterTabMenu)
 
 const styles = StyleSheet.create({
     container: {
-        height: 60,
         width: SCREEN_WIDTH - 20,
         flexDirection: 'row',
         backgroundColor: colors.black2,
-        // position: 'absolute',
-        bottom: 10,
         alignSelf: 'center',
         borderRadius: 10,
         boxShadow: [

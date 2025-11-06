@@ -28,42 +28,43 @@ const Header: FC<HeaderInterface> = ({
     const navigation = useNavigation<any>()
 
     return (
-        <View style={[styles.container, !showBack && styles.padd_H_20]}>
-            {
-                showBack &&
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} disabled={!showBack}>
-                    <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' />
-                </TouchableOpacity>
-            }
-            <View style={styles.flex1}>
+        <RootHeader>
+            <View style={[styles.container, !showBack && styles.padd_H_20]}>
                 {
-                    (heading !== '') &&
-                    <Text style={[styles.heading, headingStyle]} numberOfLines={1} adjustsFontSizeToFit allowFontScaling={false}>
-                        {heading}
-                    </Text>
+                    showBack &&
+                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} disabled={!showBack}>
+                        <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' />
+                    </TouchableOpacity>
                 }
-                <View style={[styles.row, styles.mt_5]}>
+                <View style={styles.flex1}>
                     {
-                        (highlightText !== '') &&
-                        <View style={styles.highlight}>
-                            <Text style={styles.highlightText} numberOfLines={1} adjustsFontSizeToFit allowFontScaling={false}>
-                                {highlightText}
-                            </Text>
-                        </View>
+                        (heading !== '') &&
+                        <Text style={[styles.heading, headingStyle]} numberOfLines={1} adjustsFontSizeToFit allowFontScaling={false}>
+                            {heading}
+                        </Text>
                     }
+                    <View style={[styles.row, styles.mt_5]}>
+                        {
+                            (highlightText !== '') &&
+                            <View style={styles.highlight}>
+                                <Text style={styles.highlightText} numberOfLines={1} adjustsFontSizeToFit allowFontScaling={false}>
+                                    {highlightText}
+                                </Text>
+                            </View>
+                        }
 
-                    {
-                        subHeadingComponent &&
-                        <View style={[styles.subheadingContainer, !showBack && { marginLeft: 0 }]}>
-                            {
-                                subHeadingComponent?.()
-                            }
-                        </View>
-                    }
+                        {
+                            subHeadingComponent &&
+                            <View style={[styles.subheadingContainer, !showBack && { marginLeft: 0 }]}>
+                                {
+                                    subHeadingComponent?.()
+                                }
+                            </View>
+                        }
+                    </View>
                 </View>
             </View>
-
-        </View>
+        </RootHeader>
     )
 }
 
@@ -92,6 +93,7 @@ const styles = StyleSheet.create({
         height: 40,
         justifyContent: 'center',
         alignItems: 'center',
+        // backgroundColor: 'red'
     },
     subheadingContainer: {
         flex: 1,
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: colors.black,
         includeFontPadding: false,
-        textAlign: 'center',
+        // textAlign: 'center',
         // backgroundColor: 'red'
     },
     highlight: {

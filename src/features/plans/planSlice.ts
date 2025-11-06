@@ -2,12 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface planInterface {
     createPlanLocation: { currentLocation: string, currentLocId: string, planLocation: string, planLocId: string },
-    myPlans: Array<any>
+    myPlans: Array<any>,
+    activities: Array<any>
 }
 
 const initialState: planInterface = {
     createPlanLocation: { currentLocation: '', currentLocId: '', planLocation: '', planLocId: '' },
-    myPlans: []
+    myPlans: [],
+    activities: []
 };
 
 const planSlice = createSlice({
@@ -23,11 +25,14 @@ const planSlice = createSlice({
         setMyPlans(state, action: PayloadAction<planInterface['myPlans']>) {
             state.myPlans = action.payload
         },
+        setActivities(state, action: PayloadAction<planInterface['activities']>) {
+            state.activities = action.payload
+        },
         clearPlan() {
             return initialState
         },
     },
 });
 
-export const { setCreatePlanLocation, clearCreatePlanLocation, setMyPlans, clearPlan } = planSlice.actions;
+export const { setCreatePlanLocation, setActivities, clearCreatePlanLocation, setMyPlans, clearPlan } = planSlice.actions;
 export default planSlice.reducer;

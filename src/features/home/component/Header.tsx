@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native'
-import React, { FC, memo, useMemo, useState } from 'react'
-import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
+import React, { FC, memo, useEffect, useState } from 'react'
 import CacheImage from '../../../shared/component/CacheImage';
 import { icons } from '../../../shared/constants/icons';
 import { fonts } from '../../../shared/constants/fonts';
 import { colors } from '../../../shared/constants/colors';
+import RootHeader from '../../../shared/component/RootHeader';
+import { useAppSelector } from '../../../redux/store';
+import { images } from '../../../shared/constants/images';
+import { getCityCountryFromCoordinates } from '../../../shared/utils/addressTransformer';
 
 interface HeaderInterface {
     toogleModal?: () => void,
@@ -17,49 +19,69 @@ const Header: FC<HeaderInterface> = ({
     onSearch
 }) => {
 
-    const navigation = useNavigation<any>()
-    const [value, setValue] = useState('')
 
+    const { coords } = useAppSelector(state => state?.location)
+    const { userdata } = useAppSelector(state => state?.profile)
+    const [value, setValue] = useState('')
+    const [location, setLocation] = useState<any>(null)
+    const [loader, setLoader] = useState(false)
+
+    useEffect(() => {
+        setLoader(true)
+        getCityCountryFromCoordinates(coords).then(res => {
+            if (res?.city && res?.country) setLocation(res)
+        }).finally(() => setLoader(false))
+    }, [coords])
 
     return (
-        <View style={[styles.container]}>
-            <View style={[styles.header]}>
-                <CacheImage
-                    uri='https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
-                    style={styles.image}
-                    resizeMode='cover'
-                />
-                <View style={styles.row}>
-                    <Image source={icons.distance} style={styles.location} resizeMode='contain' />
-                    <Text style={styles.locationLabel}>California, USA</Text>
-                </View>
-            </View>
-            <View style={[styles.mt_20, styles.row]}>
-                <View style={styles.searchBox}>
-                    <TextInput
-                        value={value}
-                        placeholder='Search Smart. Connect Better.'
-                        style={styles.input}
-                        placeholderTextColor={colors.grey3}
-                        onChangeText={setValue}
+        <RootHeader>
+            <View style={[styles.container]}>
+                <View style={[styles.header]}>
+                    <CacheImage
+                        uri={''}
+                        style={styles.image}
+                        resizeMode='cover'
+                        fallbackComponent={
+                            <Image source={userdata?.gender === 'male' ? images.boy : images.girl} style={styles.image} resizeMode='cover' />
+                        }
                     />
-                    <TouchableOpacity onPress={() => onSearch?.(value)}>
+                    <View style={styles.row}>
+                        <Image source={icons.distance} style={styles.location} resizeMode='contain' />
+                        {
+                            loader ?
+                                <ActivityIndicator animating color={colors.black} />
+                                :
+                                <Text style={styles.locationLabel}>{location?.city}, {location?.country}</Text>
+                        }
+                    </View>
+                </View>
+                <View style={[styles.mt_20, styles.row]}>
+                    <View style={styles.searchBox}>
+                        <TextInput
+                            value={value}
+                            placeholder='Search Smart. Connect Better.'
+                            style={styles.input}
+                            placeholderTextColor={colors.grey3}
+                            onChangeText={setValue}
+                        />
+                        <TouchableOpacity onPress={() => onSearch?.(value)}>
+                            <Image
+                                source={icons.searchbtncircle}
+                                style={styles.search}
+                                resizeMode='contain'
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity style={styles.ml_10} onPress={toogleModal}>
                         <Image
-                            source={icons.searchbtncircle}
+                            source={icons.filterbtncircle}
                             style={styles.search}
                             resizeMode='contain'
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.ml_10} onPress={toogleModal}>
-                    <Image
-                        source={icons.filterbtncircle}
-                        style={styles.search}
-                        resizeMode='contain'
-                    />
-                </TouchableOpacity>
             </View>
-        </View>
+        </RootHeader>
     )
 }
 

@@ -32,3 +32,7 @@ export const changePassword = async (param: {} | undefined) => {
 export const completeProfile = async (param: {} | undefined) => {
     return await apiClient.patch(endpoints.completeprofile, param)
 }
+
+export const googleLogin = async (param: {} | undefined) => {
+    return await apiClient.post(endpoints.googlelogin, param);
+}

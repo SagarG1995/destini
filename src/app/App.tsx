@@ -1,23 +1,31 @@
 import { Text, StyleSheet, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Navigation from './navigation'
 import AppStatusBar from '../shared/component/AppStatusBar'
 import { colors } from '../shared/constants/colors'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider } from 'react-redux'
 import { store } from '../redux/store'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import env from '../api/env'
 
 const App = () => {
 
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId: env.webClientId,
+        })
+    }, [])
+
     return (
         <GestureHandlerRootView style={styles.container}>
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaProvider>
                 <Provider store={store}>
                     <AppStatusBar backgroundColor={colors.white} barStyle='dark-content' />
                     <Navigation />
                 </Provider>
-            </SafeAreaView>
+            </SafeAreaProvider>
         </GestureHandlerRootView>
     )
 }

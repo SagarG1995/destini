@@ -1,42 +1,55 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { memo, useMemo } from 'react'
+import React, { FC, memo, useMemo } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from '../../../shared/constants/colors'
 import CustomButton from '../../../shared/component/CustomButton'
 import { icons } from '../../../shared/constants/icons'
 import { fonts } from '../../../shared/constants/fonts'
+import moment from 'moment'
+import { ACCEPTED, DECLINED, PENDING } from '../../../shared/constants/planStatus'
 
-const ActivityCard = () => {
+interface ActivityCardInterface {
+    data?: any
+}
 
-    const status: string = 'rejected'
-    const chatButtonEnabled: boolean = status === 'approved' ? true : status === 'pending' && false
+const ActivityCard: FC<ActivityCardInterface> = ({
+    data = null
+}) => {
+
+    // console.log(data);
+
+    const chatButtonEnabled: boolean = data?.status === ACCEPTED ? true : false
 
     const statusBgColor = useMemo(() => {
-        if (status === 'approved') {
+        if (data?.status === ACCEPTED) {
             return { backgroundColor: colors.yellow1 }
         }
-        if (status === 'pending') {
+        if (data?.status === PENDING) {
             return { backgroundColor: colors.green1 }
         }
-        if (status === 'rejected') {
+        if (data?.status === DECLINED) {
             return { backgroundColor: colors.red1 }
         }
-    }, [status])
+    }, [data?.status])
 
+
+    if (!data) return null
     return (
         <View style={styles.container}>
             <LinearGradient useAngle={true} angle={120} angleCenter={{ x: 0.3, y: 0.5 }} colors={[colors.blue2, colors.white]} style={styles.gradient1}>
                 <View style={styles.cardHeader}>
                     <View style={[styles.row, styles.flex1]}>
                         <Image source={icons.profilecirclecolor} style={styles.profile} resizeMode='contain' />
-                        <Text style={styles.tripName} numberOfLines={2} allowFontScaling={false} >Someone from Rajori Garden is headed to Bistro Cafe!! </Text>
+                        <Text style={styles.tripName} numberOfLines={2} allowFontScaling={false} >
+                            {data?.planTitle}
+                        </Text>
                     </View>
                     <View style={[styles.statusContainer, statusBgColor]}>
-                        <Text style={styles.status}>{status}</Text>
+                        <Text style={styles.status}>{data?.status}</Text>
                     </View>
                 </View>
                 <Text style={[styles.description]} numberOfLines={2} allowFontScaling={false}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et .
+                    {data?.planDescription}
                 </Text>
 
                 <View style={[styles.row, styles.mt_15]}>
@@ -47,14 +60,18 @@ const ActivityCard = () => {
                         </View>
                         <View style={[styles.row, styles.mt_5]}>
                             <Image source={icons.calendercolor} style={styles.icon} resizeMode='contain' />
-                            <Text style={styles.text}>July 30,2025</Text>
+                            <Text style={styles.text}>
+                                {
+                                    moment(data?.planAt).format("MMM, DD YYYY")
+                                }
+                            </Text>
                         </View>
                     </View>
                     {
-                        status !== 'rejected' &&
+                        data?.status !== DECLINED &&
                         <CustomButton
                             label='CHAT'
-                            containerStyle={chatButtonEnabled ? styles.enableButton : styles.disableButton}
+                            containerStyle={[styles.enableButton, !chatButtonEnabled && styles.disableButton]}
                             labelStyle={styles.buttonLabel}
                             enabled={chatButtonEnabled}
                         />
@@ -70,7 +87,6 @@ export default memo(ActivityCard)
 const styles = StyleSheet.create({
     container: {
         borderRadius: 10,
-        minHeight: 160,
         borderColor: colors.blue1,
         borderWidth: 1,
         overflow: 'hidden'
@@ -113,16 +129,16 @@ const styles = StyleSheet.create({
     statusContainer: {
         backgroundColor: colors.red1,
         height: 16,
-        paddingHorizontal: 5,
+        paddingHorizontal: 10,
         borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center'
     },
     status: {
-        fontSize: 8,
+        fontSize: 10,
         fontFamily: fonts.semibold,
         color: colors.white,
-        // lineHeight: 10,
+        lineHeight: 10,
         textTransform: 'uppercase',
         includeFontPadding: false,
     },
@@ -151,10 +167,7 @@ const styles = StyleSheet.create({
         width: '20%'
     },
     disableButton: {
-        borderRadius: 100,
         backgroundColor: colors.grey3,
-        height: 30,
-        width: '20%'
     },
     buttonLabel: {
         fontFamily: fonts.semibold,

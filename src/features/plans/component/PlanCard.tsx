@@ -11,6 +11,8 @@ import ExpandedRequest from './ExpandedRequest'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import moment from 'moment'
 import { useNavigation } from '@react-navigation/native'
+import { deletePlan, getMyPlans } from '../plansApi'
+import { showToast } from '../../../shared/utils/toast'
 
 
 interface PlanCardInterface {
@@ -24,21 +26,19 @@ const PlanCard: FC<PlanCardInterface> = ({
     const height = useSharedValue(0)
     const navigation = useNavigation<any>()
     const [expandList, setExpandList] = useState(false)
+    const [loader, setLoader] = useState(false)
 
 
     const toggleExpandList = () => {
+
+        const requestCount = data?.requests?.length || 0
+        const targetHeight = Math.min(requestCount * 50, 150)
+
         setExpandList(!expandList)
-        if (expandList) {
-            height.value = withTiming(0, {
-                duration: 300,
-                easing: Easing.out(Easing.ease),
-            })
-        } else {
-            height.value = withTiming(150, {
-                duration: 300,
-                easing: Easing.out(Easing.ease),
-            })
-        }
+        height.value = withTiming(expandList ? 0 : targetHeight, {
+            duration: 300,
+            easing: Easing.out(Easing.ease),
+        })
     }
 
     const animatedExpandedListStyle = useAnimatedStyle(() => {
@@ -48,6 +48,18 @@ const PlanCard: FC<PlanCardInterface> = ({
         }
     })
 
+    const onDelete = () => {
+        setLoader(true)
+        deletePlan(data?._id).then(res => {
+            if (res?.success) {
+                showToast("Plan deleted!!!")
+                getMyPlans()
+            } else {
+                showToast(res?.message)
+            }
+        }).finally(() => setLoader(false))
+    }
+
 
 
     if (!data) return null
@@ -56,10 +68,13 @@ const PlanCard: FC<PlanCardInterface> = ({
             <LinearGradient useAngle={true} angle={120} angleCenter={{ x: 0.3, y: 0.5 }} colors={[colors.blue2, colors.white]} style={styles.gradient1}>
                 <View style={styles.header}>
                     <Image source={images.logo} style={styles.logo} tintColor={colors.blue1} resizeMode='cover' />
-                    <TouchableOpacity disabled={data?.requests?.length > 0 ? false : true} style={styles.descContainer} onPress={toggleExpandList}>
+                    <TouchableOpacity style={styles.descContainer} onPress={toggleExpandList}>
                         <View style={[styles.row, styles.justifyBtw]}>
                             <Text style={styles.heading} numberOfLines={1}>{data?.title}</Text>
-                            <Image source={icons.arrowdown} style={styles.downIcon} tintColor={colors.black} resizeMode='contain' />
+                            {
+                                data?.requests?.length > 0 &&
+                                <Image source={icons.arrowdown} style={styles.downIcon} tintColor={colors.black} resizeMode='contain' />
+                            }
                         </View>
                         <Text style={styles.desc} numberOfLines={2}>{data?.description}</Text>
                     </TouchableOpacity>
@@ -81,14 +96,7 @@ const PlanCard: FC<PlanCardInterface> = ({
                     {
                         data?.requests?.length > 0 &&
                         <AvatarGroup
-                            avatars={[
-                                'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                                'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
-                                'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                                'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                                'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
-                                'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
-                            ]}
+                            data={data?.requests}
                         />
                     }
                 </View>
@@ -101,21 +109,16 @@ const PlanCard: FC<PlanCardInterface> = ({
                     <CustomButton
                         label='Delete Plan'
                         containerStyle={styles.button}
+                        onPress={onDelete}
+                        loading={loader}
                     />
                 </View>
 
                 {
-                    // expandList &&
+                    expandList &&
                     <Animated.View style={[animatedExpandedListStyle]} >
                         <ExpandedRequest
-                            avatars={[
-                                'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                                'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
-                                'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                                'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-                                'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
-                                'https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D'
-                            ]}
+                            data={data?.requests}
                         />
                     </Animated.View>
                 }
@@ -178,7 +181,7 @@ const styles = StyleSheet.create({
     },
     desc: {
         fontFamily: fonts.regular,
-        fontSize: 8,
+        fontSize: 9,
         color: colors.black,
         width: '90%',
     },
@@ -205,6 +208,6 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 0.49,
-        height: 30
+        height: 40
     }
 })

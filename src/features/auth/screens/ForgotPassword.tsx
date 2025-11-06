@@ -21,6 +21,16 @@ const ForgotPassword = () => {
     const [loader, setLoader] = useState(false)
 
     const handleSend = () => {
+
+        if (!email) {
+            showToast('Email cannot be blank')
+            return
+        }
+        else if (!/\S+@\S+\.\S+/.test(email)) {
+            showToast('Please enter valid email')
+            return
+        }
+
         const param = {
             email: email
         }

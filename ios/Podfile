@@ -14,15 +14,14 @@
      )", __dir__]).strip
  end
 
- node_require('react-native/scripts/react_native_pods.rb')
-  node_require('react-native-permissions/scripts/setup.rb')
+node_require('react-native/scripts/react_native_pods.rb')
+node_require('react-native-permissions/scripts/setup.rb')
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
 setup_permissions([
 'LocationAccuracy',
-'LocationAlways',
 'LocationWhenInUse'
 ])
 
@@ -32,8 +31,14 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+use_frameworks! :linkage => :static
+
 target 'Destini' do
   config = use_native_modules!
+
+  pod 'FirebaseCore'
+  pod 'FirebaseAuth'
+  pod 'FirebaseFirestore'
 
   use_react_native!(
     :path => config[:reactNativePath],

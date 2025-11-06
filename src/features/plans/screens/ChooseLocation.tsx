@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Keyboard } from 'react-native'
 import React, { useCallback, useState } from 'react'
@@ -8,6 +9,7 @@ import CustomInput from '../../../shared/component/CustomInput'
 import { getPlaceSuggestion } from '../plansApi'
 import { fonts } from '../../../shared/constants/fonts'
 import { setCreatePlanLocation } from '../planSlice'
+import Header from '../component/Header'
 
 const ChooseLocation = () => {
 
@@ -80,11 +82,18 @@ const ChooseLocation = () => {
 
     return (
         <View style={styles.container}>
+            <Header
+                showPlanCounter={false}
+                showSearchBox={false}
+                showHeading
+                containerStyle={{ backgroundColor: colors.black, paddingBottom: 20 }}
+            />
             <CustomInput
+                autoFocus
                 value={text}
-                placeholder='Search...'
-                // autoFocus
+                placeholder='Search Your Destination...'
                 onChangeText={handleTextChange}
+                containerStyle={styles.inputContainerStyle}
             />
             <ScrollView contentContainerStyle={styles.scrollview}>
                 {
@@ -116,7 +125,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.white,
-        paddingHorizontal: 10
+    },
+    inputContainerStyle: {
+        marginHorizontal: 10,
+        marginTop: 15
     },
     scrollview: {
         flexGrow: 1

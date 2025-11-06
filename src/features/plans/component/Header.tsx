@@ -1,77 +1,93 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native'
-import React, { FC, memo, useMemo } from 'react'
+import React, { FC, memo, useMemo, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { icons } from '../../../shared/constants/icons'
 import { colors } from '../../../shared/constants/colors'
 import { fonts } from '../../../shared/constants/fonts'
 import { useNavigation } from '@react-navigation/native'
 import { useAppSelector } from '../../../redux/store'
+import RootHeader from '../../../shared/component/RootHeader'
 
 interface HeaderInterface {
     showSearchBox?: boolean,
-    showPlanCounter?: boolean
+    showPlanCounter?: boolean,
+    showHeading?: boolean,
+    containerStyle?: any,
+    onSearch?: (value: string) => void,
+    toogleModal?: () => void,
 }
 
 const Header: FC<HeaderInterface> = ({
     showSearchBox = true,
-    showPlanCounter = false
+    showPlanCounter = false,
+    showHeading = false,
+    containerStyle = null,
+    onSearch,
+    toogleModal
 }) => {
 
-    const insets = useSafeAreaInsets()
     const navigation = useNavigation<any>()
     const { myPlans } = useAppSelector(state => state?.plan)
+    const [value, setValue] = useState('')
 
-    const rootHeaderContainer = useMemo(() => {
-        return { paddingTop: insets.top + 20 }
-    }, [insets])
 
     return (
-        <View style={[styles.container, rootHeaderContainer]}>
-            {
-                showSearchBox &&
-                <View style={[styles.row]}>
-                    <View style={styles.searchBox}>
-                        <TextInput
-                            value=''
-                            placeholder='Search Smart. Connect Better.'
-                            style={styles.input}
-                            placeholderTextColor={colors.grey3}
-                        />
-                        <TouchableOpacity >
+        <RootHeader containerStyle={containerStyle}>
+            <View style={[styles.container]}>
+                {
+                    showSearchBox &&
+                    <View style={[styles.row]}>
+                        <View style={styles.searchBox}>
+                            <TextInput
+                                value={value}
+                                placeholder='Search Smart. Connect Better.'
+                                style={styles.input}
+                                onChangeText={setValue}
+                                placeholderTextColor={colors.grey3}
+                            />
+                            <TouchableOpacity onPress={() => onSearch?.(value)}>
+                                <Image
+                                    source={icons.searchbtncircle}
+                                    style={styles.search}
+                                    resizeMode='contain'
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.ml_10} onPress={toogleModal}>
                             <Image
-                                source={icons.searchbtncircle}
+                                source={icons.filterbtncircle}
                                 style={styles.search}
                                 resizeMode='contain'
                             />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.ml_10}>
-                        <Image
-                            source={icons.filterbtncircle}
-                            style={styles.search}
-                            resizeMode='contain'
-                        />
-                    </TouchableOpacity>
-                </View>
-            }
-            {
-                (showPlanCounter) &&
-                <View style={[styles.row, styles.justifyBtw]}>
-                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                        <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' />
-                        <Image source={icons.calenderheart} style={styles.calenderIcon} resizeMode='contain' tintColor={colors.black} />
-                        <Text style={styles.label}>My plans</Text>
-                    </TouchableOpacity>
+                }
+                {
+                    (showPlanCounter) &&
+                    <View style={[styles.row, styles.justifyBtw]}>
+                        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                            <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' />
+                            <Image source={icons.calenderheart} style={styles.calenderIcon} resizeMode='contain' tintColor={colors.black} />
+                            <Text style={styles.label}>My plans</Text>
+                        </TouchableOpacity>
 
-                    <View style={styles.counterContainer}>
-                        <Text style={styles.counterText}>Total Plans</Text>
-                        <View style={styles.counterBox}>
-                            <Text style={styles.counter}>{myPlans?.length ?? 0}</Text>
+                        <View style={styles.counterContainer}>
+                            <Text style={styles.counterText}>Total Plans</Text>
+                            <View style={styles.counterBox}>
+                                <Text style={styles.counter}>{myPlans?.length ?? 0}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-            }
-        </View>
+                }
+                {
+                    showHeading &&
+                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                        <Image source={icons.arrowback} tintColor={colors.white} style={[styles.backIcon, { tintColor: colors.white }]} resizeMode='contain' />
+                        <Text style={[styles.label, { color: colors.white }]}>Search Location</Text>
+                    </TouchableOpacity>
+                }
+            </View>
+        </RootHeader>
     )
 }
 

@@ -106,7 +106,6 @@ const Login = () => {
 
                     <CustomButton
                         label='Log In'
-                        // onPress={() => navigation.navigate('tabs')}
                         onPress={handleLogin}
                         loading={loader}
                     />
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
         marginTop: 30
     },
     headingStyle: {
-        textAlign: 'left'
+        // textAlign: 'left'
     },
     subheadingContainer: {
         flex: 1,
@@ -142,7 +141,8 @@ const styles = StyleSheet.create({
     subHeading: {
         fontFamily: fonts.light,
         fontSize: 12,
-        color: colors.grey1
+        color: colors.grey1,
+        marginLeft: 8,
     },
     blackText: {
         fontFamily: fonts.regular,
