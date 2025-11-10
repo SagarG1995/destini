@@ -1,13 +1,27 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native'
-import React, { useCallback } from 'react'
+import { View, StyleSheet, FlatList } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import Header from '../component/Header'
 import { colors } from '../../../shared/constants/colors'
-import EventCard from '../component/EventCard'
+import ChatCard from '../component/ChatCard'
+import { getAllChats } from '../chatApi'
 
 const Chat = () => {
 
-    const renderItem = ({ }) => {
-        return <EventCard />
+    const [chats, setChats] = useState<Array<any>>([])
+
+    useEffect(() => {
+        getAllChats().then(res => {
+            console.log(res);
+            if (res?.success) {
+                setChats(res?.data?.groups ?? [])
+            }
+        })
+    }, [])
+
+
+
+    const renderItem = ({ item }: any) => {
+        return <ChatCard data={item} />
     }
 
     const separator = useCallback(() => <View style={styles.separator} />, [])
@@ -16,7 +30,7 @@ const Chat = () => {
         <View style={styles.container}>
             <Header />
             <FlatList
-                data={[{}, {}, {}]}
+                data={chats}
                 keyExtractor={(item, index) => index + ''}
                 renderItem={renderItem}
                 ItemSeparatorComponent={separator}
@@ -38,10 +52,10 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     listStyle: {
-        marginTop: 10
+        // backgroundColor: 'red'
     },
     listContainer: {
         flexGrow: 1,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
     }
 })

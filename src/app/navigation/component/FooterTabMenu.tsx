@@ -31,7 +31,7 @@ const FooterTabMenu = ({ state, descriptors, navigation }: BottomTabBarProps) =>
     const containerStyle = useMemo(() => {
         return {
             height: 60,
-            bottom: insets.bottom + 10,
+            bottom: insets.bottom + 15,
         };
     }, [insets.bottom]);
 
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         boxShadow: [
             {
                 offsetX: 2,
-                offsetY: 7,
+                offsetY: 2,
                 blurRadius: 20,
                 spreadDistance: 1,
                 color: "rgba(0,0,0,0.5)",

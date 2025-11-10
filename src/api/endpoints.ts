@@ -28,4 +28,6 @@ export const endpoints = {
     requestplan: "plans/request/",
     activities: "plans/activity/mine",
 
+    getchats: "chat/user-groups",
+
 }

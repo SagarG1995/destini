@@ -1,6 +1,7 @@
 export const icons = {
     arrowback: require("../../assets/icons/arrow-left.png"),
     arrowdown: require("../../assets/icons/arrow-down.png"),
+    openlink: require("../../assets/icons/open-link.png"),
     eyeshow: require("../../assets/icons/eye-show.png"),
     google: require("../../assets/icons/google.png"),
     searchbtn: require("../../assets/icons/search-btn.png"),
@@ -33,4 +34,5 @@ export const icons = {
     nosound: require("../../assets/icons/no-sound.png"),
     cancel: require("../../assets/icons/cancel.png"),
     exit: require("../../assets/icons/exit.png"),
+    sendbutton: require('../../assets/icons/send-button.png')
 }

@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import React, { FC, memo, useMemo } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { FC, memo } from 'react'
 import { icons } from '../../../shared/constants/icons';
 import { colors } from '../../../shared/constants/colors';
 import { fonts } from '../../../shared/constants/fonts';
@@ -12,6 +11,8 @@ import { clearLocation } from '../../location/locationSlice';
 import { clearProfileData } from '../profileSlice';
 import { clearPlan } from '../../plans/planSlice';
 import RootHeader from '../../../shared/component/RootHeader';
+import { getAuth, signOut } from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 interface HeaderInterface {
     isEditing?: boolean
@@ -21,12 +22,14 @@ const Header: FC<HeaderInterface> = ({
     isEditing = false
 }) => {
 
-    const insets = useSafeAreaInsets();
     const dispatch = useDispatch()
     const navigation = useNavigation<any>()
 
 
     const logout = () => {
+        signOut(getAuth())
+        GoogleSignin.signOut()
+        GoogleSignin.revokeAccess()
         dispatch(clearAuth())
         dispatch(clearLocation())
         dispatch(clearProfileData())
@@ -94,7 +97,6 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         justifyContent: 'center',
-        // backgroundColor: 'pink'
     }
 
 })

@@ -2,10 +2,9 @@
 import { AppleAuthProvider, createUserWithEmailAndPassword, EmailAuthProvider, getAuth, GoogleAuthProvider, linkWithCredential, signInWithCredential, signInWithEmailAndPassword } from "@react-native-firebase/auth";
 import appleAuth from '@invertase/react-native-apple-authentication'
 import { GoogleSignin, isSuccessResponse } from "@react-native-google-signin/google-signin";
-import { showToast } from "../../shared/utils/toast";
+import { showToast } from "./toast";
 
-const auth = getAuth();
-
+export const auth = getAuth();
 
 /**
  * Sign up with email + password
@@ -66,7 +65,6 @@ export const signInWithGoogle = async () => {
             return { success: false, error: signInResponse }
         }
     } catch (error: any) {
-        // console.log("signInWithGoogle: ", error);
         return { success: false, error, code: error?.code };
     }
 };

@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { FC, memo, useMemo } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { FC, memo } from 'react'
 import { icons } from '../../../shared/constants/icons';
 import { fonts } from '../../../shared/constants/fonts';
 import { colors } from '../../../shared/constants/colors';
@@ -16,8 +15,8 @@ const Header: FC<HeaderInterface> = ({
 
 
     return (
-        <RootHeader>
-            <View style={[styles.container,]}>
+        <RootHeader containerStyle={{}}>
+            <View style={[styles.container]}>
                 <Image source={icons.chat} resizeMode='contain' style={styles.icon} tintColor={colors.black} />
                 <Text style={styles.heading}>Chats</Text>
             </View>
@@ -32,6 +31,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',
+        // backgroundColor: 'pink',
+        paddingVertical: 10
     },
     icon: {
         width: 20,
@@ -42,6 +43,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: colors.black,
         marginLeft: 10,
+        lineHeight: 20,
         includeFontPadding: false
     }
 })

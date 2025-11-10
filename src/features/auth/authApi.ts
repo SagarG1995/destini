@@ -13,9 +13,6 @@ export const verifyRegisterOtp = async (param: any) => {
     return await apiClient.post(endpoints.verifyregisterotp, param)
 }
 
-export const getProfessions = async (_param?: any) => {
-    return await apiClient.get(endpoints.professions)
-}
 
 export const sendForgotPasswordOtp = async (param: {} | undefined) => {
     return await apiClient.post(endpoints.sendfogotpasswordotp, param)

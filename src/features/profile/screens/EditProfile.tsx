@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Header from '../component/Header'
 import { colors } from '../../../shared/constants/colors'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -14,7 +14,6 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { images } from '../../../shared/constants/images'
 import { getMe, updateMe } from '../profileApi'
 import { showToast } from '../../../shared/utils/toast'
-import { setUserData } from '../profileSlice'
 
 const EditProfile = () => {
 
@@ -104,7 +103,7 @@ const EditProfile = () => {
                 </View>
             </KeyboardAwareScrollView>
             {
-                // isOpen &&
+                isOpen &&
                 <ProfessionModal
                     isOpen={isOpen}
                     toggleModal={() => setIsopen(false)}

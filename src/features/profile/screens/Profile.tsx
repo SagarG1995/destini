@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flexGrow: 1,
-        paddingBottom: 100
+        paddingBottom: 80
     },
     separator: {
         marginTop: 15

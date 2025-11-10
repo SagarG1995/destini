@@ -18,12 +18,14 @@ const TripCard: FC<TripCardInterface> = ({
 }) => {
 
     const [loader, setLoader] = useState(false)
+    const [isRequested, setIsRequested] = useState(false)
 
     const onRequest = () => {
         setLoader(true)
         requestPlan(data?._id)
             .then(res => {
                 if (res?.success) {
+                    setIsRequested(true)
                     showToast('Plan Requested')
                 } else {
                     showToast(res?.message)
@@ -57,11 +59,12 @@ const TripCard: FC<TripCardInterface> = ({
                     </View>
                 </View>
                 <CustomButton
-                    label='Request to Join'
+                    label={isRequested ? "Requested" : 'Request to Join'}
                     containerStyle={styles.reqButton}
                     labelStyle={styles.reqButtonLabel}
                     loading={loader}
                     onPress={onRequest}
+                    enabled={!isRequested}
                 />
             </View>
         </LinearGradient>
@@ -72,9 +75,11 @@ export default memo(TripCard)
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
+        // padding: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 10,
         borderRadius: 10,
-        minHeight: 155,
+        // minHeight: 155,
         justifyContent: 'space-between'
     },
     flex1: {
@@ -82,6 +87,9 @@ const styles = StyleSheet.create({
     },
     mt_5: {
         marginTop: 5
+    },
+    mt_20: {
+        marginTop: 20
     },
     mt_30: {
         marginTop: 30

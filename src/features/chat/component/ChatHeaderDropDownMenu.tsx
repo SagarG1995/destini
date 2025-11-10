@@ -77,12 +77,12 @@ const ChatHeaderDropDownMenu = () => {
                     >
                         <TouchableOpacity style={styles.menuItem}>
                             <Image source={icons.cancel} style={styles.icon20} resizeMode='contain' />
-                            <Text style={styles.menuText}>Profile</Text>
+                            <Text style={styles.menuText}>Cancel Plan</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.menuItem}>
+                        {/* <TouchableOpacity style={styles.menuItem}>
                             <Image source={icons.nosound} style={styles.icon20} resizeMode='contain' />
                             <Text style={styles.menuText}>Mute Group</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TouchableOpacity style={styles.menuItem}>
                             <Image source={icons.exit} style={styles.icon13} resizeMode='contain' />
                             <Text style={styles.menuText}>Exit Plan</Text>

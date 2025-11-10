@@ -1,42 +1,48 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import React, { memo, useMemo } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { FC, memo } from 'react'
 import { colors } from '../../../shared/constants/colors';
 import AppStatusBar from '../../../shared/component/AppStatusBar';
 import { icons } from '../../../shared/constants/icons';
 import { fonts } from '../../../shared/constants/fonts';
 import ChatHeaderDropDownMenu from './ChatHeaderDropDownMenu';
+import RootHeader from '../../../shared/component/RootHeader';
+import moment from 'moment';
 
-const ChatHeader = () => {
+interface ChatHeaderInterface {
+    data?: any
+}
 
-    const insets = useSafeAreaInsets();
-
-
-    const rootHeaderContainer = useMemo(() => {
-        return { paddingTop: insets.top }
-    }, [insets])
+const ChatHeader: FC<ChatHeaderInterface> = ({
+    data = null
+}) => {
 
     return (
-        <View style={[styles.container, rootHeaderContainer]}>
-            <AppStatusBar backgroundColor={colors.black} barStyle='light-content' />
-            <View style={styles.row}>
-                <TouchableOpacity style={styles.button} >
-                    <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' tintColor={colors.white} />
-                </TouchableOpacity>
-                <View style={styles.detailsContainer}>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Delhi</Text>
-                        <Image source={icons.arrowsmright} style={styles.arrwIcon} resizeMode='contain' tintColor={colors.white} />
-                        <Text style={styles.label}>Delhi</Text>
+        <RootHeader additionalPaddingTop={0}>
+            <View style={[styles.container]}>
+                <AppStatusBar backgroundColor={colors.black} barStyle='light-content' />
+                <View style={styles.row}>
+                    <TouchableOpacity style={styles.button} >
+                        <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' tintColor={colors.white} />
+                    </TouchableOpacity>
+                    <View style={styles.detailsContainer}>
+                        <View style={styles.row}>
+                            <Text style={styles.label} numberOfLines={1}>{data?.title}</Text>
+                            {/* <Image source={icons.arrowsmright} style={styles.arrwIcon} resizeMode='contain' tintColor={colors.white} />
+                            <Text style={styles.label}>Delhi</Text> */}
+                        </View>
+                        <View style={[styles.row, styles.mt_5]}>
+                            <Image source={icons.calendar} resizeMode='contain' style={styles.calenderIcon} />
+                            <Text style={styles.date}>
+                                {
+                                    moment(data?.date).format("MMM, DD YYYY")
+                                }
+                            </Text>
+                        </View>
                     </View>
-                    <View style={[styles.row, styles.mt_5]}>
-                        <Image source={icons.calendar} resizeMode='contain' style={styles.calenderIcon} />
-                        <Text style={styles.date}>July 30,2025</Text>
-                    </View>
+                    <ChatHeaderDropDownMenu />
                 </View>
-                <ChatHeaderDropDownMenu />
             </View>
-        </View>
+        </RootHeader>
     )
 }
 

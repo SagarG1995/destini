@@ -19,10 +19,10 @@ const AvatarGroup: React.FC<AvatarGroupInterface> = ({ data = [] }) => {
 
     return (
         <View style={styles.container}>
-            {displayAvatars.map((uri, index) => (
+            {displayAvatars.map((item, index) => (
                 <Image
                     key={index}
-                    source={images.boy}
+                    source={item?.gender === 'male' ? images.boy : images.girl}
                     style={[
                         styles.avatar,
                         index !== 0 && styles.overlap, { zIndex: displayAvatars.length - index }

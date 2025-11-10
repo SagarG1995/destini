@@ -5,6 +5,7 @@ export interface ApiError {
   success: boolean,
   isNetworkError: boolean;
   data?: any;
+  all?: any
 }
 
 export const formatError = (error: any): ApiError => {
@@ -16,6 +17,7 @@ export const formatError = (error: any): ApiError => {
       success: false,
       isNetworkError: false,
       data: error.response.data,
+      all: error?.response
     };
   }
 

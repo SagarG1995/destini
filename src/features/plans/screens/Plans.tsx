@@ -144,11 +144,14 @@ const Plans = () => {
                 }
             />
 
-            <ProfessionModal
-                isOpen={isOpen}
-                toggleModal={toogleModal}
-                onChooseProfession={(e => setProfession(_prev => e))}
-            />
+            {
+                isOpen &&
+                <ProfessionModal
+                    isOpen={isOpen}
+                    toggleModal={toogleModal}
+                    onChooseProfession={(e => setProfession(_prev => e))}
+                />
+            }
 
         </View>
     )

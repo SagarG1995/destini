@@ -172,7 +172,7 @@ const EditPlanForm: FC<EditPlanFormInterface> = ({
 
                 <CustomButton
                     label='Edit Plan'
-                    containerStyle={styles.mt_25}
+                    containerStyle={styles.mt_60}
                     onPress={onUpdatePlan}
                     loading={loader}
                 />
@@ -189,10 +189,14 @@ const styles = StyleSheet.create({
     content: {
         flexGrow: 1,
         paddingHorizontal: 15,
-        paddingTop: 20
+        paddingTop: 20,
+        paddingBottom: 80
     },
     mt_25: {
         marginTop: 25
+    },
+    mt_60: {
+        marginTop: 60
     },
     label: {
         fontFamily: fonts.semibold,

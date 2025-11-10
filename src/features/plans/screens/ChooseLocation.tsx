@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Keyboard } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Keyboard, Image } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -10,6 +10,7 @@ import { getPlaceSuggestion } from '../plansApi'
 import { fonts } from '../../../shared/constants/fonts'
 import { setCreatePlanLocation } from '../planSlice'
 import Header from '../component/Header'
+import { icons } from '../../../shared/constants/icons'
 
 const ChooseLocation = () => {
 
@@ -97,6 +98,10 @@ const ChooseLocation = () => {
             />
             <ScrollView contentContainerStyle={styles.scrollview}>
                 {
+                    (suggestions?.length > 0) &&
+                    <Text style={styles.heading}>Choose your destini:</Text>
+                }
+                {
                     loading ? (
                         <View style={styles.loaderContainer}>
                             <ActivityIndicator size="small" color={colors.black} />
@@ -111,6 +116,7 @@ const ChooseLocation = () => {
                                 onPress={() => handleSelect(item)}
                             >
                                 <Text style={styles.suggestionText}>{item?.label ?? ''}</Text>
+                                <Image source={icons.openlink} style={styles.icon} resizeMode='contain' />
                             </TouchableOpacity>
                         )
                 }
@@ -126,22 +132,36 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.white,
     },
+    heading: {
+        fontFamily: fonts.bold,
+        fontSize: 14,
+        color: colors.black
+    },
     inputContainerStyle: {
         marginHorizontal: 10,
         marginTop: 15
     },
     scrollview: {
-        flexGrow: 1
+        flexGrow: 1,
+        paddingHorizontal: 15,
+        paddingTop: 20
     },
     loaderContainer: {
         paddingVertical: 10,
         alignItems: 'center',
     },
     suggestionItem: {
-        paddingVertical: 10,
+        paddingVertical: 15,
         paddingHorizontal: 12,
         borderBottomColor: colors.grey1,
         borderBottomWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    icon: {
+        width: 15,
+        height: 15
     },
     suggestionText: {
         color: colors.black,

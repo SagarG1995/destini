@@ -12,7 +12,8 @@ export const rootReducer = combineReducers({
     auth: authReducer,
     profile: profileReducer,
     location: locationReducer,
-    plan: planReducer
+    plan: planReducer,
+    // profession: 
 });
 
 // 2. Set up persist config

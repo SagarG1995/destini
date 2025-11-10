@@ -7,7 +7,7 @@ import {
     Image,
     TextInput,
     SectionList,
-    ActivityIndicator
+    RefreshControl
 } from 'react-native'
 import React, { FC, memo, useCallback, useEffect, useState } from 'react'
 import { icons } from '../constants/icons'
@@ -16,9 +16,10 @@ import { fonts } from '../constants/fonts'
 // import { profession } from '../constants/_dev_profession'
 import ProfessionItem from './ProfessionItem'
 import ProfessionItemHead from './ProfessionItemHead'
-import BottomSheet from './BottomSheet'
-import { getProfessions } from '../../features/auth/authApi'
+import CustomBottomSheet from './CustomBottomSheet'
 import { showToast } from '../utils/toast'
+import { useAppSelector } from '../../redux/store'
+import { getProfessions } from '../../features/home/homeApi'
 
 interface ProfessionModalInterface {
     isOpen?: boolean,
@@ -34,25 +35,18 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
     onChooseProfession
 }) => {
 
-    // const insets = useSafeAreaInsets()
+    const { allProfessions } = useAppSelector(state => state?.profile)
 
     const [searchText, setSearchText] = useState('')
     const [loader, setLoader] = useState(true)
-    const [profession, setProfession] = useState([])
+    const [profession, setProfession] = useState<Array<any>>([])
     const [selectedProfession, setSelectedProfession] = useState('')
 
-    useEffect(() => {
-        getAllProfessions()
-    }, [])
 
     const getAllProfessions = () => {
         setLoader(true)
-        getProfessions().then(res => {
-            console.log('', res);
-
-            if (res?.success) {
-                setProfession(res?.data?.data ?? [])
-            } else {
+        getProfessions().then((res: any) => {
+            if (!res?.success) {
                 showToast(res?.message)
             }
 
@@ -60,12 +54,31 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
     }
 
     const handleOnSave = useCallback(() => {
-
         if (!isFilter) {
             onChooseProfession?.(selectedProfession)
         }
         toggleModal?.()
     }, [selectedProfession, searchText])
+
+    const filterProfessions = useCallback((text: string) => {
+        setSearchText(text)
+        if (!text.trim()) {
+            setProfession(allProfessions)
+            return
+        }
+
+        const filtered = allProfessions
+            .map((section: any) => {
+                const filteredData = section?.data.filter((item: any) =>
+                    item.title.toLowerCase().includes(text.toLowerCase())
+                )
+                return { ...section, data: filteredData }
+            })
+            .filter(section => section.data.length > 0)
+
+        setProfession(filtered)
+    }, [allProfessions, profession, allProfessions])
+
 
     const renderItem = useCallback(({ item, _index }: any) => {
         return (
@@ -76,9 +89,34 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
         )
     }, [selectedProfession, searchText])
 
+    const onSearchTextUpdate = useCallback((e: string) => {
+        if (e === undefined || e === null) return;
+        const text = e.trim();
+        if (text.length === 0) {
+            return;
+        }
+        filterProfessions(text);
+    }, [])
 
-    const headerComponent = useCallback(() => {
+    useEffect(() => {
+        const t = setTimeout(() => {
+            setProfession(allProfessions)
+            setLoader(false)
+        }, 1000);
+
+        return () => clearTimeout(t)
+    }, [])
+
+    const listEmptyComponent = useCallback(() => {
+        if (loader) return null
         return (
+            <Text style={styles.emptyText}>No Searched Item.</Text>
+        )
+    }, [loader])
+
+
+    return (
+        <CustomBottomSheet isOpen={isOpen} toggleModal={toggleModal}>
             <View style={styles.header}>
                 <View style={styles.headingContainer}>
                     <TouchableOpacity style={styles.iconButton} onPress={toggleModal}>
@@ -105,39 +143,30 @@ const ProfessionModal: FC<ProfessionModalInterface> = ({
                     />
                     <TextInput
                         value={searchText}
-                        onChangeText={setSearchText}
+                        onChangeText={onSearchTextUpdate}
                         placeholder="Search Professions"
                         placeholderTextColor={colors.grey3}
                         style={styles.input}
                     />
                 </View>
             </View>
-        )
-    }, [isFilter, searchText, selectedProfession])
 
-    return (
-        <BottomSheet isOpen={isOpen} toggleModal={toggleModal}>
-            {
-                loader ?
-                    <ActivityIndicator animating color={colors.white} />
-                    :
-                    <SectionList
-                        sections={profession}
-                        keyExtractor={(item, index) => item.title + index}
-                        renderItem={renderItem}
-                        renderSectionHeader={({ section: { title } }) => (
-                            <ProfessionItemHead title={title} />
-                        )}
-                        style={[styles.list]}
-                        contentContainerStyle={styles.listContainer}
-                        showsVerticalScrollIndicator={false}
-                        stickySectionHeadersEnabled={true} // set to true if you want sticky headers
-                        ListHeaderComponent={headerComponent}
-                        onRefresh={getAllProfessions}
-                        refreshing={loader}
-                    />
-            }
-        </BottomSheet>
+            <SectionList
+                sections={profession}
+                keyExtractor={(item, index) => item.title + index}
+                renderItem={renderItem}
+                renderSectionHeader={({ section: { title } }) => (
+                    <ProfessionItemHead title={title} />
+                )}
+                style={[styles.list]}
+                contentContainerStyle={styles.listContainer}
+                showsVerticalScrollIndicator={false}
+                stickySectionHeadersEnabled={true}
+                refreshControl={<RefreshControl refreshing={loader} onRefresh={getAllProfessions} tintColor={colors.white} />}
+                ListEmptyComponent={listEmptyComponent}
+            />
+
+        </CustomBottomSheet>
     )
 }
 
@@ -145,17 +174,18 @@ export default memo(ProfessionModal)
 
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: colors.black,
         paddingHorizontal: 20,
         borderBottomColor: colors.grey3,
         borderBottomWidth: 0.7,
-        paddingBottom: 20
+        paddingBottom: 20,
+    },
+    mt_10: {
+        marginTop: 10
     },
     headingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: colors.black,
-        paddingTop: 10
+        paddingTop: 20
     },
     iconButton: {
         flex: 0.2,
@@ -210,7 +240,12 @@ const styles = StyleSheet.create({
     listContainer: {
         backgroundColor: colors.white,
     },
-    mb_100: {
-        marginBottom: 100
+    emptyText: {
+        fontFamily: fonts.bold,
+        fontSize: 14,
+        color: colors.black,
+        textAlign: 'center',
+        includeFontPadding: false,
+        lineHeight: 30
     }
 })

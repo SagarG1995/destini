@@ -7,7 +7,7 @@ import TripCard from '../component/TripCard'
 import { fonts } from '../../../shared/constants/fonts'
 import ProfessionModal from '../../../shared/component/ProfessionModal'
 import { getMe } from '../../profile/profileApi'
-import { getHomePlans } from '../homeApi'
+import { getHomePlans, getProfessions } from '../homeApi'
 import { showToast } from '../../../shared/utils/toast'
 import NoTripComponent from '../component/NoTripComponent'
 import { getActivities, getMyPlans } from '../../plans/plansApi'
@@ -29,6 +29,7 @@ const Home = () => {
         getMe()
         getMyPlans()
         getActivities()
+        getProfessions()
     }, [])
 
     useEffect(() => {
@@ -38,7 +39,7 @@ const Home = () => {
     useEffect(() => {
         if (page === 1 || refreshing) return;
         loadMore();
-    }, [page]);
+    }, [page,]);
 
     const loadInitial = async () => {
         setLoading(true);
@@ -69,7 +70,7 @@ const Home = () => {
         if (loading || !hasMore) return;
         setLoading(true);
         try {
-            const result: any = await getHomePlans("", "", page);
+            const result: any = await getHomePlans(search, profession, page);
             const resdata = result?.data?.data
             if (result?.success) {
                 if (result?.data?.page === result?.data?.totalPages) {
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
     listContainer: {
         flexGrow: 1,
         paddingHorizontal: 20,
-        paddingBottom: 30,
+        paddingBottom: 100
     },
     separator: {
         marginTop: 15,

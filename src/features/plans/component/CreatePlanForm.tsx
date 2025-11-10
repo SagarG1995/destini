@@ -13,7 +13,7 @@ import CustomButton from '../../../shared/component/CustomButton'
 import LocationSuggestionBox from '../../../shared/component/LocationSuggestionBox'
 import { toISODateTime } from '../../../shared/utils/dateTimeConversion'
 import { showToast } from '../../../shared/utils/toast'
-import { createPlan } from '../plansApi'
+import { createPlan, getMyPlans } from '../plansApi'
 import { useAppDispatch, useAppSelector } from '../../../redux/store'
 import { useNavigation } from '@react-navigation/native'
 import { clearCreatePlanLocation } from '../planSlice'
@@ -79,6 +79,7 @@ const CreatePlanForm = () => {
             // console.log(res);
 
             if (res?.success) {
+                getMyPlans()
                 showToast("Plan has been created successfully!!!")
                 navigation.goBack()
                 dispatch(clearCreatePlanLocation())
@@ -142,7 +143,7 @@ const CreatePlanForm = () => {
 
                 <CustomButton
                     label='Create Plan'
-                    containerStyle={styles.mt_25}
+                    containerStyle={styles.mt_60}
                     onPress={onCreatePlan}
                     loading={loader}
                 />
@@ -159,10 +160,14 @@ const styles = StyleSheet.create({
     content: {
         flexGrow: 1,
         paddingHorizontal: 15,
-        paddingTop: 20
+        paddingTop: 20,
+        paddingBottom: 80
     },
     mt_25: {
         marginTop: 25
+    },
+    mt_60: {
+        marginTop: 60
     },
     label: {
         fontFamily: fonts.semibold,

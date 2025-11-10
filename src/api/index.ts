@@ -12,7 +12,7 @@ api.interceptors.request.use((config) => {
     const reset_token = store.getState()?.auth?.resetToken
     if (token || reset_token) config.headers.Authorization = `Bearer ${token || reset_token}`;
 
-    // console.log(config.headers);
+
     // console.log(token);
 
 
@@ -23,6 +23,8 @@ api.interceptors.request.use((config) => {
         config.headers['Content-Type'] = 'application/json';
     }
 
+    // console.log(config);
+
     return config;
 },
     (error) => Promise.reject(error)
@@ -31,6 +33,8 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // console.log(error);
+
         return Promise.reject(error);
     }
 );

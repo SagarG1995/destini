@@ -137,11 +137,14 @@ const CompleteProfile = () => {
 
                 </KeyboardAwareScrollView>
             </GestureDetector>
-            <ProfessionModal
-                isOpen={isOpen}
-                toggleModal={toogleModal}
-                onChooseProfession={setProf}
-            />
+            {
+                isOpen &&
+                <ProfessionModal
+                    isOpen={isOpen}
+                    toggleModal={toogleModal}
+                    onChooseProfession={setProf}
+                />
+            }
         </View>
     )
 }

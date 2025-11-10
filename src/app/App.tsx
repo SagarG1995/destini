@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React, { useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Navigation from './navigation'
@@ -9,6 +9,8 @@ import { Provider } from 'react-redux'
 import { store } from '../redux/store'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import env from '../api/env'
+import { onAuthStateChanged } from '@react-native-firebase/auth'
+import { auth } from '../shared/utils/firebaseAuthHelper'
 
 const App = () => {
 
@@ -16,7 +18,14 @@ const App = () => {
         GoogleSignin.configure({
             webClientId: env.webClientId,
         })
-    }, [])
+        const subscriber = onAuthStateChanged(auth, handleAuthStateChanged);
+        return subscriber; // unsubscribe on unmount
+    }, []);
+
+    const handleAuthStateChanged = (user: any) => {
+        // console.log('firebase AUTH : ', user.toJSON());
+
+    }
 
     return (
         <GestureHandlerRootView style={styles.container}>

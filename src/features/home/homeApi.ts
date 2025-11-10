@@ -1,6 +1,7 @@
 import apiClient from "../../api/client"
 import { endpoints } from "../../api/endpoints"
 import { store } from "../../redux/store"
+import { setAllProfessions } from "../profile/profileSlice"
 
 
 export const getHomePlans = async (search = '', profession = '', page = 1) => {
@@ -26,4 +27,14 @@ export const getHomePlans = async (search = '', profession = '', page = 1) => {
 
 
     return await apiClient.get(url)
+}
+
+export const getProfessions = async (_param?: any) => {
+    const res = await apiClient.get(endpoints.professions)
+    if (res?.success) {
+        const data = res?.data?.data ?? []
+        store.dispatch(setAllProfessions(data))
+    }
+
+    return res
 }
