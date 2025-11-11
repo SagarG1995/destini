@@ -22,7 +22,7 @@ const App = () => {
         return subscriber; // unsubscribe on unmount
     }, []);
 
-    const handleAuthStateChanged = (user: any) => {
+    const handleAuthStateChanged = (_user: any) => {
         // console.log('firebase AUTH : ', user.toJSON());
 
     }

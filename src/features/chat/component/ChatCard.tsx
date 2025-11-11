@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import React, { FC, memo } from 'react'
+import React, { FC, memo, useCallback } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { icons } from '../../../shared/constants/icons'
 import { colors } from '../../../shared/constants/colors'
@@ -18,6 +19,11 @@ const ChatCard: FC<EventCardInterface> = ({
 }) => {
 
     const navigation = useNavigation<any>()
+
+    const onChat = useCallback(() => {
+        // console.log(data)
+        navigation.navigate('groupchat', { tripDetails: data })
+    }, [data])
 
 
     if (!data) return null
@@ -58,7 +64,7 @@ const ChatCard: FC<EventCardInterface> = ({
                         label='CHAT'
                         containerStyle={styles.button}
                         labelStyle={styles.buttonLabel}
-                        onPress={() => navigation.navigate('groupchat', { tripDetails: data })}
+                        onPress={onChat}
                     />
                 </View>
             </LinearGradient>

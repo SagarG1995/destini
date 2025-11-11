@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { FC, memo, useState } from 'react'
+import React, { FC, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { colors } from '../../../shared/constants/colors'
 import { icons } from '../../../shared/constants/icons'
@@ -71,7 +71,7 @@ const TripCard: FC<TripCardInterface> = ({
     )
 }
 
-export default memo(TripCard)
+export default (TripCard)
 
 const styles = StyleSheet.create({
     container: {

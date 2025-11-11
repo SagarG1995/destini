@@ -1,29 +1,35 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { FC, useEffect, useMemo, useState } from 'react'
+import React, { FC, memo, useEffect, useMemo, useState } from 'react'
 import { colors } from '../../../shared/constants/colors';
 import { fonts } from '../../../shared/constants/fonts';
 import moment from 'moment';
 import { SCREEN_WIDTH } from '../../../shared/constants/dimensions';
-import { useAppSelector } from '../../../redux/store';
+import { Bubble, IMessage } from 'react-native-gifted-chat';
 
-interface MessageBubbleInterface {
-    data?: any
+
+interface BubbleProps<TMessage extends IMessage = IMessage> {
+    currentMessage: TMessage;
+    user?: {
+        _id: string | number;
+    };
+    // ...other optional render props
 }
 
-const MessageBubble: FC<MessageBubbleInterface> = ({
-    data = null
+const MessageBubble: FC<BubbleProps<IMessage>> = ({
+    currentMessage,
+    user,
+    props
 }) => {
 
-    const { userdata } = useAppSelector(state => state.profile)
     const [isMessageOwner, setIsMessageOwner] = useState(false)
 
     useEffect(() => {
-        if (userdata?.userId === data?.user?._id) {
+        if (user?._id === currentMessage?.user?._id) {
             setIsMessageOwner(true)
         } else {
             setIsMessageOwner(false)
         }
-    }, [data, userdata?.userId])
+    }, [currentMessage, user?._id])
 
     const bubbleBg = useMemo(() => {
         if (isMessageOwner) {
@@ -35,11 +41,11 @@ const MessageBubble: FC<MessageBubbleInterface> = ({
 
 
     const formattedTime = useMemo(
-        () => moment(data.createdAt).format('hh:mm a'),
-        [data.createdAt]
+        () => moment(currentMessage.createdAt).format('hh:mm a'),
+        [currentMessage.createdAt]
     );
 
-    if (!data) return null
+    if (!currentMessage) return null
 
     return (
         <View
@@ -52,15 +58,17 @@ const MessageBubble: FC<MessageBubbleInterface> = ({
                 <View style={styles.avatarContainer}>
                     <Image
                         source={
-                            typeof data?.user?.avatar === 'string'
-                                ? { uri: data.user.avatar }
-                                : data?.user?.avatar
+                            typeof currentMessage?.user?.avatar === 'function'
+                                ? undefined
+                                : typeof currentMessage?.user?.avatar === 'string'
+                                    ? { uri: currentMessage.user.avatar }
+                                    : currentMessage?.user?.avatar
                         }
                         style={styles.avatar}
                         resizeMode="cover"
                     />
                     <Text style={styles.username} numberOfLines={1}>
-                        {data?.user?.name}
+                        {currentMessage?.user?.name}
                     </Text>
                 </View>
             )}
@@ -74,7 +82,7 @@ const MessageBubble: FC<MessageBubbleInterface> = ({
                 {isMessageOwner && <Text style={[styles.time, styles.mr_10]}>{formattedTime}</Text>}
 
                 <View style={[styles.bubble, bubbleBg]}>
-                    <Text style={styles.message}>{data?.text}</Text>
+                    <Text style={styles.message}>{currentMessage?.text}</Text>
                 </View>
 
                 {!isMessageOwner && <Text style={[styles.time, styles.ml_10]}>{formattedTime}</Text>}
@@ -89,7 +97,7 @@ export default (MessageBubble)
 const styles = StyleSheet.create({
     container: {
         marginVertical: 4,
-        maxWidth: SCREEN_WIDTH * 0.6,
+        maxWidth: SCREEN_WIDTH * 0.8,
     },
 
     // Aligns the entire message bubble block
@@ -124,7 +132,7 @@ const styles = StyleSheet.create({
     },
     message: {
         fontFamily: fonts.medium,
-        fontSize: 10,
+        fontSize: 12,
         color: colors.white,
         includeFontPadding: false
     },

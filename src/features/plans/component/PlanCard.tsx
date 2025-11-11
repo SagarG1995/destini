@@ -42,11 +42,14 @@ const PlanCard: FC<PlanCardInterface> = ({
     }
 
     const animatedExpandedListStyle = useAnimatedStyle(() => {
+        const requestCount = data?.requests?.length || 0
+        const targetHeight = Math.min(requestCount * 50, 150)
+
         return {
-            height: height.value,
+            height: targetHeight - 10,
             overflow: 'hidden'
         }
-    })
+    }, [data?.requests?.length])
 
     const onDelete = () => {
         setLoader(true)
@@ -132,7 +135,7 @@ export default PlanCard
 const styles = StyleSheet.create({
     container: {
         borderRadius: 10,
-        minHeight: 120,
+        // minHeight: 120,
         borderColor: colors.blue1,
         borderWidth: 1,
         overflow: 'hidden'

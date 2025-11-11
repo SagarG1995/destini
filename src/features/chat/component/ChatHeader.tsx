@@ -7,6 +7,7 @@ import { fonts } from '../../../shared/constants/fonts';
 import ChatHeaderDropDownMenu from './ChatHeaderDropDownMenu';
 import RootHeader from '../../../shared/component/RootHeader';
 import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
 
 interface ChatHeaderInterface {
     data?: any
@@ -16,17 +17,19 @@ const ChatHeader: FC<ChatHeaderInterface> = ({
     data = null
 }) => {
 
+    const navigation = useNavigation<any>()
+
     return (
-        <RootHeader additionalPaddingTop={0}>
+        <RootHeader additionalPaddingTop={0} containerStyle={{ backgroundColor: colors.black }}>
             <View style={[styles.container]}>
                 <AppStatusBar backgroundColor={colors.black} barStyle='light-content' />
                 <View style={styles.row}>
-                    <TouchableOpacity style={styles.button} >
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
                         <Image source={icons.arrowback} style={styles.backIcon} resizeMode='contain' tintColor={colors.white} />
                     </TouchableOpacity>
                     <View style={styles.detailsContainer}>
                         <View style={styles.row}>
-                            <Text style={styles.label} numberOfLines={1}>{data?.title}</Text>
+                            <Text style={styles.label} numberOfLines={1}>{data?.title ?? data?.planTitle}</Text>
                             {/* <Image source={icons.arrowsmright} style={styles.arrwIcon} resizeMode='contain' tintColor={colors.white} />
                             <Text style={styles.label}>Delhi</Text> */}
                         </View>
@@ -34,12 +37,12 @@ const ChatHeader: FC<ChatHeaderInterface> = ({
                             <Image source={icons.calendar} resizeMode='contain' style={styles.calenderIcon} />
                             <Text style={styles.date}>
                                 {
-                                    moment(data?.date).format("MMM, DD YYYY")
+                                    moment(data?.date ?? data?.planAt).format("MMM, DD YYYY")
                                 }
                             </Text>
                         </View>
                     </View>
-                    <ChatHeaderDropDownMenu />
+                    <ChatHeaderDropDownMenu data={data} />
                 </View>
             </View>
         </RootHeader>

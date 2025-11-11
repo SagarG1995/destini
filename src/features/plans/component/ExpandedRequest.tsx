@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     listStyle: {
         marginTop: 15,
         maxHeight: 150,
+        // backgroundColor: 'pink'
     },
     listContainer: {
         paddingVertical: 8, // padding instead of flexGrow

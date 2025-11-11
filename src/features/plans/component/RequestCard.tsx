@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, ViewStyle, StyleProp } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, ViewStyle, StyleProp, ActivityIndicator } from 'react-native'
 import React, { FC, memo, useEffect, useMemo, useState } from 'react'
 import CacheImage from '../../../shared/component/CacheImage'
 import { fonts } from '../../../shared/constants/fonts'
@@ -8,6 +8,7 @@ import { icons } from '../../../shared/constants/icons'
 import { acceptDeclineRequest } from '../plansApi'
 import { showToast } from '../../../shared/utils/toast'
 import { ACCEPTED, DECLINED, PENDING } from '../../../shared/constants/planStatus'
+import { getAllChats } from '../../chat/chatApi'
 
 interface RequestCardInterface {
     data?: any,
@@ -20,6 +21,7 @@ const RequestCard: FC<RequestCardInterface> = ({
 }) => {
 
     const [status, setStatus] = useState<string>(data?.status ?? PENDING)
+    const [loader, setLoader] = useState(false)
 
     useEffect(() => {
         setStatus(data?.status ?? PENDING)
@@ -38,17 +40,19 @@ const RequestCard: FC<RequestCardInterface> = ({
     const onTrigger = (type: string) => {
 
         const newStatus = type === 'accept' ? ACCEPTED : DECLINED
-        setStatus(newStatus)
 
+        setLoader(true)
         acceptDeclineRequest(data?.requestId, type).then(res => {
+
             if (res?.success) {
-                showToast(res?.message)
+                getAllChats()
+                setStatus(newStatus)
             } else {
-                // If failed, revert the change
+
                 setStatus(data?.status ?? PENDING)
                 showToast('Something went wrong. Please try again.')
             }
-        })
+        }).finally(() => setLoader(false))
     }
 
     if (!data) return null
@@ -69,14 +73,22 @@ const RequestCard: FC<RequestCardInterface> = ({
             />
             <Text style={styles.label} numberOfLines={1}>{data?.full_name} requested to join your plan.</Text>
             {
-                (status === PENDING) &&
+                (status === PENDING || loader) &&
                 <View style={styles.actionContainer}>
-                    <TouchableOpacity style={styles.button} onPress={() => onTrigger('accept')}>
-                        <Image source={icons.like} style={styles.icon} resizeMode='contain' />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => onTrigger('decline')}>
-                        <Image source={icons.dislike} style={styles.icon} resizeMode='contain' />
-                    </TouchableOpacity>
+                    {
+                        loader ?
+                            <ActivityIndicator animating color={colors.black} />
+                            :
+                            <>
+                                <TouchableOpacity style={styles.button} onPress={() => onTrigger('accept')}>
+                                    <Image source={icons.like} style={styles.icon} resizeMode='contain' />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.button} onPress={() => onTrigger('decline')}>
+                                    <Image source={icons.dislike} style={styles.icon} resizeMode='contain' />
+                                </TouchableOpacity>
+                            </>
+                    }
+
                 </View>
             }
             {

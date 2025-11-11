@@ -1,29 +1,27 @@
 import { View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native'
-import React, { FC, useCallback, useState } from 'react'
+import React, { FC, memo, useCallback, useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import { fonts } from '../../../shared/constants/fonts'
 import { icons } from '../../../shared/constants/icons'
 import { sendMessage } from '../../../shared/utils/firestoreMessageHelper'
 
 interface MessageInputBarInterface {
-    groupId?: string
+    groupId?: string,
 }
 
 const MessageInputBar: FC<MessageInputBarInterface> = ({
-    groupId = ''
+    groupId = '',
 }) => {
 
-    const [text, setText] = useState('hihihih')
+    const [text, setText] = useState('')
 
 
     const onSend = useCallback(async () => {
-        // console.log(groupId);
-
+        if (!text) return
         const res = await sendMessage(groupId, text)
-
         if (res) {
             console.log('sent');
-
+            setText('')
         }
 
     }, [groupId, text])
@@ -46,12 +44,12 @@ const MessageInputBar: FC<MessageInputBarInterface> = ({
     )
 }
 
-export default MessageInputBar
+export default memo(MessageInputBar)
 
 const styles = StyleSheet.create({
     container: {
         paddingVertical: 10,
-        paddingBottom: 20,
+        // paddingBottom: 20,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 10,
@@ -60,7 +58,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10
     },
     inputContainer: {
-        height: 50,
+        height: 45,
         width: '100%',
         borderRadius: 100,
         backgroundColor: colors.black3,
@@ -71,7 +69,8 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        height: 45,
+        // height: 45,
+        height: '100%',
         margin: 0,
         paddingTop: 0,
         paddingBottom: 0,

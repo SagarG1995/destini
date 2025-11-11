@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, StatusBarStyle } from 'react-native'
+import { StatusBar, StatusBarStyle } from 'react-native'
 import React, { FC, memo } from 'react'
 
 interface AppStatusBarInterface {

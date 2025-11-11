@@ -1,19 +1,39 @@
 /* eslint-disable react-native/no-inline-styles */
 import { View, Text, TouchableOpacity, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { FC, useMemo, useRef, useState } from 'react'
 import { icons } from '../../../shared/constants/icons'
 import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { fonts } from '../../../shared/constants/fonts';
 import { colors } from '../../../shared/constants/colors';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../../shared/constants/dimensions';
+import { useAppSelector } from '../../../redux/store';
+import { exitFromPlan } from '../../plans/plansApi';
+import { showToast } from '../../../shared/utils/toast';
+import { useNavigation } from '@react-navigation/native';
 
-const ChatHeaderDropDownMenu = () => {
+interface ChatHeaderDropDownMenuInterface {
+    data?: any
+}
 
+const ChatHeaderDropDownMenu: FC<ChatHeaderDropDownMenuInterface> = ({
+    data = null
+}) => {
+
+    const navigation = useNavigation<any>()
+    const { userdata } = useAppSelector(state => state.profile)
     const buttonRef = useRef(null);
     const dropdownProgress = useSharedValue(0);
     const [isOpen, setIsOpen] = useState(false);
     const [buttonLayout, setButtonLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
+    const isOwner = useMemo(() => {
+        if (userdata?.userId === data?.creatorId) {
+            return true
+        } else {
+            return false
+        }
+
+    }, [data?.creatorId, userdata?.userId])
 
     const toggleDropdown = () => {
         setIsOpen((prev) => !prev);
@@ -40,6 +60,19 @@ const ChatHeaderDropDownMenu = () => {
         setIsOpen(false);
         dropdownProgress.value = withTiming(0, { duration: 200 });
     };
+
+    const exitPlan = () => {
+        exitFromPlan(data?.planId).then(res => {
+            console.log(res);
+
+            if (res?.success) {
+                console.log(res);
+                navigation.goBack()
+            } else {
+                showToast(res?.message)
+            }
+        })
+    }
 
 
     return (
@@ -75,18 +108,24 @@ const ChatHeaderDropDownMenu = () => {
                             },
                         ]}
                     >
-                        <TouchableOpacity style={styles.menuItem}>
-                            <Image source={icons.cancel} style={styles.icon20} resizeMode='contain' />
-                            <Text style={styles.menuText}>Cancel Plan</Text>
-                        </TouchableOpacity>
+                        {
+                            isOwner &&
+                            <TouchableOpacity style={styles.menuItem}>
+                                <Image source={icons.cancel} style={styles.icon20} resizeMode='contain' />
+                                <Text style={styles.menuText}>Cancel Plan</Text>
+                            </TouchableOpacity>
+                        }
                         {/* <TouchableOpacity style={styles.menuItem}>
                             <Image source={icons.nosound} style={styles.icon20} resizeMode='contain' />
                             <Text style={styles.menuText}>Mute Group</Text>
                         </TouchableOpacity> */}
-                        <TouchableOpacity style={styles.menuItem}>
-                            <Image source={icons.exit} style={styles.icon13} resizeMode='contain' />
-                            <Text style={styles.menuText}>Exit Plan</Text>
-                        </TouchableOpacity>
+                        {
+                            !isOwner &&
+                            <TouchableOpacity style={styles.menuItem} onPress={exitPlan}>
+                                <Image source={icons.exit} style={styles.icon13} resizeMode='contain' />
+                                <Text style={styles.menuText}>Exit Plan</Text>
+                            </TouchableOpacity>
+                        }
 
                     </Animated.View>
                 </>

@@ -7,6 +7,7 @@ import { icons } from '../../../shared/constants/icons'
 import { fonts } from '../../../shared/constants/fonts'
 import moment from 'moment'
 import { ACCEPTED, DECLINED, PENDING } from '../../../shared/constants/planStatus'
+import { useNavigation } from '@react-navigation/native'
 
 interface ActivityCardInterface {
     data?: any
@@ -16,7 +17,7 @@ const ActivityCard: FC<ActivityCardInterface> = ({
     data = null
 }) => {
 
-    // console.log(data);
+    const navigation = useNavigation<any>()
 
     const chatButtonEnabled: boolean = data?.status === ACCEPTED ? true : false
 
@@ -31,6 +32,12 @@ const ActivityCard: FC<ActivityCardInterface> = ({
             return { backgroundColor: colors.red1 }
         }
     }, [data?.status])
+
+    const onChat = () => {
+        // console.log(data);
+        // return
+        navigation.navigate('groupchat', { tripDetails: data })
+    }
 
 
     if (!data) return null
@@ -74,6 +81,7 @@ const ActivityCard: FC<ActivityCardInterface> = ({
                             containerStyle={[styles.enableButton, !chatButtonEnabled && styles.disableButton]}
                             labelStyle={styles.buttonLabel}
                             enabled={chatButtonEnabled}
+                            onPress={onChat}
                         />
                     }
                 </View>

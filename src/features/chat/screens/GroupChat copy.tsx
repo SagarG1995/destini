@@ -1,29 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { View, StyleSheet, FlatList } from 'react-native'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { View, StyleSheet } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { colors } from '../../../shared/constants/colors'
 import ChatHeader from '../component/ChatHeader'
+import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MessageBubble from '../component/MessageBubble';
+import { fonts } from '../../../shared/constants/fonts';
 import MessageInputBar from '../component/MessageInputBar';
 import { collection, getFirestore, onSnapshot, orderBy, query } from '@react-native-firebase/firestore';
 import { parseFirestoreTimestamp } from '../../../shared/utils/firebaseTimeParser';
 import { images } from '../../../shared/constants/images';
+import { useAppSelector } from '../../../redux/store';
 import { showToast } from '../../../shared/utils/toast';
-import { isIOS } from '../../../shared/constants/dimensions';
-import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 const GroupChat = () => {
 
     const { tripDetails } = useRoute<any>()?.params
     const navigation = useNavigation<any>()
     const db = getFirestore();
-    const flatListRef = useRef<any>(null);
+    const { userdata } = useAppSelector(state => state.profile)
 
-    const [messages, setMessages] = useState<Array<any>>([]);
+    const [messages, setMessages] = useState<IMessage[]>([]);
 
-    useEffect(() => {
-        // flatListRef.current?.scrollToEnd({ animated: true });
-    }, [messages]);
+
 
     useEffect(() => {
 
@@ -66,36 +66,38 @@ const GroupChat = () => {
         return () => unsubscribe();
     }, [db, tripDetails?.groupId]);
 
-    const renderBubble = useCallback(({ item }: any) => {
-        return <MessageBubble data={item} />
+    const onSend = useCallback((newMessages: IMessage[] = []) => {
+        setMessages((previousMessages) =>
+            GiftedChat.append(previousMessages, newMessages)
+        );
+    }, []);
+
+    const renderBubble = useCallback((props: any) => {
+        return <MessageBubble {...props} />
     }, [])
 
-    const itemSeparatorComponent = useCallback(() => {
-        return (
-            <View style={styles.mt_10} />
-        )
-    }, [])
+    const messageInputBar = useCallback(() => {
+        return <MessageInputBar groupId={tripDetails?.groupId} />
+    }, [tripDetails])
 
     return (
-        <KeyboardAvoidingView
-            style={[styles.container]}
-        // behavior={isIOS ? "padding" : 'height'}
-        // keyboardVerticalOffset={isIOS ? 90 : 0}
-        >
+        <View style={styles.container}>
             <ChatHeader data={tripDetails} />
-            <FlatList
-                ref={flatListRef}
-                data={messages}
-                keyExtractor={(item, index) => item?._id ?? index.toString()}
-                renderItem={renderBubble}
-                inverted
-                style={styles.listStyle}
-                contentContainerStyle={styles.listContainerStyle}
-                ItemSeparatorComponent={itemSeparatorComponent}
-                keyboardShouldPersistTaps="handled"
+            <GiftedChat
+                messages={messages}
+                onSend={onSend}
+                user={{
+                    _id: userdata?.userId, // your user id
+                }}
+
+                renderBubble={renderBubble}
+                renderAvatar={() => null}
+                showUserAvatar={false}
+                renderInputToolbar={messageInputBar}
+                keyboardShouldPersistTaps='handled'
+                messagesContainerStyle={styles.messagesContainerStyle}
             />
-            <MessageInputBar groupId={tripDetails?.groupId} />
-        </KeyboardAvoidingView>
+        </View>
     )
 }
 
@@ -104,19 +106,20 @@ export default GroupChat
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: colors.white
     },
-    keyboardAwareContainerStyle: {
-        flexGrow: 1,
-        backgroundColor: 'red'
+    inputToolbar: {
+        borderTopWidth: 0,
+        marginHorizontal: 8,
+        marginVertical: 6,
+        borderRadius: 24,
+        backgroundColor: '#111',
+        paddingVertical: 4,
+        fontFamily: fonts.regular
     },
-    listStyle: {
-        // paddingBottom: 20
-        // marginBottom: 20
-    },
-    listContainerStyle: {
-        flexGrow: 1,
-    },
-    mt_10: {
-        marginTop: 10
+    messagesContainerStyle: {
+        paddingBottom: 20,
+        paddingHorizontal: 0,
+        marginHorizontal: 0
     }
 })

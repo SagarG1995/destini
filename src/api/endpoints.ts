@@ -20,13 +20,12 @@ export const endpoints = {
     homeapi: 'plans/nearby?',
 
     getplacesuggestion: 'location/autocomplete',
-    createplan: 'plans',
-    updateplan: "plans/",
-    deleteplan: "plans/",
+    plans: 'plans/',
     myplans: 'plans/mine',
     acceptdeclinerequest: "plans/request/",
     requestplan: "plans/request/",
     activities: "plans/activity/mine",
+    exitplan: "plans/request/",
 
     getchats: "chat/user-groups",
 

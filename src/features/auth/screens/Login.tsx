@@ -36,7 +36,7 @@ const Login = () => {
         }
         setLoader(true)
         login(param).then(res => {
-            console.log(res);
+            // console.log(res);
 
             if (res?.success && res?.status === 200) {
                 dispatch(setAuthData({

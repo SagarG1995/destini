@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, RefreshControl } from 'react-native'
+import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { colors } from '../../../shared/constants/colors'
 import Header from '../component/Header'

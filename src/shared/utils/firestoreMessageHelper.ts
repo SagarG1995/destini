@@ -18,7 +18,8 @@ export const sendMessage = async (firebaseGroupId: string, message: string) => {
                 message,
                 gender: userdata?.gender,
                 timestamp: Date.now(),    // Firestore server timestamp,
-                unixtimestamp: Date.now(),
+                readabletimestamp: serverTimestamp(),
+                leftGroup: false
             }
         ).then(res => {
             console.log("send msg ==> ", res);

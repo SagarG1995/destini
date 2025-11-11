@@ -110,7 +110,7 @@ const Home = () => {
         setIsopen(!isOpen)
     }, [isOpen])
 
-    const renderItem = useCallback(({ item }: any) => <TripCard data={item} />, [])
+    const renderItem = useCallback(({ item }: any) => <TripCard data={item} />, [plans])
 
     const listEmptyComponent = useCallback(
         () => (!loading && !refreshing) && <NoTripComponent />,

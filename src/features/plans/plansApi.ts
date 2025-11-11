@@ -10,15 +10,15 @@ export const getPlaceSuggestion = async (query: string) => {
 }
 
 export const createPlan = async (param: {} | undefined) => {
-    return await apiClient.post(endpoints.createplan, param)
+    return await apiClient.post(endpoints.plans, param)
 }
 
 export const deletePlan = async (plan_id: string) => {
-    return await apiClient._delete(endpoints.deleteplan + plan_id)
+    return await apiClient._delete(endpoints.plans + plan_id)
 }
 
 export const updatePlan = async (param: any, plan_id: string) => {
-    return await apiClient.put(endpoints.updateplan + plan_id, param)
+    return await apiClient.put(endpoints.plans + plan_id, param)
 }
 
 export const getMyPlans = async () => {
@@ -72,10 +72,14 @@ export const requestPlan = async (plan_id: string) => {
 
 export const getActivities = async () => {
     const res = await apiClient.get(endpoints.activities)
+    // console.log(res);
+
     if (res?.success) {
         store.dispatch(setActivities(res?.data?.data ?? []))
-    } else {
-        // showToast(res?.message)
     }
     return res
+}
+
+export const exitFromPlan = async (plan_id: string) => {
+    return await apiClient._delete(endpoints.exitplan + plan_id + '/leave')
 }
